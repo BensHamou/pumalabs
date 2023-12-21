@@ -1,0 +1,12 @@
+# .gitignore
+
+# Virtual environment
+vlab/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Local settings file
+*.env
+
