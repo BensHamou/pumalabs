@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    container_name: PUMA_DB
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=mydb-dev
+      - POSTGRES_USER=prod_report
+      - POSTGRES_PASSWORD=prod_report
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5400:5432"
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: puma_prod:latest
+    restart: unless-stopped
+    container_name: PUMA_APP
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./report_prod:/report_prod
+
+    command: >
+      sh -c " python manage.py makemigrations &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mydb-dev
+      - DB_USER=prod_report
+      - DB_PASS=prod_report
+      - DB_PORT=5432
+  cron:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    image: puma_cron
+    depends_on:
+    - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mydb-dev
+      - DB_USER=prod_report
+      - DB_PASS=prod_report
+      - DB_PORT=5432
+    command: >
+      sh -c " python manage.py crontab add &&
+              crond -f"
+volumes:
+  db_data:
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.67.0/24

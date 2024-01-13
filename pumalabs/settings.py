@@ -37,6 +37,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "account",
+    "report",
+    'bootstrap5',
+    'fontawesomefree',
+    'django_filters',
+    'widget_tweaks',
+    'django_extensions',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -69,20 +77,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "pumalabs.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'LabDBDev',
+        'USER': 'puma_prod',
+        'PASSWORD': 'puma_prod',
+        'HOST': '10.10.10.101',
+        'PORT': '5434',
     }
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql',
+    #    'NAME': os.environ.get('DB_NAME'),
+    #    'USER': os.environ.get('DB_USER'),
+    #    'PASSWORD': os.environ.get('DB_PASS'),
+    #    'HOST': os.environ.get('DB_HOST'),
+    #    'PORT': os.environ.get('DB_PORT'),
+    #}
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -100,24 +113,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
+LANGUAGE_CODE = "fr"
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Algiers"
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATIC_URL = '/static/'
 
-STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+LOGIN_REDIRECT_URL = 'login_success'
+LOGOUT_REDIRECT_URL = '/login'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
