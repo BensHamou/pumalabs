@@ -54,9 +54,9 @@ class StandardForm(ModelForm):
         
     def __init__(self, *args, **kwargs):
         poste = kwargs.pop('poste', None)
+        super(StandardForm, self).__init__(*args, **kwargs)
         if poste:
             self.fields['poste'].initial = poste
-        super(StandardForm, self).__init__(*args, **kwargs)
         self.fields['poste'].widget.attrs['disabled'] = True
     
 class ReportForm(ModelForm):

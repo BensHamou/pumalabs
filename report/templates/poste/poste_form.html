@@ -52,13 +52,17 @@ Poste
         <div class="card card-body mb-3" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
             <div class="row text-center">
                 <div class="d-flex mb-5">
-                    <div class="col-lg-6 col-md-3 col-sm-3 d-flex justify-content-end">
-                        <h4 class="text-white">{{ standard }}</h4>
+                    <div class="col-lg-7 col-md-7 col-sm-6 d-flex justify-content-end">
+                        <h4 class="text-white">{{ standard }} {% if standard.active %}(défault){% endif %}</h4>
                     </div>
-                    <div class="col-lg-1 col-md-3 col-sm-3 d-flex justify-content-start">
+                    <div class="col-lg-1 col-md-1 col-sm-6 d-flex justify-content-start">
+                        {% if not standard.active %}<button type="button" onclick="window.location='{% url 'default_standard' standard.id %}'" class="btn" 
+                            style="margin-left: 10px; color: #000066; padding: 2px;"><i class="fas fa-vial-circle-check"></i></button>
+                        {% endif %}
                         <button type="button" onclick="window.location='{% url 'edit_standard' standard.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" 
                         class="btn" style="margin-left: 10px; padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmStandardDel('{{standard.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" onclick="confirmStandardDel('{{standard.id|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        
                     </div>
                 </div>
             </div>
@@ -137,4 +141,22 @@ Poste
     {% endfor %}
 {% endif %}
 
+<script>
+    const confirmStandardDel = (standardId) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer standard N° ${standardId}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_standard' 123456789 %}".replace(/123456789/, standardId);
+            }});
+    }
+</script>
 {% endblock %}

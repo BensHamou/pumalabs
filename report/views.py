@@ -98,7 +98,13 @@ def editStandardView(request, id):
     if request.method == 'POST':
         form = StandardForm(request.POST, instance=standard)
         if form.is_valid():
-            form.save()
+            standard = form.save()
+            if standard.active:
+                related_standards = Standard.objects.filter(poste=standard.poste).exclude(pk=standard.pk)
+                related_standards.update(active=False)
+            elif all(not s.active for s in standard.poste.standards()):
+                standard.active = True
+                standard.save()
             cache_param = str(uuid.uuid4())
             url_path = reverse('edit_poste', args=[standard.poste.pk])
             page = request.GET.get('page', '1')
@@ -114,7 +120,7 @@ def editStandardView(request, id):
 @admin_required
 def deleteStandardView(request, id):
     standard = Standard.objects.get(id=id)
-    if len(standard.poste.standards.all) > 1:
+    if len(standard.poste.standards()) > 1:
         standard.delete()
     cache_param = str(uuid.uuid4())
     url_path = reverse('edit_poste', args=[standard.poste.pk])
@@ -126,27 +132,38 @@ def deleteStandardView(request, id):
 
 @login_required(login_url='login')
 @admin_required
-def createPosteView(request):
-    form = PosteForm()
-    standard_form = StandardForm()
+def createStandardView(request, id):
+    poste = Poste.objects.get(id=id)
+    form = StandardForm(poste = poste)
     if request.method == 'POST':
-        form = PosteForm(request.POST)
+        form = StandardForm(request.POST)
         if form.is_valid():
-            poste = form.save()
-            
-            standard_data = {
-                'poste': poste.id, 'active': True, 'max_2_5_value': 0, 'max_1_25_value': 0,
-                'max_0_6_value': 0, 'max_0_3_value': 0, 'max_0_value': 0, 'min_2_5_value': 0,
-                'min_1_25_value': 0, 'min_0_6_value': 0, 'min_0_3_value': 0, 'min_0_value': 0,
-            }
-            standard_form = StandardForm(standard_data)
-            if standard_form.is_valid():
-                standard_form.save()
-
+            standard = form.save()
+            if standard.active:
+                related_standards = Standard.objects.filter(poste=standard.poste).exclude(pk=standard.pk)
+                related_standards.update(active=False)
             cache_param = str(uuid.uuid4())
-            url_path = reverse('postes')
-            redirect_url = f'{url_path}?cache={cache_param}'
+            url_path = reverse('edit_poste', args=[id])
+            page = request.GET.get('page', '1')
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
             return redirect(redirect_url)
-    context = {'form': form}
-    return render(request, 'poste_form.html', context)
+    context = {'form': form, 'poste': poste}
+    return render(request, 'standard_form.html', context)
 
+@login_required(login_url='login')
+@admin_required
+def setDefaultStandardView(request, id):
+    standard = Standard.objects.get(id=id)
+    standard.active = True
+    standard.save()
+    related_standards = Standard.objects.filter(poste=standard.poste).exclude(pk=standard.pk)
+    related_standards.update(active=False)
+    cache_param = str(uuid.uuid4())
+    url_path = reverse('edit_poste', args=[standard.poste.pk])
+    page = request.GET.get('page', '1')
+    page_size = request.GET.get('page_size', '12')
+    search = request.GET.get('search', '')
+    redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
+    return redirect(redirect_url)
