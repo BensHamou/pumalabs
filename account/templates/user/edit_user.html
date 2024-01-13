@@ -63,13 +63,13 @@ Utilisateur - {{ user_to_edit.username }}
       <div class="row mb-4">
         <div class="col-md-4 col-sm-6 mb-sm-2">
           <div class="form-outline">
-            <label class="form-label labelCustom" for="lines">Lignes</label>
-            <div id="line" class="form-control select" style="background-color: #cacfd7;">
-              <input id="line_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
+            <label class="form-label labelCustom" for="usines">Usines</label>
+            <div id="usine" class="form-control select" style="background-color: #cacfd7;">
+              <input id="usine_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
               <div class="dropdown-menu"></div>
-              <select name="lines" multiple hidden id="hidden_lines_select">
-                {% for line in form.fields.lines.queryset %}
-                  <option value="{{ line.id }}" {% if line.id in selectedLines %} selected {% endif %}>{{ line.designation }}</option>
+              <select name="usines" multiple hidden id="hidden_usines_select">
+                {% for usine in form.fields.usines.queryset %}
+                  <option value="{{ usine.id }}" {% if usine.id in selectedUsines %} selected {% endif %}>{{ usine.designation }}</option>
                 {% endfor %}                      
               </select>
             </div>

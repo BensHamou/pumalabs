@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %} PUMA Production {% endblock %}</title>
+    <title>{% block title %} PUMA Labs {% endblock %}</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% load bootstrap5 %} 
     {% bootstrap_css %} 
@@ -32,7 +32,7 @@
                 <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
               </div>
             {% endif %}
-            {% if user.role not in 'Observateur,Nouveau' %}
+            {% comment %} {% if user.role not in 'Observateur,Nouveau' %}
               <div class="d-flex" style="width: 100%; margin: 5px 10px;">
                 {% block activeCreateReport %}{% endblock %}
                 <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
@@ -41,7 +41,7 @@
             <div class="d-flex" style="width: 100%; margin: 0px 10px;">
               {% block activeListReport %}{% endblock %}
               <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
-            </div>
+            </div> {% endcomment %}
             <div class="d-flex" style="width: 100%; margin: 5px 10px;">
               {% if user.role == 'Admin' %}
               {% block activeUsers %}{% endblock %}
@@ -65,12 +65,8 @@
                   <li class="nav-item dropdown dropend list-unstyled">
                     <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a>
                       <ul class="dropdown-menu list-unstyled">
-                      <li><a href="{% url 'location_teams' %}" class="dropdown-item">Emplacements & Équipes</a></li>
+                      <li><a href="{% url 'usines' %}" class="dropdown-item">Usines</a></li>
                       <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
-                      <li><a href="{% url 'products' %}" class="dropdown-item">Produits</a></li>
-                      <li><a href="{% url 'numo_products' %}" class="dropdown-item">Nomenclatures</a></li>
-                      <li><a href="{% url 'types' %}" class="dropdown-item">Types d'arrêt</a></li>
-                      <li><a href="{% url 'reasons' %}" class="dropdown-item">Raison d'arrêt</a></li>
                     </ul>
                   </li>
                 </h4>

@@ -43,26 +43,6 @@ class UsineForm(ModelForm):
     horaires = forms.SelectMultiple(attrs={'class': 'form-select'})
 
 
-class StandardForm(ModelForm):
-    class Meta:
-        model = Standard
-        fields = '__all__'
-
-
-    poste = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
-    active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton'}))
-    max_2_5_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 2,5mm')))
-    max_1_25_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 1,25mm')))
-    max_0_6_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0,6mm')))
-    max_0_3_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0,3mm')))
-    max_0_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0 (<63µm)')))
-    min_2_5_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 2,5mm')))
-    min_1_25_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 1,25mm')))
-    min_0_6_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,6mm')))
-    min_0_3_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,3mm')))
-    min_0_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0 (<63µm)')))
-
-
 class CustomLoginForm(AuthenticationForm):
     
     username = forms.EmailField( label="Email", widget=forms.EmailInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder':'Email'}))

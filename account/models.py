@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from report.models import Poste, Fraction
 
 class Horaire(models.Model):
     hour_start = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(23)])
@@ -49,31 +48,13 @@ class Setting(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.name + ' : ' + self.value
-    
-class Standard(models.Model):
-
-    poste = models.ForeignKey(Poste, null=True, on_delete=models.SET_NULL)
-    active = models.BooleanField(default=True)
-    max_2_5_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    max_1_25_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    max_0_6_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    max_0_3_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    max_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    min_2_5_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    min_1_25_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    min_0_6_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    min_0_3_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    min_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-
-    def __str__(self):
-        return self.poste.designation + " (R" + str(self.report.id) +")"
 
 class User(AbstractUser):
 
     ROLE_CHOICES = [
         ('Nouveau', 'Nouveau'),
         ('Technicien', 'Technicien'),
-        ('TechnicienV', 'TechnicienV'),
+        ('Validateur', 'Validateur'),
         ('Observateur', 'Observateur'),
         ('Admin', 'Admin'),
     ]

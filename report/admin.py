@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import *
+
+admin.site.register(Poste)
+admin.site.register(Report)
+admin.site.register(Sample)
+admin.site.register(Standard)
+admin.site.register(Validation)

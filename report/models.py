@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from account.models import *
+from account.models import Usine, User, Horaire
 
 class Poste(models.Model):
     designation = models.CharField(max_length=100)
@@ -33,7 +33,7 @@ class Report(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     state = models.CharField(choices=STATE_REPORT, max_length=40)
-    creator = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={'role': 'Technicien'})
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'Technicien'})
     usine = models.ForeignKey(Usine, on_delete=models.SET_NULL, null=True)
     shift = models.ForeignKey(Horaire, null=True, on_delete=models.SET_NULL)
    
@@ -72,7 +72,25 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.poste.designation + " (R" + str(self.report.id) +")"
-    
+
+class Standard(models.Model):
+
+    poste = models.ForeignKey(Poste, null=True, on_delete=models.SET_NULL)
+    active = models.BooleanField(default=True)
+    max_2_5_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    max_1_25_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    max_0_6_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    max_0_3_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    max_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    min_2_5_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    min_1_25_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    min_0_6_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    min_0_3_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    min_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+
+    def __str__(self):
+        return self.poste.designation + " (R" + str(self.report.id) +")"
+
 class Validation(models.Model):
 
     STATE_REPORT = [

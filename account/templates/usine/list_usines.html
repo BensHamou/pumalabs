@@ -1,0 +1,81 @@
+{% extends "main.html" %}
+
+{% block title %}
+  Usines
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div style="margin: 20px 0px;">
+        <div class="row height d-flex justify-content-end align-items-center">
+            <div class="col-md-1">
+                <a href="{% url 'create_usine' %}" class="btn btn-secondary" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);">Nouveau</a>
+            </div>
+        </div>
+    </div> 
+    <section class="sectionList"> 
+        <table class="table table-borderless">
+            <thead style="border-bottom: 2px solid white;">
+                <tr class="text-white">
+                <th class="d-none d-md-table-cell">#</th>
+                <th>Désignation</th>
+                <th>Address</th>
+                <th>Horaires</th>
+                <th style="width: 6vh;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usine in page %}
+                <tr style="color: #dde3f0;">
+                    <td class="d-none d-md-table-cell">{{ usine.id }}</td>
+                    <td>{{ usine.designation }}</td>
+                    <td>{{ usine.address }}</td>
+                    <td class="d-none d-md-table-cell">
+                        {% for horaire in usine.horaires.all %}
+                            <button onclick="window.location='{% url 'edit_horaire' horaire.id %}?redirect_url=usines{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}'"  
+                            type="button" class="badge position-relative listBadge" style="margin: 0 0.8vw 0.5vw 0; border: none;">
+                            <p class="lead p-0 m-0 listBadgeText">{{ horaire }}</p>
+                                {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                                    <a onclick="confirmHoraireDel('{{horaire.id|escapejs}}', '{{horaire.designation|escapejs}}', '{{usine.designation|escapejs}}');" 
+                                    style="color: white; text-decoration: none; font-size: 10px;">x</a>  
+                                </span> {% endcomment %}
+                            </button>
+                        {% empty %}
+                            <span class="badge bg-secondary">Pas d'horaire associés.</span>
+                        {% endfor %}
+                        <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_horaire' %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <button type="button" onclick="window.location='{% url 'edit_usine' usine.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmUsineDel('{{usine.id|escapejs}}', '{{usine|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if page.has_other_pages %}
+            {% include 'pagination.html' %}
+        {% endif %}    
+    </section>
+</div>
+<script>
+    const confirmUsineDel = (usineId, usineDes) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer l'usine ${usineDes}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_usine' 123456789 %}".replace(/123456789/, usineId);
+            }});
+    }
+</script>
+{% endblock %}

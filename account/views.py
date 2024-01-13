@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import User, Site, Line, Team
+from .models import User, Usine
 from django.shortcuts import render, redirect
 import requests
 import json
@@ -41,13 +41,11 @@ def admin_only_required(view_func):
 
 def DI_GS_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role in ['Admin', 'Gestionnaire de stock', 'Directeur Industriel']:
+        if request.user.is_authenticated and request.user.role in ['Admin', 'Validateur']:
             return view_func(request, *args, **kwargs)
         else:
             return render(request, '403.html', status=403)
     return wrapper
-
-
 
 def page_not_found(request, exception):
     return render(request, '404.html', status=404)
@@ -99,7 +97,7 @@ def refreshUsersList(request):
 @admin_only_required
 def editUserView(request, id):
     user = User.objects.get(id=id)
-    selectedLines = [line.id for line in user.lines.all()]
+    selectedUsines = [usine.id for usine in user.usines.all()]
     form = UserForm(instance=user)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
@@ -110,7 +108,7 @@ def editUserView(request, id):
             redirect_url = f'{url_path}?cache={cache_param}'
             return redirect(redirect_url)
 
-    context = {'form': form, 'user_to_edit': user, 'selectedLines': selectedLines}
+    context = {'form': form, 'user_to_edit': user, 'selectedUsines': selectedUsines}
 
     return render(request, 'edit_user.html', context)
 
@@ -132,17 +130,17 @@ def listUsersView(request):
     users = User.objects.exclude(role='Nouveau').exclude(username='admin').order_by('id')
     filteredData = UserFilter(request.GET, queryset=users)
     users = filteredData.qs
-    selectedLines = request.GET.getlist('line')
+    selectedUsines = request.GET.getlist('usine')
 
-    if len(selectedLines) > 0:
-        users = users.filter(lines__in=selectedLines)
+    if len(selectedUsines) > 0:
+        users = users.filter(usines__in=selectedUsines)
 
     paginator = Paginator(users, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     context = {
-        'page': page, 'filtredData': filteredData, 'selectedLines': selectedLines,
+        'page': page, 'filtredData': filteredData, 'selectedUsines': selectedUsines,
     }
     return render(request, 'users_list.html', context)
 
@@ -189,330 +187,69 @@ def logoutView(request):
     logout(request)
     return redirect('login')
 
-# LOCATION AND TEAMS
+# USINES
 
 @login_required(login_url='login')
 @admin_required
-def listLocationTeams(request):
-    location_teams = Site.objects.all().order_by('id')
-    filteredData = SiteFilter(request.GET, queryset=location_teams)
-    location_teams = filteredData.qs
-    paginator = Paginator(location_teams, 8)
+def listUsineView(request):
+    usines = Usine.objects.all().order_by('id')
+    paginator = Paginator(usines, 8)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
-        'page': page, 'filtredData': filteredData,
+        'page': page, 'usines': usines, 
     }
-    return render(request, 'list_location_teams.html', context)
-
-# SITES
+    return render(request, 'list_usines.html', context)
 
 @login_required(login_url='login')
 @admin_required
-def deleteSiteView(request, id):
-    site = Site.objects.get(id=id)
-    site.delete()
+def deleteUsineView(request, id):
+    usine = Usine.objects.get(id=id)
+    usine.delete()
     cache_param = str(uuid.uuid4())
-    url_path = reverse('location_teams')
+    url_path = reverse('usines')
     redirect_url = f'{url_path}?cache={cache_param}'
     return redirect(redirect_url)
 
 @login_required(login_url='login')
 @admin_required
-def createSiteView(request):
-    form = SiteForm()
+def createUsineView(request):
+    form = UsineForm()
     if request.method == 'POST':
-        form = SiteForm(request.POST, request.FILES)
+        form = UsineForm(request.POST)
         if form.is_valid():
             form.save()
             cache_param = str(uuid.uuid4())
-            url_path = reverse('location_teams')
+            url_path = reverse('usines')
             page = request.GET.get('page', '1')
             redirect_url = f'{url_path}?cache={cache_param}&page={page}'
             return redirect(redirect_url)
 
     context = {'form': form, 'selectedHoraire': []}
 
-    return render(request, 'site_form.html', context)
+    return render(request, 'usine_form.html', context)
 
 @login_required(login_url='login')
 @admin_required
-def editSiteView(request, id):
-    site = Site.objects.get(id=id)
-    form = SiteForm(instance=site)
+def editUsineView(request, id):
+    usine = Usine.objects.get(id=id)
+    form = UsineForm(instance=usine)
 
-    selectedHoraire = [horaire.id for horaire in site.horaires.all()]
+    selectedHoraire = [horaire.id for horaire in usine.horaires.all()]
 
     if request.method == 'POST':
-        form = SiteForm(request.POST, request.FILES, instance=site)
+        form = UsineForm(request.POST, instance=usine)
         if form.is_valid():
             form.save()
             cache_param = str(uuid.uuid4())
-            url_path = reverse('location_teams')
+            url_path = reverse('usines')
             page = request.GET.get('page', '1')
             redirect_url = f'{url_path}?cache={cache_param}&page={page}'
             return redirect(redirect_url)
 
-    context = {'form': form, 'site': site, 'selectedHoraire': selectedHoraire}
+    context = {'form': form, 'usine': usine, 'selectedHoraire': selectedHoraire}
 
-    return render(request, 'site_form.html', context)
-
-
-# LINES
-
-
-@login_required(login_url='login')
-@admin_required
-def deleteLineView(request, id):
-    line = Line.objects.get(id=id)
-    line.delete()
-    redirect_url = request.GET.get('redirect_url', 'location_teams')
-    page = request.GET.get('page', '1')
-    cache_param = str(uuid.uuid4())
-    if redirect_url == 'location_teams':
-        url_path = reverse('location_teams')
-        redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-        return redirect(redirect_url)
-    if 'site_' in redirect_url:
-        id_site = redirect_url.split('_')[1]
-        url_path = reverse('edit_site', args=[id_site])
-        redirect_url = f'{url_path}?cache={cache_param}'
-        return redirect(redirect_url)
-    url_path = reverse('location_teams')
-    redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-    return redirect(redirect_url)
-
-@login_required(login_url='login')
-@admin_required
-def createLineView(request):
-    site = request.GET.get('site', None)
-    form = LineForm(site=site)
-    
-    if request.method == 'POST':
-        form = LineForm(request.POST)
-        if form.is_valid():
-            cache_param = str(uuid.uuid4())
-            form.save()
-            redirect_url = request.GET.get('redirect_url', 'location_teams')
-            page = request.GET.get('page', '1')
-            if 'site_' in redirect_url:
-                id_site = redirect_url.split('_')[1]
-                url_path = reverse('edit_site', args=[id_site])
-                redirect_url = f'{url_path}?cache={cache_param}'
-                return redirect(redirect_url)
-            url_path = reverse('location_teams')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-            return redirect(redirect_url)
-
-    context = {'form': form}
-
-    return render(request, 'line_form.html', context)
-
-@login_required(login_url='login')
-@admin_required
-def editLineView(request, id):
-    line = Line.objects.get(id=id)
-    form = LineForm(instance=line)
-    if request.method == 'POST':
-        form = LineForm(request.POST, instance=line)
-        cache_param = str(uuid.uuid4())
-        if form.is_valid():
-            form.save()
-            redirect_url = request.GET.get('redirect_url', 'location_teams')
-            page = request.GET.get('page', '1')
-            if redirect_url == 'location_teams':
-                url_path = reverse('location_teams')
-                redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-                return redirect(redirect_url)
-            if 'site_' in redirect_url:
-                id_site = redirect_url.split('_')[1]
-                url_path = reverse('edit_site', args=[id_site])
-                redirect_url = f'{url_path}?cache={cache_param}'
-                return redirect(redirect_url)
-            url_path = reverse('location_teams')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-            return redirect(redirect_url)
-
-    context = {'form': form, 'line': line}
-    return render(request, 'line_form.html', context)
-
-
-# TEAMS
-
-@login_required(login_url='login')
-@admin_required
-def deleteTeamView(request, id):
-    team = Team.objects.get(id=id)
-    team.delete()
-    redirect_url = request.GET.get('redirect_url', 'location_teams')
-    page = request.GET.get('page', '1')
-    cache_param = str(uuid.uuid4())
-    if redirect_url == 'location_teams':
-        cache_param = str(uuid.uuid4())
-        url_path = reverse('location_teams')
-        redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-        return redirect(redirect_url)
-    if 'line_' in redirect_url:
-        id_line = redirect_url.split('_')[1]
-        url_path = reverse('edit_line', args=[id_line])
-        redirect_url = f'{url_path}?cache={cache_param}'
-        return redirect(redirect_url)
-    url_path = reverse('location_teams')
-    redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-    return redirect(redirect_url)
-
-@login_required(login_url='login')
-@admin_required
-def createTeamView(request):
-
-    line = request.GET.get('line', None)
-
-    form = TeamForm(user = request.user, line = line)
-
-    if request.method == 'POST':
-        form = TeamForm(request.POST, user = request.user, line = line)
-        if form.is_valid():
-            cache_param = str(uuid.uuid4())
-            designation = form.cleaned_data['designation']
-            line = form.cleaned_data['line']
-            team = Team(designation=designation, line=line)
-            team.save()
-            redirect_url = request.GET.get('redirect_url', 'location_teams')
-            page = request.GET.get('page', '1')
-            if redirect_url == 'location_teams':
-                url_path = reverse('location_teams')
-                redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-                return redirect(redirect_url)
-            if 'line_' in redirect_url:
-                id_line = redirect_url.split('_')[1]
-                url_path = reverse('edit_line', args=[id_line])
-                redirect_url = f'{url_path}?cache={cache_param}'
-                return redirect(redirect_url)
-            url_path = reverse('location_teams')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-            return redirect(redirect_url)
-
-    context = {'form': form}
-
-    return render(request, 'team_form.html', context)
-
-@login_required(login_url='login')
-@admin_required
-def editTeamView(request, id):
-    team = Team.objects.get(id=id)
-    form = TeamForm(instance=team, user = request.user)
-
-    if request.method == 'POST':
-        form = TeamForm(request.POST, instance=team)
-        cache_param = str(uuid.uuid4())
-        if form.is_valid():
-            form.save()
-            redirect_url = request.GET.get('redirect_url', 'location_teams')
-            page = request.GET.get('page', '1')
-            if redirect_url == 'location_teams':
-                url_path = reverse('location_teams')
-                redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-                return redirect(redirect_url)
-            if 'line_' in redirect_url:
-                id_line = redirect_url.split('_')[1]
-                url_path = reverse('edit_line', args=[id_line])
-                redirect_url = f'{url_path}?cache={cache_param}'
-                return redirect(redirect_url)
-            url_path = reverse('location_teams')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-            return redirect(redirect_url)
-    context = {'form': form, 'team': team}
-
-    return render(request, 'team_form.html', context)
-
-# Silos
-
-@login_required(login_url='login')
-@admin_required
-def deleteSiloView(request, id):
-    silo = Silo.objects.get(id=id)
-    silo.delete()
-    redirect_url = request.GET.get('redirect_url', 'location_teams')
-    page = request.GET.get('page', '1')
-    cache_param = str(uuid.uuid4())
-    if redirect_url == 'location_teams':
-        cache_param = str(uuid.uuid4())
-        url_path = reverse('location_teams')
-        redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-        return redirect(redirect_url)
-    if 'line_' in redirect_url:
-        id_line = redirect_url.split('_')[1]
-        url_path = reverse('edit_line', args=[id_line])
-        redirect_url = f'{url_path}?cache={cache_param}'
-        return redirect(redirect_url)
-    url_path = reverse('location_teams')
-    redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-    return redirect(redirect_url)
-
-@login_required(login_url='login')
-@admin_required
-def createSiloView(request):
-
-    line = request.GET.get('line', None)
-
-    form = SiloForm(user = request.user, line = line)
-
-    if request.method == 'POST':
-        form = SiloForm(request.POST, user = request.user, line = line)
-        if form.is_valid():
-            cache_param = str(uuid.uuid4())
-            designation = form.cleaned_data['designation']
-            line = form.cleaned_data['line']
-            silo = Silo(designation=designation, line=line)
-            silo.save()
-            redirect_url = request.GET.get('redirect_url', 'location_teams')
-            page = request.GET.get('page', '1')
-            if redirect_url == 'location_teams':
-                url_path = reverse('location_teams')
-                redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-                return redirect(redirect_url)
-            if 'line_' in redirect_url:
-                id_line = redirect_url.split('_')[1]
-                url_path = reverse('edit_line', args=[id_line])
-                redirect_url = f'{url_path}?cache={cache_param}'
-                return redirect(redirect_url)
-            url_path = reverse('location_teams')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-            return redirect(redirect_url)
-
-    context = {'form': form}
-
-    return render(request, 'silo_form.html', context)
-
-@login_required(login_url='login')
-@admin_required
-def editSiloView(request, id):
-    silo = Silo.objects.get(id=id)
-    form = SiloForm(instance=silo, user = request.user)
-
-    if request.method == 'POST':
-        form = SiloForm(request.POST, instance=silo)
-        cache_param = str(uuid.uuid4())
-        if form.is_valid():
-            form.save()
-            redirect_url = request.GET.get('redirect_url', 'location_teams')
-            page = request.GET.get('page', '1')
-            if redirect_url == 'location_teams':
-                url_path = reverse('location_teams')
-                redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-                return redirect(redirect_url)
-            if 'line_' in redirect_url:
-                id_line = redirect_url.split('_')[1]
-                url_path = reverse('edit_line', args=[id_line])
-                redirect_url = f'{url_path}?cache={cache_param}'
-                return redirect(redirect_url)
-            url_path = reverse('location_teams')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
-            return redirect(redirect_url)
-    context = {'form': form, 'silo': silo}
-
-    return render(request, 'silo_form.html', context)
-
+    return render(request, 'usine_form.html', context)
 
 # HORAIRE
 
