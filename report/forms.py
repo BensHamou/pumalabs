@@ -36,10 +36,10 @@ class PosteForm(ModelForm):
 class StandardForm(ModelForm):
     class Meta:
         model = Standard
-        fields = '__all__'
+        fields = ['poste', 'active', 'max_2_5_value', 'max_1_25_value', 'max_0_6_value', 'max_0_3_value', 'max_0_value', 'min_2_5_value', 'min_1_25_value', 
+                  'min_0_6_value', 'min_0_3_value', 'min_0_value']
 
-
-    poste = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
+    poste = forms.ModelChoiceField(queryset=Poste.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Poste")
     active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton'}))
     max_2_5_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 2,5mm')))
     max_1_25_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 1,25mm')))
@@ -51,6 +51,13 @@ class StandardForm(ModelForm):
     min_0_6_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,6mm')))
     min_0_3_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,3mm')))
     min_0_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0 (<63µm)')))
+        
+    def __init__(self, *args, **kwargs):
+        poste = kwargs.pop('poste', None)
+        if poste:
+            self.fields['poste'].initial = poste
+        super(StandardForm, self).__init__(*args, **kwargs)
+        self.fields['poste'].widget.attrs['disabled'] = True
     
 class ReportForm(ModelForm):
     class Meta:

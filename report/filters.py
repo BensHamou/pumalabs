@@ -5,6 +5,19 @@ from .forms import getAttrs
 from .models import *
 from django.db.models import Q
 
+class PosteFilter(FilterSet):
+
+    search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher Emplacement..')))
+
+    def filter_search(self, queryset, name, value):
+        return queryset.filter(
+            Q(designation__icontains=value) |
+            Q(region__icontains=value)
+        ).distinct()
+
+    class Meta:
+        model = Poste
+        fields = ['search']
 
 class ReportFilter(FilterSet):
 

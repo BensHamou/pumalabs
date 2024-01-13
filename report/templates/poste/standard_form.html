@@ -1,0 +1,123 @@
+{% extends "main.html" %}
+
+{% block title %}
+Standard
+{% endblock %}
+{% block scripts %}
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet" />
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'edit_poste' standard.poste.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2" style="color: white;"></i>
+    <p class="text-white lead m-0 p-0" style="color: #133356;">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">{% if poste %}Modification du {{ poste.designation }}{% else %}Création d'un poste{% endif %}</h4>
+
+<form method="POST">
+  {% csrf_token %}
+    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <div class="row mb-4">
+            <div class="col-lg-1 col-md-1 col-sm-12 mb-2">
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="designation">Poste</label>
+                    {{ form.poste }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 mb-sm-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="active">Active?</label>
+                    </br>
+                    {{ form.active }}
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-lg-1 col-md-1 col-sm-2">
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="max_2_5_value">Max 2,5mm</label>
+                    {{ form.max_2_5_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="max_1_25_value">Max 1,25mm</label>
+                    {{ form.max_1_25_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="max_0_6_value">Max 0,6mm</label>
+                    {{ form.max_0_6_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="max_0_3_value">Max 0,3mm</label>
+                    {{ form.max_0_3_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="max_0_value">Max 0 (&lt;63µm)</label>
+                    {{ form.max_0_value }}
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-lg-1 col-md-0 col-sm-0">
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="min_2_5_value">Min 2,5mm</label>
+                    {{ form.min_2_5_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="min_1_25_value">Min 1,25mm</label>
+                    {{ form.min_1_25_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="min_0_6_value">Min 0,6mm</label>
+                    {{ form.min_0_6_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="min_0_3_value">Min 0,3mm</label>
+                    {{ form.min_0_3_value }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="min_0_value">Min 0 (&lt;63µm)</label>
+                    {{ form.min_0_value }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="float-end mt-4 mb-4">
+        <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('form').submit(function () {
+            $('[disabled]').removeAttr('disabled');
+        });
+    });
+</script>
+
+{% endblock %}

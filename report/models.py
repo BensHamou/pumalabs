@@ -93,7 +93,7 @@ class Standard(models.Model):
     min_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):
-        return self.poste.designation + " (R" + str(self.report.id) +")"
+        return self.poste.designation + " - N° " + str(self.id) 
 
 class Validation(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)

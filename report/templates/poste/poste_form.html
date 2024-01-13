@@ -1,0 +1,140 @@
+{% extends "main.html" %}
+
+{% block title %}
+Poste
+{% endblock %}
+{% block scripts %}
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet" />
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'postes' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2" style="color: white;"></i>
+    <p class="text-white lead m-0 p-0" style="color: #133356;">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">{% if poste %}Modification du {{ poste.designation }}{% else %}Création d'un poste{% endif %}</h4>
+
+<form method="POST">
+  {% csrf_token %}
+    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <div class="row mb-4">
+            <div class="col-lg-10 col-md-10 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="designation">Désignation</label>
+                    {{ form.designation }}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 mb-sm-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="active">Active?</label>
+                    </br>
+                    {{ form.active }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="float-end mt-4">
+        <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+    </div>
+</form>
+
+</br>
+</br>
+</br>
+
+{% if poste %}
+<h4 class="text-white mb-4">Standards liés à ce poste <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_standard' poste.id %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span></h4>
+    {% for standard in poste.standards.all %}
+        <div class="card card-body mb-3" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+            <div class="row text-center">
+                <div class="d-flex mb-5">
+                    <div class="col-lg-6 col-md-3 col-sm-3 d-flex justify-content-end">
+                        <h4 class="text-white">{{ standard }}</h4>
+                    </div>
+                    <div class="col-lg-1 col-md-3 col-sm-3 d-flex justify-content-start">
+                        <button type="button" onclick="window.location='{% url 'edit_standard' standard.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" 
+                        class="btn" style="margin-left: 10px; padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmStandardDel('{{standard.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-1 col-md-1 col-sm-2">
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="max_2_5_value">Max 2,5mm</label>
+                        <input type="text" id="max_2_5_value" class="form-control" value="{{ standard.max_2_5_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="max_1_25_value">Max 1,25mm</label>
+                        <input type="text" id="max_1_25_value" class="form-control" value="{{ standard.max_1_25_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="max_0_6_value">Max 0,6mm</label>
+                        <input type="text" id="max_0_6_value" class="form-control" value="{{ standard.max_0_6_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="max_0_3_value">Max 0,3mm</label>
+                        <input type="text" id="max_0_3_value" class="form-control" value="{{ standard.max_0_3_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="max_0_value">Max 0 (&lt;63µm)</label>
+                        <input type="text" id="max_0_value" class="form-control" value="{{ standard.max_0_value }}" disabled/>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-lg-1 col-md-0 col-sm-0">
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="min_2_5_value">Min 2,5mm</label>
+                        <input type="text" id="min_2_5_value" class="form-control" value="{{ standard.min_2_5_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="min_1_25_value">Min 1,25mm</label>
+                        <input type="text" id="min_1_25_value" class="form-control" value="{{ standard.min_1_25_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="min_0_6_value">Min 0,6mm</label>
+                        <input type="text" id="min_0_6_value" class="form-control" value="{{ standard.min_0_6_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="min_0_3_value">Min 0,3mm</label>
+                        <input type="text" id="min_0_3_value" class="form-control" value="{{ standard.min_0_3_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="min_0_value">Min 0 (&lt;63µm)</label>
+                        <input type="text" id="min_0_value" class="form-control" value="{{ standard.min_0_value }}" disabled/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-white">Aucun standard lié à ce poste</p>{{ standard }}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
