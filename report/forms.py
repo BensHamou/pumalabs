@@ -25,7 +25,6 @@ def getAttrs(type, placeholder='', other={}):
     else:
         return {}
 
-
 class PosteForm(ModelForm):
     class Meta:
         model = Poste
@@ -78,7 +77,7 @@ class ReportForm(ModelForm):
 class SampleForm(ModelForm):
     class Meta:
         model = Sample
-        fields = '__all__'
+        fields = ['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0', 'value_h']
     
     poste = forms.ModelChoiceField(queryset=Poste.objects.all(), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Poste")
     value_2_5 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','2,5mm')))

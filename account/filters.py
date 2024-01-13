@@ -14,7 +14,7 @@ class UserFilter(django_filters.FilterSet):
             Q(fullname__icontains=value) |
             Q(username__icontains=value) |
             Q(role__icontains=value) |
-            Q(lines__designation__contains=value)
+            Q(usines__designation__contains=value)
         ).distinct()
 
     class Meta:

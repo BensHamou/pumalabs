@@ -10,3 +10,7 @@ __pycache__/
 # Local settings file
 *.env
 
+account/migrations/*
+!account/migrations/__init__.py
+report/migrations/*
+!report/migrations/__init__.py

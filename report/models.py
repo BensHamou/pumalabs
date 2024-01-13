@@ -3,11 +3,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from account.models import Usine, User, Horaire
 
 class Poste(models.Model):
-    designation = models.CharField(max_length=100)
-    active = models.BooleanField(default=True)
-    
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+
+    designation = models.CharField(max_length=100)
+    active = models.BooleanField(default=True)
     
     def standards(self):
         return self.standard_set.all()
@@ -61,6 +61,8 @@ class Report(models.Model):
     
 class Sample(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
     
     poste = models.ForeignKey(Poste, null=True, on_delete=models.SET_NULL)
     value_2_5 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
@@ -74,6 +76,8 @@ class Sample(models.Model):
         return self.poste.designation + " (R" + str(self.report.id) +")"
 
 class Standard(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     poste = models.ForeignKey(Poste, null=True, on_delete=models.SET_NULL)
     active = models.BooleanField(default=True)
@@ -92,6 +96,8 @@ class Standard(models.Model):
         return self.poste.designation + " (R" + str(self.report.id) +")"
 
 class Validation(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     STATE_REPORT = [
         ('Brouillon', 'Brouillon'),
