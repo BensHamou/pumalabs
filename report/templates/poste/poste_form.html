@@ -26,6 +26,13 @@ Poste
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="designation">Désignation</label>
                     {{ form.designation }}
+                        {% if form.designation.errors %}
+                            <div style="color: red;">
+                            {% for error in form.designation.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
                 </div>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-6 mb-sm-2">
@@ -33,6 +40,13 @@ Poste
                     <label class="form-label labelCustom" for="active">Active?</label>
                     </br>
                     {{ form.active }}
+                        {% if form.active.errors %}
+                            <div style="color: red;">
+                            {% for error in form.active.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
                 </div>
             </div>
         </div>
