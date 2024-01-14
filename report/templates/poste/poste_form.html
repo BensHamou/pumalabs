@@ -22,13 +22,26 @@ Poste
   {% csrf_token %}
     <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
         <div class="row mb-4">
-            <div class="col-lg-10 col-md-10 col-sm-12 mb-2">
+            <div class="col-lg-6 col-md-5 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="designation">Désignation</label>
                     {{ form.designation }}
                         {% if form.designation.errors %}
                             <div style="color: red;">
                             {% for error in form.designation.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-5 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="usine">Usine</label>
+                    {{ form.usine }}
+                        {% if form.usine.errors %}
+                            <div style="color: red;">
+                            {% for error in form.usine.errors %}
                                 *{{ error }}
                             {% endfor %}
                             </div>

@@ -81,11 +81,12 @@ Liste des rapports
                 <thead style="border-bottom: 2px solid white;">
                     <tr class="text-white" style="vertical-align: middle;">
                     <th>N° Rapport</th>
-                    <th class="d-none d-lg-table-cell" style="width: 19vh;">Date de création</th>
-                    <th style="width: 8vh;">Date de prélevement</th>
+                    <th class="d-none d-lg-table-cell" style="width: 15vw;">Date de création</th>
+                    <th>Technicien</th>
+                    <th style="width: 15vw;">Date de prélevement</th>
                     <th>Usine</th>
-                    <th>Sable</th>
                     <th>Shift</th>
+                    <th>Sable</th>
                     <th>État</th>
                     {% if user.role == 'Technicien' %}
                         <th class="d-none d-md-table-cell" style="width: 6vh;">Actions</th>
@@ -97,12 +98,13 @@ Liste des rapports
                     <tr style="color: #dde3f0;">
                         <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.n_report }}</td>
                         <td class="d-none d-lg-table-cell" onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y H:i" }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.creator }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.date_prelev|date:"d/m/Y H:i" }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.usine }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.type_sable }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.shift }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.state }}</td>
-                        {% if report.creator == user and user.role == 'Gestionnaire de production' %}
+                        {% if report.creator == user and user.role == 'Technicien' %}
                         <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
                             <button type="button" onclick="window.location='{% url 'update_report' report.id %}'"  style="padding: 2px;"
                             class="btn" {% if report.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: white;"></i></button>
@@ -240,7 +242,37 @@ Liste des rapports
         }
         .tableStyle{
             overflow-x: auto; 
-            width:  75vw;
+            width:  85vw;
+        }
+    }
+    @media only screen and (max-width: 700px) {
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  84vw;
+        }
+    }
+    @media only screen and (max-width: 600px) {
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  79vw;
         }
     }
 </style>

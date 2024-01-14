@@ -7,6 +7,7 @@ class Poste(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     designation = models.CharField(max_length=100)
+    usine = models.ForeignKey(Usine, on_delete=models.SET_NULL, null=True)
     active = models.BooleanField(default=True)
     
     def standards(self):

@@ -240,7 +240,6 @@ class ReportInline():
         kwargs = super().get_form_kwargs()
         kwargs['admin'] = self.request.user.role == 'Admin'
         kwargs['usines'] = self.request.user.usines.all()
-        kwargs['usine'] = self.request.user.usines.all().first()
         if self.object:
             kwargs['state'] = self.object.state
         return kwargs
@@ -397,26 +396,35 @@ class ReportList(LoginRequiredMixin, FilterView):
 
         return {state['state']: state['total'] for state in state_totals}
 
-
 @login_required(login_url='login')
 @check_creator
 def delete_report(request, pk):
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
-        messages.success(
-            request, 'Le rapport n\'existe pas'
-            )
+        messages.success(request, 'Le rapport n\'existe pas')
         url_path = reverse('list_report')
         cache_param = str(uuid.uuid4())
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
 
     report.delete()
-    messages.success(
-            request, 'Rapport supprimé avec succès'
-            )
+    messages.success(request, 'Rapport supprimé avec succès')
     url_path = reverse('list_report')
     cache_param = str(uuid.uuid4())
     redirect_url = f'{url_path}?cache={cache_param}'
     return redirect(redirect_url)
+
+@login_required(login_url='login')
+def get_data_by_usine(request):
+    usine_id = request.GET.get('usine_id')
+    if usine_id == '':
+        return JsonResponse({'postes': [], 'horaires_list': [] })
+    
+    usine = Usine.objects.get(pk=usine_id)
+    
+    poste_list = [ poste.id for poste in Poste.objects.filter(usine_id=usine_id, active=True)]
+    horaires_list = [{'id': horaire.id, 'designation': horaire.__str__()} for horaire in usine.horaires.all()]
+
+    return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list })
+

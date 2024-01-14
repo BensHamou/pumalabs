@@ -36,8 +36,9 @@ Postes
                 <tr class="text-white">
                 <th>#</th>
                 <th>Désignation</th>
+                <th>Usine</th>
                 <th>Active</th>
-                <th style="width: 40vh;">Actions</th>
+                <th style="width: 5vw;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +46,8 @@ Postes
                 <tr style="color: #dde3f0;">
                     <td>{{ poste.id }}</td>
                     <td>{{ poste.designation }}</td>
-                    <td>{{ poste.active }}</td>
+                    <td>{{ poste.usine }}</td>
+                    <td>{% if poste.active %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-x"></i>{% endif %}</td>
                     <td style="vertical-align: middle;">
                         <button type="button" onclick="window.location='{% url 'edit_poste' poste.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
                         <button type="button" onclick="confirmPosteDel('{{poste.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>

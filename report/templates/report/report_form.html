@@ -1,0 +1,409 @@
+{% extends "main.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Rapport 
+{% endblock %}
+{% block scripts %}
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet" />
+{% endblock %}
+{% load static %} 
+{% block activeCreateReport %} {% include 'active_bar.html' %} {% endblock %}
+{% block content %}
+<form class="container" method="POST" id="report_form">
+    {% csrf_token %}
+    {% if form.instance.pk %}
+        <input type="hidden" value="1" id="isUpdating"/> 
+    {% endif %}
+    <div class="card card-body mb-5" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <!-- N RAPPORT -->
+        <div class="row mb-4">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="n_report">N° Rapport</label>
+                    {{ form.n_report }}
+                    {% if form.n_report.errors %}
+                        <div style="color: red;">
+                        {% for error in form.n_report.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- USINE - SHIFT -->
+        <div class="row mb-4">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="usine">Usine</label>
+                    {{ form.usine|attr:"id:usine-select" }}
+                    {% if form.usine.errors %}
+                        <div style="color: red;">
+                        {% for error in form.usine.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="shift">Horaire</label>
+                    {{ form.shift }}
+                    {% if form.shift.errors %}
+                        <div style="color: red;">
+                        {% for error in form.shift.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- DATE - HORAIRE -->
+        <div class="row mb-4">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="date_prelev">Date de Prélèvement</label>
+                    {{ form.date_prelev }}
+                    {% if form.date_prelev.errors %}
+                        <div style="color: red;">
+                        {% for error in form.date_prelev.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="type_sable">Type de Saable</label>
+                    {{ form.type_sable }}
+                    {% if form.type_sable.errors %}
+                        <div style="color: red;">
+                        {% for error in form.type_sable.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <h4 class="card-title text-white">Données d'entrée Unité de Traitement</h4>
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <h5 class="card-title text-white">Entrée sable</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="variateur">Variateur (%)</label>
+                    {{ form.variateur }}
+                    {% if form.variateur.errors %}
+                        <div style="color: red;">
+                        {% for error in form.variateur.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                <h5 class="card-title text-white">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="debit">Débit (t/h) </label>
+                    {{ form.debit }}
+                    {% if form.debit.errors %}
+                        <div style="color: red;">
+                        {% for error in form.debit.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <h5 class="card-title text-white">Sécheur</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="t_consigne">T consigne (˚C)</label>
+                    {{ form.t_consigne }}
+                    {% if form.t_consigne.errors %}
+                        <div style="color: red;">
+                        {% for error in form.t_consigne.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <h5 class="card-title text-white">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="t_real">T réelle (˚C)</label>
+                    {{ form.t_real }}
+                    {% if form.t_real.errors %}
+                        <div style="color: red;">
+                        {% for error in form.t_real.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                <h5 class="card-title text-white">Broyeurs</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="freq_b1">Fréquence (HZ) B1</label>
+                    {{ form.freq_b1 }}
+                    {% if form.freq_b1.errors %}
+                        <div style="color: red;">
+                        {% for error in form.freq_b1.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <h5 class="card-title text-white">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="freq_b2">Fréquence (HZ) B2</label>
+                    {{ form.freq_b2 }}
+                    {% if form.freq_b2.errors %}
+                        <div style="color: red;">
+                        {% for error in form.freq_b2.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <h5 class="card-title text-white">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="retour_1_3" style="margin-right: 20px;">Retour > 1,3</label>
+                </br>
+                    {{ form.retour_1_3 }}
+                    {% if form.retour_1_3.errors %}
+                        <div style="color: red;">
+                        {% for error in form.retour_1_3.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <h5 class="card-title text-white">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="retour_0_6" style="margin-right: 20px;">Retour > 0,6</label>
+                </br>
+                    {{ form.retour_0_6 }}
+                    {% if form.retour_0_6.errors %}
+                        <div style="color: red;">
+                        {% for error in form.retour_0_6.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% with named_formsets.samples as formset %}  
+        {{ formset.management_form }}
+        <script type="text/html" id="samples-template">
+            <tr id="samples-__prefix__" class= hide_all> 
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+            
+                {% for field in formset.empty_form.visible_fields %}
+                    {% if field.label != 'Supprimer' %} 
+                        <td {% if field.label == 'Poste' %} class="postTD" {% endif %}>
+                            <div>
+                                <p class="tdLabel">{{ field.label }}</p>
+                                <p class="valueLead mb-0">{{ field }}</p>
+                            </div>
+                            {% for error in field.errors %}
+                                <span style="color: red">*{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td>
+                            {{ field|add_class:'hidden' }}
+                            {% for error in field.errors %}
+                                <span style="color: red">*{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </script>
+
+        <div class="table-responsive card mt-4" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+            <div class="card-header card-header-secondary">
+                <p class="card-title lead" style="font-size: 26px; color: rgb(237, 243, 253)">Échantillons</p>
+            </div>
+            <table class="table card-header">
+                <thead>
+                    <th class="d-none d-md-table-cell text-white text-center">Poste</th>
+                    <th class="d-none d-md-table-cell text-white text-center">2,5mm</th>
+                    <th class="d-none d-md-table-cell text-white text-center">1,25mm</th>
+                    <th class="d-none d-md-table-cell text-white text-center">0,6mm</th>
+                    <th class="d-none d-md-table-cell text-white text-center">0,3mm</th>
+                    <th class="d-none d-md-table-cell text-white text-center">0 (<63µm)</th>
+                    <th class="d-none d-md-table-cell text-white text-center">Humidité (%)</th>
+                </thead>
+                <tbody id="item-samples" style="border: 0px solid transparent;">  
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">*{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="samples-{{ forloop.counter0 }}" class= hide_all> 
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                {% if not field.label == 'Supprimer' %}
+                                    <td {% if field.label == 'Poste' %} style="width: 20vw;" {% endif %}>
+                                        
+                                        <div>
+                                            <p class="tdLabel">{{ field.label }}</p>
+                                            <p class="valueLead mb-0">{{ field }}</p>
+                                        </div>
+                                        
+                                        {% for error in field.errors %}
+                                            <span style="color: red">*{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        {{ field|add_class:'hidden' }}
+                                        {% for error in field.errors %}
+                                            <span style="color: red">*{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endwith %}
+
+    <div class="d-flex justify-content-center align-items-center form-group m-4">
+        <button type="submit" class="btn btn-secondary btn-block customSaveButton">{% if form.instance.pk %}Sauvegarder les modifications{% else %}Créer{% endif %}</button>
+    </div>
+
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .tdLabel{
+        display: none;
+    }
+    .postTD{
+        width: 20vw;
+    }
+    @media only screen and (max-width: 767px) {
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .postTD{
+            width: 100%;
+        }
+        th {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .valueLead{
+            font-size: 16px;
+        }
+        .tdLabel{
+            display: block;
+            color: white;
+            font-size: 16px; 
+            margin-bottom: 5px;
+        }
+    }
+    .select2-search {
+        background-color: #cacfd7 !important;
+    }
+    .select2-search input {
+        background-color: #cacfd7 !important;
+    }
+    
+    .select2-results {
+        background-color: #cacfd7 !important;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection {
+        border-color: #cacfd7 !important;
+        background-color: #cacfd7 !important;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function() {
+        $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
+        $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
+        onChangeUsine = $('#usine-select').change(function() {
+            var usine_id = $(this).val();
+            $.ajax({ url: '{% url 'get_data_by_usine' %}', type: 'GET', data: {'usine_id': usine_id, 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),},
+              success: function(response) {
+                // CLEAR SAMPLES
+                var tbodyElement = document.getElementById('item-samples');
+                var rows = tbodyElement.getElementsByTagName('tr');
+                for (var i = 0; i < rows.length; i++) {
+                    var checkboxElement = rows[i].querySelector('input[type="checkbox"]');
+                    checkboxElement.checked = true;
+                    rows[i].style.display = 'none';
+                }
+
+                // SAMPLES
+                
+                var countSamples = $('#item-samples').children().length;
+                for (var i = 0; i < response.postes.length; i++) {
+                    var tmplSampleMarkup = $('#samples-template').html();
+                    var compiledTmplSample = tmplSampleMarkup.replace(/__prefix__/g, countSamples);
+                    $('#item-samples').append(compiledTmplSample);
+                    $('#id_samples-TOTAL_FORMS').attr('value', countSamples+1);
+                    const selectPoste = document.getElementById(`id_samples-${countSamples}-poste`);
+                    selectPoste.value = response.postes[i];
+                    countSamples += 1;
+                }
+
+                // HORAIRES
+                var horaire_options = '';
+                horaire_options += '<option value> Horaire </option>';
+                $.each(response.horaires_list, function(index, horaire) {
+                    horaire_options += '<option value="' + horaire.id + '">' + horaire.designation + '</option>';
+                });
+                $('#shift-select').html(horaire_options);               
+
+              },
+              error: function(xhr, errmsg, err) {
+                console.log(errmsg);
+              }
+            });
+        });
+        formInstance = $('#isUpdating').val();
+        if(!formInstance) {
+            onChangeUsine.trigger('change');
+        }
+        //onChangeUsine.trigger('change');
+    });
+</script>
+{% endblock content %}

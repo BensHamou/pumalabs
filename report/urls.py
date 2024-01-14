@@ -20,4 +20,6 @@ urlpatterns = [
     path('report/<int:pk>/delete/', delete_report, name='delete_report'),
     path('report/<int:pk>/', ReportDetail.as_view(), name='report_detail'),
     
+    path('report/get-data-by-usine/', views.get_data_by_usine, name='get_data_by_usine'),
+
     ]

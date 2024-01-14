@@ -32,12 +32,12 @@
                 <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
               </div>
             {% endif %}
-            {% comment %} {% if user.role not in 'Observateur,Nouveau' %}
+            {% if user.role not in 'Observateur,Nouveau' %}
               <div class="d-flex" style="width: 100%; margin: 5px 10px;">
                 {% block activeCreateReport %}{% endblock %}
                 <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
               </div>
-            {% endif %} {% endcomment %}
+            {% endif %}
             <div class="d-flex" style="width: 100%; margin: 0px 10px;">
               {% block activeListReport %}{% endblock %}
               <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
