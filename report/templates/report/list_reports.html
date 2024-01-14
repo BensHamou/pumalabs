@@ -1,0 +1,265 @@
+{% extends "main.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Liste des rapports
+{% endblock %}
+{% load static %} 
+{% block activeListReport %}{% include 'active_bar.html' %}{% endblock %}
+{% block content %}
+<div class="row mb-3">
+    {% if page %}
+    <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
+        {% csrf_token %}
+        <div class="row height d-flex justify-content-center align-items-center">
+            <div class="col-lg-4 col-md-3 col-sm-6 mb-2">
+                <div class="form" style="position: relative;">
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filter.form.search }}
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.start_date }}
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.end_date }}
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.usine }}
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
+                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
+            </div>
+        </div>
+        <ul class="nav nav-tabs mt-3 showUl">
+            <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
+                <button class="nav-link text-decoration-none customUnactive {% if not request.GET.state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
+                    All {% if not request.GET.state %}({{ all_total }}){% endif %}
+                </button>
+            </li>
+            {% with allowed_states=role_state|get_item:user.role %}
+                {% for state in allowed_states %}            
+                    <li class="nav-item {% if request.GET.state == state %}customActive{% endif %}">
+                        <button class="nav-link text-decoration-none customUnactive {% if request.GET.state == state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                        onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" type="submit" name="state" value="{{ state }}">
+                            {{ state }} ({{ state_totals|get_item:state }})
+                        </button>
+                    </li>
+                {% endfor %}
+            {% endwith %}
+        </ul>
+        <div class="dropdown mt-3 showDrop">
+            {% with allowed_states=role_state|get_item:user.role %}
+                <a class="btn btn-secondary dropdown-toggle" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" 
+                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if request.GET.state %}{{ request.GET.state }}{% else %} Tous {% if not request.GET.state %}({{ all_total }}){% endif %} {% endif %}
+                </a>
+                <ul class="dropdown-menu ulStyle" aria-labelledby="dropdownMenuLink">
+                    <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                        <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                            Tous {% if not request.GET.state %}({{ all_total }}){% endif %}
+                        </button>
+                    </li>
+                    {% for state in allowed_states %}
+                        <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                            <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                                {{ state }} ({{ state_totals|get_item:state }})
+                            </button>
+                        </li>
+                    {% endfor %}
+            {% endwith %}
+        </div>
+    </form>
+    <section class="sectionList"> 
+        <div class="tableStyle">
+            <table class="table table-borderless">
+                <thead style="border-bottom: 2px solid white;">
+                    <tr class="text-white" style="vertical-align: middle;">
+                    <th>N° Rapport</th>
+                    <th class="d-none d-lg-table-cell" style="width: 19vh;">Date de création</th>
+                    <th style="width: 8vh;">Date de prélevement</th>
+                    <th>Usine</th>
+                    <th>Sable</th>
+                    <th>Shift</th>
+                    <th>État</th>
+                    {% if user.role == 'Technicien' %}
+                        <th class="d-none d-md-table-cell" style="width: 6vh;">Actions</th>
+                    {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in page %}
+                    <tr style="color: #dde3f0;">
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.n_report }}</td>
+                        <td class="d-none d-lg-table-cell" onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y H:i" }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.date_prelev|date:"d/m/Y H:i" }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.usine }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.type_sable }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.shift }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ report.state }}</td>
+                        {% if report.creator == user and user.role == 'Gestionnaire de production' %}
+                        <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
+                            <button type="button" onclick="window.location='{% url 'update_report' report.id %}'"  style="padding: 2px;"
+                            class="btn" {% if report.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: white;"></i></button>
+                            {% if report.creator and report.creator == user %}
+                                <button type="button" {% if report.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmRepDel('{{report.id|escapejs}}', '{{report.n_report|escapejs}}', '{{report.date_prelev|escapejs}}')" class="btn">
+                                    <i class="far fa-trash-alt" style="color: white;"></i>
+                                </button>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if page.has_other_pages %}
+            {% include 'pagination.html' %}
+        {% endif %}    
+    </section>
+    {% else %}
+    <form method="GET" style="margin: 20px 0px;">
+        {% csrf_token %}
+        <div class="row height d-flex justify-content-center align-items-center">
+            <div class="col-md-4 col-sm-6 mb-2">
+                <div class="form" style="position: relative;">
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filter.form.search }}
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.start_date }}
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.end_date }}
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.usine }}
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
+                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
+            </div>
+        </div>
+        <ul class="nav nav-tabs mt-3 showUl">
+            <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
+                <button class="nav-link text-decoration-none customUnactive {% if not request.GET.state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
+                    All {% if not request.GET.state %}({{ all_total }}){% endif %}
+                </button>
+            </li>
+            {% with allowed_states=role_state|get_item:user.role %}
+                {% for state in allowed_states %}            
+                    <li class="nav-item {% if request.GET.state == state %}customActive{% endif %}">
+                        <button class="nav-link text-decoration-none customUnactive {% if request.GET.state == state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                        onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" type="submit" name="state" value="{{ state }}">
+                            {{ state }} ({{ state_totals|get_item:state }})
+                        </button>
+                    </li>
+                {% endfor %}
+            {% endwith %}
+        </ul>
+        <div class="dropdown mt-3 showDrop">
+            {% with allowed_states=role_state|get_item:user.role %}
+                <a class="btn btn-secondary dropdown-toggle" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" 
+                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if request.GET.state %}{{ request.GET.state }}{% else %} Tous {% if not request.GET.state %}({{ all_total }}){% endif %} {% endif %}
+                </a>
+                <ul class="dropdown-menu ulStyle" aria-labelledby="dropdownMenuLink">
+                    <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                        <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                            Tous {% if not request.GET.state %}({{ all_total }}){% endif %}
+                        </button>
+                    </li>
+                    {% for state in allowed_states %}
+                        <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                            <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                                {{ state }} ({{ state_totals|get_item:state }})
+                            </button>
+                        </li>
+                    {% endfor %}
+            {% endwith %}
+        </div>
+    </form>
+        {% include 'empty_list.html' %}
+    {% endif %}
+</div>
+<style>
+    .ulStyle{
+        background: rgba(127, 139, 161, 0.9);  
+        border-radius: 5px; 
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+    .cActive{
+        background-color: rgba(14, 42, 91, 0.3);
+        border-bottom: 0px solid transparent;
+    }
+    .CustBtn{
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        text-align: left;
+        color: white;
+        margin-left: 3px;
+    }
+    .CustBtn:hover{
+        background-color: rgba(14, 42, 91, 0.3);
+    }
+    select option {
+        background: rgba(127, 139, 161, 0.9);
+    }
+    .showDrop{
+        display: none;
+    }
+    @media only screen and (max-width: 820px) {
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  85vw;
+        }
+    }
+    @media only screen and (max-width: 767px) {
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  75vw;
+        }
+    }
+</style>
+<script>
+    const confirmRepDel = (repID, repNR, repDay) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Voulez-vous vraiment supprimer le rapport ${repNR} - ${repDay} ?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_report' 123456789 %}".replace(/123456789/, repID);
+            }});
+      }
+</script>
+{% endblock content %}

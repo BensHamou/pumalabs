@@ -27,7 +27,7 @@ class ReportFilter(FilterSet):
     state = ChoiceFilter(choices=Report.STATE_REPORT, widget=forms.Select(attrs=getAttrs('select')), empty_label="État")
     start_date = DateTimeFilter(field_name='date_prelev', lookup_expr='gte', widget=forms.widgets.DateTimeInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
     end_date = DateTimeFilter(field_name='date_prelev', lookup_expr='lte', widget=forms.widgets.DateTimeInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
-    usine = ModelChoiceFilter(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select', other=other)), empty_label="Ligne")
+    usine = ModelChoiceFilter(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select', other=other)), empty_label="Usine")
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
@@ -53,5 +53,5 @@ class ReportFilter(FilterSet):
             elif user.role == 'Nouveau':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
                                         ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']]
-            self.filters['line'].queryset = user.lines.all()
+            self.filters['usine'].queryset = user.usines.all()
 

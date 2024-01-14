@@ -93,6 +93,13 @@ class SampleForm(ModelForm):
     value_0_3 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','0,3mm')))
     value_0 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','0 (<63µm)')))
     value_h = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Humidité (%)')))
+        
+    def __init__(self, *args, **kwargs):
+        poste = kwargs.pop('poste', None)
+        super(StandardForm, self).__init__(*args, **kwargs)
+        if poste:
+            self.fields['poste'].initial = poste
+        self.fields['poste'].widget.attrs['disabled'] = True
 
 
 SamplesFormSet = inlineformset_factory(Report, Sample, form=SampleForm, fields=['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0', 'value_h'], extra=0)
