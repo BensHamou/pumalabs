@@ -19,6 +19,9 @@ urlpatterns = [
     path('report/<int:pk>/update/', ReportUpdate.as_view(), name='update_report'),
     path('report/<int:pk>/delete/', delete_report, name='delete_report'),
     path('report/<int:pk>/', ReportDetail.as_view(), name='report_detail'),
+
+    path('report/<int:pk>/', ReportDetail.as_view(), name='confirm_report'),
+    path('report/<int:pk>/', ReportDetail.as_view(), name='cancel_report'),
     
     path('report/get-data-by-usine/', views.get_data_by_usine, name='get_data_by_usine'),
 
