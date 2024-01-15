@@ -20,91 +20,98 @@
     <link rel="icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
 
   </head>
-  <body style="background: url('{% static "img/background.png" %}'); background-position: center; background-repeat: no-repeat; background-size: cover; height: 100%;">
-    <div class="wrapper d-flex align-items-stretch"  style="background: {% if user.is_authenticated %}rgba(14, 42, 91, 0.7){% else %}rgba(14, 42, 91, 0.2){% endif %}; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  
-    height: 100%; backdrop-filter: blur(3.7px); -webkit-backdrop-filter: blur(3.7px);" >
-      {% if user.is_authenticated %}
-        <div class="d-flex flex-column" style="height: 100vh; background: rgba(198, 204, 215, 1); z-index:10; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); position: sticky; top: 0; left: 0;">
-          <div class="pb-1 d-flex align-items-center flex-column" style="margin-top: 100%;">
-            {% if user.role == 'Admin' %}
-              <div class="d-flex" style="width: 100%; margin: 0px 10px;">
-                {% block activeHome %}{% endblock %}
-                <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
-              </div>
-            {% endif %}
-            {% if user.role not in 'Observateur,Nouveau' %}
-              <div class="d-flex" style="width: 100%; margin: 5px 10px;">
-                {% block activeCreateReport %}{% endblock %}
-                <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
-              </div>
-            {% endif %}
-            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
-              {% block activeListReport %}{% endblock %}
-              <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
-            </div>
-            <div class="d-flex" style="width: 100%; margin: 5px 10px;">
-              {% if user.role == 'Admin' %}
-              {% block activeUsers %}{% endblock %}
-                <h4 class="mx-auto">
-                  <li class="nav-item dropdown dropend list-unstyled">
-                    <a class="nav-link text-reset" style="padding: 5px 0.5px;" data-bs-toggle="dropdown" role="button"><i class="fas fa-users fa-sm menu_item"></i></a >
-                      <ul class="dropdown-menu list-unstyled">
-                        <li><a href="{% url 'users' %}" class="dropdown-item">Actifs</a></li>
-                        <li><a href="{% url 'new_users' %}" class="dropdown-item">Nouveaux</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a href="{% url 'refresh_users' %}" class="dropdown-item">Actualiser</a></li>
-                    </ul>
-                  </li>
-                </h4>
-              {% endif %}
-            </div>
-            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
-              {% if user.role == 'Admin' or user.is_admin %}
-                {% block activeSettings %}{% endblock %}
-                <h4 class="mx-auto">
-                  <li class="nav-item dropdown dropend list-unstyled">
-                    <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a>
-                      <ul class="dropdown-menu list-unstyled">
-                      <li><a href="{% url 'usines' %}" class="dropdown-item">Usines</a></li>
-                      <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
-                      <li><a href="{% url 'postes' %}" class="dropdown-item">Postes</a></li>
-                    </ul>
-                  </li>
-                </h4>
-              {% endif %}
-            </div>
-          </div>
-          <div class="mt-auto pb-5 d-flex align-items-center flex-column">
-            <h4><a href="/logout" class="text-reset"><i class="fas fa-right-from-bracket fa-rotate-180 menu_item"></i></a></h4>
-          </div>
-        </div>
-      {% else %} 
-      <div style="height: 100vh; position: sticky;"></div>
-      {% endif %}
+  <body style="background-color: #EAEFFF; min-height: 100vh;">
+    {% if not user.is_authenticated %}
+      <div style="height: 100vh; background: linear-gradient(rgba(187, 187, 187, 0.7), rgba(255, 255, 255, 0)); position: relative; overflow: hidden;">
+        {% block login %}
 
-      {% if user.is_authenticated %}
-      <div style="flex-grow: 1; height: 100%;">
-        <div class="row" style="width:100%; position: relative; margin: 0px; {% if not user.is_authenticated %}padding-top: 3%;{% endif %}">
-          <div class="col-md-2 d-flex justify-content-center" style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
-            <img src="{% static 'img/site_logo.png' %}" height="55" style="{% if not user.is_authenticated %}margin-left: 10%;{% endif %}" class="d-inline-block align-top" alt="Puma Logo">
-          </div>
-          <div class="col-md-12 d-flex justify-content-end p-0">
-            <div class="d-flex flex-column align-items-center justify-content-center centered-text float-end m-2">
-              <p class="lead p-0 m-0 nameStyle">{{ user.fullname }}</p>
-              <p class="p-0 roleStyle">{{ user.role }}</p>
+        {% endblock %}
+      </div>
+    {% else %} 
+      <div class="wrapper d-flex align-items-stretch">
+        {% if user.is_authenticated %}
+          <div class="d-flex flex-column" style="height: 100vh; background: rgba(198, 204, 215, 1); z-index:10; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); position: sticky; top: 0; left: 0;">
+            <div class="pb-1 d-flex align-items-center flex-column" style="margin-top: 100%;">
+              {% if user.role == 'Admin' %}
+                <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+                  {% block activeHome %}{% endblock %}
+                  <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
+                </div>
+              {% endif %}
+              {% if user.role not in 'Observateur,Nouveau' %}
+                <div class="d-flex" style="width: 100%; margin: 5px 10px;">
+                  {% block activeCreateReport %}{% endblock %}
+                  <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
+                </div>
+              {% endif %}
+              <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+                {% block activeListReport %}{% endblock %}
+                <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
+              </div>
+              <div class="d-flex" style="width: 100%; margin: 5px 10px;">
+                {% if user.role == 'Admin' %}
+                {% block activeUsers %}{% endblock %}
+                  <h4 class="mx-auto">
+                    <li class="nav-item dropdown dropend list-unstyled">
+                      <a class="nav-link text-reset" style="padding: 5px 0.5px;" data-bs-toggle="dropdown" role="button"><i class="fas fa-users fa-sm menu_item"></i></a >
+                        <ul class="dropdown-menu list-unstyled">
+                          <li><a href="{% url 'users' %}" class="dropdown-item">Actifs</a></li>
+                          <li><a href="{% url 'new_users' %}" class="dropdown-item">Nouveaux</a></li>
+                          <li><hr class="dropdown-divider" /></li>
+                          <li><a href="{% url 'refresh_users' %}" class="dropdown-item">Actualiser</a></li>
+                      </ul>
+                    </li>
+                  </h4>
+                {% endif %}
+              </div>
+              <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+                {% if user.role == 'Admin' or user.is_admin %}
+                  {% block activeSettings %}{% endblock %}
+                  <h4 class="mx-auto">
+                    <li class="nav-item dropdown dropend list-unstyled">
+                      <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a>
+                        <ul class="dropdown-menu list-unstyled">
+                        <li><a href="{% url 'usines' %}" class="dropdown-item">Usines</a></li>
+                        <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
+                        <li><a href="{% url 'postes' %}" class="dropdown-item">Postes</a></li>
+                      </ul>
+                    </li>
+                  </h4>
+                {% endif %}
+              </div>
+            </div>
+            <div class="mt-auto pb-5 d-flex align-items-center flex-column">
+              <h4><a href="/logout" class="text-reset"><i class="fas fa-right-from-bracket fa-rotate-180 menu_item"></i></a></h4>
             </div>
           </div>
-        </div>
+        {% else %} 
+        <div style="height: 100vh; position: sticky;"></div>
         {% endif %}
-        {% if request.path == "/dashboard/" %}
-          <div style="position: sticky; height: 100vh;">
-            {% block dashboard %} {% endblock %}
+
+        {% if user.is_authenticated %}
+        <div style="flex-grow: 1; height: 100%;">
+          <div class="row" style="width:100%; position: relative; margin: 0px; {% if not user.is_authenticated %}padding-top: 3%;{% endif %}">
+            <div class="col-md-2 d-flex justify-content-center" style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
+              <img src="{% static 'img/site_logo.png' %}" height="55" style="{% if not user.is_authenticated %}margin-left: 10%;{% endif %}" class="d-inline-block align-top" alt="Puma Logo">
+            </div>
+            <div class="col-md-12 d-flex justify-content-end p-0">
+              <div class="d-flex flex-column align-items-center justify-content-center centered-text float-end m-2">
+                <p class="lead p-0 m-0 nameStyle">{{ user.fullname }}</p>
+                <p class="p-0 roleStyle">{{ user.role }}</p>
+              </div>
+            </div>
           </div>
-        {% else %}
-          <div class="container" style="max-width: 94%; margin-top: 10px;">{% block content %} {% endblock %}</div>  
-        {% endif %}
+          {% endif %}
+          {% if request.path == "/dashboard/" %}
+            <div style="position: sticky; height: 100vh;">
+              {% block dashboard %} {% endblock %}
+            </div>
+          {% else %}
+            <div class="container" style="max-width: 94%; margin-top: 10px;">{% block content %} {% endblock %}</div>  
+          {% endif %}
+        </div>
       </div>
-    </div>
+    {% endif %}
     
     <script src="{% static 'js/select.js' %}"></script>
     <script src="{% static 'js/sweetalert.min.js' %}"></script>
@@ -120,16 +127,16 @@
       font-size: 15px;
     }
     .menu_item{
-      color: #0e2a5b; 
+      color: #45558A; 
       font-size: 22px;
     }
     .formBadge{
-          background-color: #0e2a5b; 
+          background-color: #45558A; 
           padding: 8px; 
           margin-right: 5px;
     }
     .listBadge{
-          background-color: #0e2a5b; 
+          background-color: #45558A; 
           padding: 8px; 
           margin-right: 5px;
     }
@@ -140,23 +147,47 @@
           font-size: 14px;
     }
     .customActive{
-        border-bottom: 3px solid white;
+        border-bottom: 3px solid #D2A517;
     }
     .customUnactive{
-        color: #b7b9bd;
+        color: #45558A;
+    }
+    .custom-card{
+      background: rgba(255, 255, 255, 0.2); 
+      border-radius: 5px; 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    .custom-card-2{
+      background: rgba(255, 255, 255, 0.2); 
+      border-radius: 0 0 5px 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     }
     .sectionList{
         margin-top: 25px; 
-        background: rgba(255, 255, 255, 0.2); 
+        background: rgba(187, 191, 204, 0.2); 
         border-radius: 5px; 
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
     .labelCustom{
-        color: #fafbfc; 
+        color: #45558A; 
         font-size: 14px;
     }
+    .text-white-c{
+      color: #45558A;
+    }
+    .tableBold{
+      color: #0C2858;
+    }
+    .text-detail{
+      border-bottom: 1px solid rgba(171, 175, 181, 0.4); 
+      letter-spacing: 1.2px;
+      color: #45558A;
+    }
+    .retourC{
+      color: #0C2858;
+    }
     .customSaveButton{
-        background-color: #0e2a5b; 
+        background-color: #45558A; 
         border-color: transparent; 
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
     }
@@ -164,10 +195,10 @@
       display: none;
     }
     .nameStyle{
-      color: white;
+      color: #45558A;
     }
     .roleStyle{
-      color: #b7b9bd;
+      color: #45558A;
     }
     @media only screen and (max-width: 767px) {
       .nameStyle{
@@ -177,19 +208,6 @@
         color: transparent;
       }
   }
-    
-    /* .dropdown-menu{ 
-      background: rgba(127, 139, 161, 0.9);  
-      border-radius: 5px; 
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-    }
-    .dropdown-item{
-      color: white;
-    }
-    .dropdown-item:hover{
-      background-color: rgba(14, 42, 91, 0.3);
-      color: white;
-    }*/
     </style>
 </body>
 

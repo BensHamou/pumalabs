@@ -196,7 +196,7 @@ def setDefaultStandardView(request, id):
 class CheckEditorMixin:
     def check_editor(self, report):
         if (report.creator != self.request.user or self.request.user.role != "Technicien" 
-                or report.state not in ['Brouillon','Refusé par Validateur']) and self.request.user.role != 'Admin':
+                or report.state not in ['Brouillon','Refusé']) and self.request.user.role != 'Admin':
             return False
         return True
 
@@ -323,8 +323,20 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        fields = [field for field in self.model._meta.get_fields() if field.concrete]
-        context['fields'] = fields
+        samples = self.object.samples()
+
+        postes = [s.poste.designation for s in samples]
+        standards = [s.poste.default_standard() for s in samples]
+
+        tami_25 = [{'value': s.value_2_5, 'color': 'black' if st.min_2_5_value <= s.value_2_5 <= st.max_2_5_value else 'red'} for s, st in zip(samples, standards)]
+        tami_125 = [{'value': s.value_1_25, 'color': 'black' if st.min_1_25_value <= s.value_1_25 <= st.max_1_25_value else 'red'} for s, st in zip(samples, standards)]
+        tami_06 = [{'value': s.value_0_6, 'color': 'black' if st.min_0_6_value <= s.value_0_6 <= st.max_0_6_value else 'red'} for s, st in zip(samples, standards)]
+        tami_03 = [{'value': s.value_0_3, 'color': 'black' if st.min_0_3_value <= s.value_0_3 <= st.max_0_3_value else 'red'} for s, st in zip(samples, standards)]
+        tami_063 = [{'value': s.value_0, 'color': 'black' if st.min_0_value <= s.value_0 <= st.max_0_value else 'red'} for s, st in zip(samples, standards)]
+        tami_h = [s.value_h for s in samples]
+
+        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h })
+
         return context
 
 class ReportList(LoginRequiredMixin, FilterView):
@@ -334,9 +346,9 @@ class ReportList(LoginRequiredMixin, FilterView):
     filterset_class = ReportFilter
     ordering = ['-date_prelev']
         
-    all_T = ['Brouillon', 'Confirmé', 'Validé par Validateur', 'Refusé par Validateur', 'Annulé']
-    all_A = ['Brouillon', 'Confirmé', 'Validé par Validateur', 'Refusé par Validateur', 'Annulé']
-    all_V = ['Confirmé', 'Validé par Validateur', 'Refusé par Validateur']
+    all_T = ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']
+    all_A = ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']
+    all_V = ['Confirmé', 'Validé', 'Refusé']
     all_NV = ['']
 
     def get_filterset_kwargs(self, filterset_class):

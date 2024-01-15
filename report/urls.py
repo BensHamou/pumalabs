@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('report/<int:pk>/', ReportDetail.as_view(), name='confirm_report'),
     path('report/<int:pk>/', ReportDetail.as_view(), name='cancel_report'),
+    path('report/<int:pk>/', ReportDetail.as_view(), name='refuse_report'),
     
     path('report/get-data-by-usine/', views.get_data_by_usine, name='get_data_by_usine'),
 

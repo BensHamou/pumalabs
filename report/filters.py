@@ -21,8 +21,8 @@ class PosteFilter(FilterSet):
 
 class ReportFilter(FilterSet):
 
-    other = {'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; border-radius: 5px;'}
-    other_line = {'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #30343b; height: 40px; border-radius: 5px;'}
+    other = {'style': 'background-color: rgba(187, 191, 204, 0.2); border-color: transparent; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); color: #6c757d; height: 40px; border-radius: 5px;'}
+    other_line = {'style': 'background-color: rgba(187, 191, 204, 0.2); border-color: transparent; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); color: #6c757d; height: 40px; border-radius: 5px;'}
     search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
     state = ChoiceFilter(choices=Report.STATE_REPORT, widget=forms.Select(attrs=getAttrs('select')), empty_label="État")
     start_date = DateTimeFilter(field_name='date_prelev', lookup_expr='gte', widget=forms.widgets.DateTimeInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
@@ -44,14 +44,11 @@ class ReportFilter(FilterSet):
         user = kwargs.pop('user', None)
         super(ReportFilter, self).__init__(*args, **kwargs)
         if user:
-            if user.role == 'Gestionnaire de stock':
+            if user.role == 'Technicien':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Confirmé', 'Validé par GS', 'Refusé par DI', 'Refusé par GS']]
-            elif user.role == 'Directeur Industriel':
-                self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Validé par GS', 'Validé par DI',  'Refusé par DI']]
+                                        ['Confirmé', 'Validé', 'Refusé']]
             elif user.role == 'Nouveau':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
-                                        ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']]
+                                        ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']]
             self.filters['usine'].queryset = user.usines.all()
 

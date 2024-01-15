@@ -8,16 +8,16 @@ Horaire
 
 {% block content %}
 <div class="d-flex justify-content-left mb-3">
-  <a href="{% url 'horaires' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
-    <i class="fas fa-caret-left me-2"></i>
-    <p class="lead m-0 p-0">retour</p>
+  <a href="{% url 'horaires' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: #0C2858; letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2 retourC"></i>
+    <p class="lead m-0 p-0 retourC">retour</p>
 </a>
 </div>
-<h4 class="text-white mb-4">{% if horaire %}Modification{% else %}Création d'un horaire{% endif %}</h4>
+<h4 class="mb-4 retourC">{% if horaire %}Modification{% else %}Création d'un horaire{% endif %}</h4>
 
 <form method="POST">
   {% csrf_token %}
-  <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+  <div class="card card-body custom-card">
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col-md-1 col-sm-6 mb-2">
             <div class="form-outline">

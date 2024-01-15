@@ -26,8 +26,8 @@ Utilisateurs
     {% if page %}
     <div class="sectionList">
         <table class="table table-borderless">
-            <thead style="border-bottom: 2px solid white;">
-                <tr class="text-white">
+            <thead style="border-bottom: 2px solid #45558A;">
+                <tr style="vertical-align: middle; color: #45558A;">
                   <th>Nom et prénom</th>
                   <th class="d-none d-md-table-cell">Rôle</th>
                   <th class="d-none d-md-table-cell">Admin</th>
@@ -37,7 +37,7 @@ Utilisateurs
             </thead>
             <tbody>
                 {% for usr in page %}
-                <tr style="color: #dde3f0;">
+                <tr style="color: #0C2858;">
                     <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.fullname }}</td>
                     <td class="d-none d-md-table-cell" onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.role }}</td>
                     <td class="d-none d-md-table-cell" onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
@@ -57,8 +57,8 @@ Utilisateurs
                         {% endfor %}
                     </td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_user' usr.id %}'" class="btn"  style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" disabled onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"  style="padding: 2px;"><i class="far fa-trash-alt" style="color: white;"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_user' usr.id %}'" class="btn"  style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
+                        <button type="button" disabled onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"  style="padding: 2px;"><i class="far fa-trash-alt" style="color: #45558A;"></i></button>
                     </td>
                 </tr>
                  {% endfor %}

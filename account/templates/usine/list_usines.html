@@ -11,14 +11,14 @@
     <div style="margin: 20px 0px;">
         <div class="row height d-flex justify-content-end align-items-center">
             <div class="col-md-1">
-                <a href="{% url 'create_usine' %}" class="btn btn-secondary" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);">Nouveau</a>
+                <a href="{% url 'create_usine' %}" class="btn btn-secondary customSaveButton">Nouveau</a>
             </div>
         </div>
     </div> 
     <section class="sectionList"> 
         <table class="table table-borderless">
-            <thead style="border-bottom: 2px solid white;">
-                <tr class="text-white">
+            <thead style="border-bottom: 2px solid #45558A;">
+                <tr style="vertical-align: middle; color: #45558A;">
                 <th class="d-none d-md-table-cell">#</th>
                 <th>Désignation</th>
                 <th>Address</th>
@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 {% for usine in page %}
-                <tr style="color: #dde3f0;">
+                <tr style="color: #0C2858;">
                     <td class="d-none d-md-table-cell">{{ usine.id }}</td>
                     <td>{{ usine.designation }}</td>
                     <td>{{ usine.address }}</td>
@@ -48,8 +48,8 @@
                         <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_horaire' %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span>
                     </td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_usine' usine.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmUsineDel('{{usine.id|escapejs}}', '{{usine|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_usine' usine.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
+                        <button type="button" onclick="confirmUsineDel('{{usine.id|escapejs}}', '{{usine|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}

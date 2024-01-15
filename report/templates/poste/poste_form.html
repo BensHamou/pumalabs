@@ -12,11 +12,11 @@ Poste
 {% block content %}
 <div class="d-flex justify-content-left mb-3">
   <a href="{% url 'postes' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
-    <i class="fas fa-caret-left me-2" style="color: white;"></i>
-    <p class="text-white lead m-0 p-0" style="color: #133356;">retour</p>
+    <i class="fas fa-caret-left me-2 retourC"></i>
+    <p class="lead m-0 p-0 retourC">retour</p>
 </a>
 </div>
-<h4 class="text-white mb-4">{% if poste %}Modification du {{ poste.designation }}{% else %}Création d'un poste{% endif %}</h4>
+<h4 class="mb-4 retourC">{% if poste %}Modification du {{ poste.designation }}{% else %}Création d'un poste{% endif %}</h4>
 
 <form method="POST">
   {% csrf_token %}
@@ -74,21 +74,21 @@ Poste
 </br>
 
 {% if poste %}
-<h4 class="text-white mb-4">Standards liés à ce poste <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_standard' poste.id %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span></h4>
+<h4 class="mb-4 retourC">Standards liés à ce poste <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_standard' poste.id %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span></h4>
     {% for standard in poste.standards.all %}
-        <div class="card card-body mb-3" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <div class="card card-body mb-3 custom-card">
             <div class="row text-center">
                 <div class="d-flex mb-5">
                     <div class="col-lg-7 col-md-7 col-sm-6 d-flex justify-content-end">
-                        <h4 class="text-white">{{ standard }} {% if standard.active %}(défault){% endif %}</h4>
+                        <h4 class="retourC">{{ standard }} {% if standard.active %}(défault){% endif %}</h4>
                     </div>
                     <div class="col-lg-1 col-md-1 col-sm-6 d-flex justify-content-start">
                         {% if not standard.active %}<button type="button" onclick="window.location='{% url 'default_standard' standard.id %}'" class="btn" 
-                            style="margin-left: 10px; color: #000066; padding: 2px;"><i class="fas fa-vial-circle-check"></i></button>
+                            style="margin-left: 10px; color: #45558A; padding: 2px;"><i class="fas fa-vial-circle-check"></i></button>
                         {% endif %}
                         <button type="button" onclick="window.location='{% url 'edit_standard' standard.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" 
-                        class="btn" style="margin-left: 10px; padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmStandardDel('{{standard.id|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        class="btn" style="margin-left: 10px; padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
+                        <button type="button" onclick="confirmStandardDel('{{standard.id|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                         
                     </div>
                 </div>

@@ -6,13 +6,13 @@ from django.db.models import Q
 
 def getAttrs(type, placeholder='', other={}):
     ATTRIBUTES = {
-        'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
+        'control': {'class': 'form-control', 'style': 'background-color: #e0e5f5; border-color: transparent;', 'placeholder': ''},
         'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
-        'select': {'class': 'form-select', 'style': 'background-color: #cacfd7;'},
-        'select2': {'class': 'form-select custom-select', 'style': 'background-color: #cacfd7; width: 100%;'},
-        'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
-        'datetime': {'type': 'datetime-local', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
-        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #cacfd7;'}
+        'select': {'class': 'form-select', 'style': 'background-color: #e0e5f5; border-color: transparent;'},
+        'select2': {'class': 'form-select custom-select', 'style': 'background-color: #e0e5f5; width: 100%; border-color: transparent;'},
+        'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5; border-color: transparent;'},
+        'datetime': {'type': 'datetime-local', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5; border-color: transparent;'},
+        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #e0e5f5; border-color: transparent;'}
     }
 
     
@@ -80,7 +80,7 @@ class ReportForm(ModelForm):
     freq_b1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Fréquence (HZ) B1')))
     freq_b2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Fréquence (HZ) B2')))
     retour_1_3 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
-    retour_0_6 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
+    retour_0_6 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non", 'style': " border-color: transparent;"}))
     observation = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):

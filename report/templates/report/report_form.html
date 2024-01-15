@@ -15,7 +15,7 @@ Rapport
     {% if form.instance.pk %}
         <input type="hidden" value="1" id="isUpdating"/> 
     {% endif %}
-    <div class="card card-body mb-5" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+    <div class="card card-body mb-5 custom-card">
         <!-- N RAPPORT -->
         <div class="row mb-4">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -78,7 +78,7 @@ Rapport
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="type_sable">Type de Saable</label>
+                    <label class="form-label mt-2 labelCustom" for="type_sable">Type de Sable</label>
                     {{ form.type_sable }}
                     {% if form.type_sable.errors %}
                         <div style="color: red;">
@@ -91,11 +91,13 @@ Rapport
             </div>
         </div>
     </div>
-    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
-        <h4 class="card-title text-white">Données d'entrée Unité de Traitement</h4>
-        <div class="row mb-4">
+    <div class="card mt-4 custom-card">
+        <div class="card-header card-header-secondary">
+            <p class="card-title lead" style="font-size: 26px; color: #45558A;">Données d'entrée Unité de Traitement</p>
+        </div>
+        <div class="row m-4">
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <h5 class="card-title text-white">Entrée sable</h5>
+                <h5 class="card-title text-white-c">Entrée sable</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="variateur">Variateur (%)</label>
                     {{ form.variateur }}
@@ -109,7 +111,7 @@ Rapport
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <h5 class="card-title text-white">&nbsp;</h5>
+                <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="debit">Débit (t/h) </label>
                     {{ form.debit }}
@@ -123,7 +125,7 @@ Rapport
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <h5 class="card-title text-white">Sécheur</h5>
+                <h5 class="card-title text-white-c">Sécheur</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="t_consigne">T consigne (˚C)</label>
                     {{ form.t_consigne }}
@@ -137,7 +139,7 @@ Rapport
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <h5 class="card-title text-white">&nbsp;</h5>
+                <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="t_real">T réelle (˚C)</label>
                     {{ form.t_real }}
@@ -151,9 +153,9 @@ Rapport
                 </div>
             </div>
         </div>
-        <div class="row mb-4">
+        <div class="row m-4">
             <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                <h5 class="card-title text-white">Broyeurs</h5>
+                <h5 class="card-title text-white-c">Broyeurs</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="freq_b1">Fréquence (HZ) B1</label>
                     {{ form.freq_b1 }}
@@ -167,7 +169,7 @@ Rapport
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <h5 class="card-title text-white">&nbsp;</h5>
+                <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="freq_b2">Fréquence (HZ) B2</label>
                     {{ form.freq_b2 }}
@@ -181,7 +183,7 @@ Rapport
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <h5 class="card-title text-white">&nbsp;</h5>
+                <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="retour_1_3" style="margin-right: 20px;">Retour > 1,3</label>
                 </br>
@@ -196,7 +198,7 @@ Rapport
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6">
-                <h5 class="card-title text-white">&nbsp;</h5>
+                <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="retour_0_6" style="margin-right: 20px;">Retour > 0,6</label>
                 </br>
@@ -211,7 +213,7 @@ Rapport
                 </div>
             </div>
         </div>
-        <div class="row mb-4">
+        <div class="row m-4">
             <div class="col-lg-12 col-md-12 col-sm-12 mb-4">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="observation">Observation</label>
@@ -259,19 +261,19 @@ Rapport
             </tr>
         </script>
 
-        <div class="table-responsive card mt-4" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <div class="table-responsive card mt-4 custom-card">
             <div class="card-header card-header-secondary">
-                <p class="card-title lead" style="font-size: 26px; color: rgb(237, 243, 253)">Échantillons</p>
+                <p class="card-title lead" style="font-size: 26px; color: #45558A;">Échantillons</p>
             </div>
-            <table class="table card-header">
+            <table class="table">
                 <thead>
-                    <th class="d-none d-md-table-cell text-white text-center">Poste</th>
-                    <th class="d-none d-md-table-cell text-white text-center">2,5mm</th>
-                    <th class="d-none d-md-table-cell text-white text-center">1,25mm</th>
-                    <th class="d-none d-md-table-cell text-white text-center">0,6mm</th>
-                    <th class="d-none d-md-table-cell text-white text-center">0,3mm</th>
-                    <th class="d-none d-md-table-cell text-white text-center">0 (<63µm)</th>
-                    <th class="d-none d-md-table-cell text-white text-center">Humidité (%)</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">Poste</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">2,5mm</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">1,25mm</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">0,6mm</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">0,3mm</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">0 (<63µm)</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">Humidité (%)</th>
                 </thead>
                 <tbody id="item-samples" style="border: 0px solid transparent;">  
                     {% for error in formset.non_form_errors %}
@@ -353,19 +355,19 @@ Rapport
         }
     }
     .select2-search {
-        background-color: #cacfd7 !important;
+        background-color: #e0e5f5 !important;
     }
     .select2-search input {
-        background-color: #cacfd7 !important;
+        background-color: #e0e5f5 !important;
     }
     
     .select2-results {
-        background-color: #cacfd7 !important;
+        background-color: #e0e5f5 !important;
     }
     
     .select2-container--bootstrap-5 .select2-selection {
-        border-color: #cacfd7 !important;
-        background-color: #cacfd7 !important;
+        border-color: #e0e5f5 !important;
+        background-color: #e0e5f5 !important;
     }
 </style>
 

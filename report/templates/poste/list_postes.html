@@ -25,15 +25,15 @@ Postes
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
             </div>
             <div class="col-md-1 mb-2">
-                <a href="{% url 'create_poste' %}" class="btn btn-secondary" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); height: 40px;">Nouveau</a>
+                <a href="{% url 'create_poste' %}" class="btn btn-secondary customSaveButton" style="height: 40px;">Nouveau</a>
             </div>
         </div>
     </form>  
     {% if page %}
     <section class="sectionList"> 
         <table class="table table-borderless">
-            <thead style="border-bottom: 2px solid white;">
-                <tr class="text-white">
+            <thead style="border-bottom: 2px solid #45558A;">
+                <tr style="vertical-align: middle; color: #45558A;">
                 <th>#</th>
                 <th>Désignation</th>
                 <th>Usine</th>
@@ -43,14 +43,14 @@ Postes
             </thead>
             <tbody>
                 {% for poste in page %}
-                <tr style="color: #dde3f0;">
+                <tr style="color: #0C2858;">
                     <td>{{ poste.id }}</td>
                     <td>{{ poste.designation }}</td>
                     <td>{{ poste.usine }}</td>
                     <td>{% if poste.active %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-x"></i>{% endif %}</td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_poste' poste.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmPosteDel('{{poste.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_poste' poste.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
+                        <button type="button" onclick="confirmPosteDel('{{poste.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}

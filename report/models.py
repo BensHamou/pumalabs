@@ -13,6 +13,9 @@ class Poste(models.Model):
     def standards(self):
         return self.standard_set.all()
     
+    def default_standard(self):
+        return self.standard_set.filter(active=True).first()
+    
     def __str__(self):
         return self.designation
 
@@ -21,8 +24,8 @@ class Report(models.Model):
     STATE_REPORT = [
         ('Brouillon', 'Brouillon'),
         ('Confirmé', 'Confirmé'),
-        ('Validé par Validateur', 'Validé par TechnicienV'),
-        ('Refusé par Validateur', 'Refusé par TechnicienV'),
+        ('Validé', 'Validé'),
+        ('Refusé', 'Refusé'),
         ('Annulé', 'Annulé'),
     ]
  
@@ -103,8 +106,8 @@ class Validation(models.Model):
     STATE_REPORT = [
         ('Brouillon', 'Brouillon'),
         ('Confirmé', 'Confirmé'),
-        ('Validé par Validateur', 'Validé par TechnicienV'),
-        ('Refusé par Validateur', 'Refusé par TechnicienV'),
+        ('Validé', 'Validé'),
+        ('Refusé', 'Refusé'),
         ('Annulé', 'Annulé'),
     ]
 
@@ -117,3 +120,4 @@ class Validation(models.Model):
 
     def __str__(self):
         return "Validation - " + str(self.report.id) + " - " + str(self.date)
+    

@@ -9,7 +9,7 @@ class UserForm(ModelForm):
         model = User
         fields = ['username', 'fullname', 'email', 'role', 'usines', 'is_admin', 'first_name', 'last_name']
 
-    attr = {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'readonly':'readonly'}
+    attr = {'class': 'form-control', 'style': 'background-color: #e0e5f5; border-color: transparent;', 'readonly':'readonly'}
 
     username = forms.CharField(widget=forms.TextInput(attrs=attr))
     last_name = forms.CharField(widget=forms.TextInput(attrs=attr))

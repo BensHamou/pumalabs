@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ report.prod_day|date:"y" }}
+Rapport - {{ report.n_report }}
 {% endblock %}
 {% load static %} 
 {% block activeListReport %} {% include 'active_bar.html' %} {% endblock %}
@@ -14,26 +14,22 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
         <div class="d-flex mb-5 justify-content-between">
             <div class="col-md-1">
                 <a href="{% url 'list_report' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
-                    <i class="fas fa-caret-left me-2"></i>
-                    <p class="lead m-0 p-0">retour</p>
+                    <i class="fas fa-caret-left me-2 retourC"></i>
+                    <p class="lead m-0 p-0 retourC">retour</p>
                 </a>
             </div>
             <div class="col-md-7">
-                <input class="form-control lead"  value="{{  report.state }}" style="background-color: #637188; border-color: transparent; color: white;" disabled>
+                <input class="form-control lead"  value="{{  report.state }}" style="background-color: #45558A; border-color: transparent; color: white;" disabled>
             </div>
             <div class="col-md-3 d-flex justify-content-end">
                 <button id="validation-card" class="btn btn-secondary btn-block customSaveButton">
                     <i class="fas fa-arrows-spin d-block d-sm-none"></i><p class="d-none d-sm-block p-0 m-0">Cycle de Validation</p>
                 </button>
-                {% if report.state in 'Brouillon,Refusé par GS,Refusé par DI' and user.role in 'Admin,Gestionnaire de production' and user == report.creator %}
+                {% if report.state in 'Brouillon,Refusé' and user.role in 'Admin,Technicien' and user == report.creator %}
                 <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
                     <i class="fas fa-edit"></i>
                 </button>
                 {% elif user.role == 'Admin' %}
-                <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
-                    <i class="fas fa-edit"></i>
-                </button>
-                {% elif user.role == 'Directeur Industriel' and report.state == 'Validé par GS' %}
                 <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -44,8 +40,8 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
     <div class="col-md-4 justify-content-center">
         <div class="row">
             <div class="d-flex justify-content-center">
-                    {% if report.state == 'Brouillon' or report.state == 'Refusé par GS' or report.state == 'Refusé par DI' %}
-                        {% if user.role == 'Admin' or user.role == 'Gestionnaire de production' %}
+                    {% if report.state in 'Brouillon,Refusé' %}
+                        {% if user.role in 'Admin,Technicien' %}
                             {% if user.role == 'Admin' or user == report.creator  %}
                                 <a href="{% url 'confirm_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
                                     <p class="lead m-0 p-0">Confirmer</p>
@@ -61,8 +57,8 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                             <h4 class="lead text-white"><strong></br></strong></h4>
                         {% endif %}
                     {% elif report.state == 'Confirmé' %}
-                        {% if user.role == 'Admin' or user.role == 'Gestionnaire de stock' %}                            
-                            <a href="{% url 'validate_report' report.id 'GS' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
+                        {% if user.role in 'Admin,Validateur' %}                            
+                            <a href="{% url 'validate_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
                                 <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                             </a>
                             <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
@@ -71,91 +67,218 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                         {% else %}
                             <h4 class="lead text-white"><strong></br></strong></h4>
                         {% endif %}
-                        
-                        {% elif report.state == 'Validé par GS' %}
-                            {% if user.role == 'Admin' or user.role == 'Directeur Industriel' %}                            
-                                <a href="{% url 'validate_report' report.id 'DI' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
-                                    <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
-                                </a>
-                                <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
-                                    <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
-                                </a>
-                            {% else %}
-                            <h4 class="lead text-white"><strong></br></strong></h4>
-                            {% endif %}
-                        {% else %}
-                        <h4 class="lead text-white"><strong></br></strong></h4>
-                        {% endif %}
+                    {% endif %}
             </div>
         </div>
     </div>
 </div>
 <div class="row mt-3">
-    <div class="col-md-8" style="margin-bottom: 20px;">
-        <div class="card" style="background: rgba(107, 122, 147, 0.4); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); color: #b7b9bd;">
+    <div class="col-lg-6 col-md-12" style="margin-bottom: 20px;">
+        <div class="card custom-card">
             <div class="card-body p-3">
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Technicien</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Technicien</label>
                     <div class="col-sm-9">
-                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                        <div class="form-control-plaintext text-detail">
                             {{ report.creator }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">N° Rapport</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">N° Rapport</label>
                     <div class="col-sm-9">
-                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                        <div class="form-control-plaintext text-detail">
                             {{ report.n_report }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Observation</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Usine</label>
                     <div class="col-sm-9">
-                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {% if report.observation_rec  %}{{ report.observation_rec }}{% else %}/{% endif %}
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.usine }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Shift</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.shift }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Date de Prélèvement</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.date_prelev }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Type de Sable</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.type_sable }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Créer le</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.date_created }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Observation</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {% if report.observation  %}{{ report.observation }}{% else %}/{% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 justify-content-center">
-        <div class="row">
-            <div class="col-md-12 mt-3">
-                <div class="card mx-auto text-white" id="arret-card" style="cursor: pointer; background: rgba(110, 125, 150, 0.5); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); max-width: 350px;">
-                    <div class="ratio" style="--bs-aspect-ratio: 40%;">
-                        <img src="{% static 'img/arrets.png' %}" class="card-img-top img-fluid" alt="Image Title">
+    <div class="col-lg-6 col-md-12" style="margin-bottom: 20px;">
+        <div class="card custom-card">
+            <div class="card-body p-3">
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Entrée sable</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Variateur (%)</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.variateur }}
+                        </div>
                     </div>
-                    <div class="card-body p-0 mx-auto">
-                        <p class="card-title lead m-3">Arrêts</p>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Débit (t/h)</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.debit }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Sécheur</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">T consigne (˚C)</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.t_consigne }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">T réelle (˚C)</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.t_real }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Broyeurs</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Fréquence (HZ) B1</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.freq_b1 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Fréquence (HZ) B2</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.freq_b2 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Retour > 1,3</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {% if report.retour_1_3 %} Oui {% else %} Non {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Retour > 0,6</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {% if report.retour_0_6 %} Oui {% else %} Non {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
-            <hr class="my-4 mx-auto" style="width: 25%; border: 1.5px solid white; border-radius: 5px; font-weight: bold;">
-            <div class="col-md-12 mb-3">
-                <div class="card mx-auto text-white" id="mpconsumeds-card" style="cursor: pointer; background: rgba(110, 125, 150, 0.5); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); max-width: 350px;">
-                    <div class="ratio" style="--bs-aspect-ratio: 40%;">
-                        <img src="{% static 'img/consomation.png' %}" class="card-img-top img-fluid" alt="Image Title">
-                    </div>
-                    <div class="card-body p-0 mx-auto">
-                        <p class="card-title lead m-3">Produits Consommés</p>
-                    </div>
-                 </div>
-            </div>
-            <hr class="my-4 mx-auto" style="width: 25%; border: 1.5px solid white; border-radius: 5px; font-weight: bold;">
-            <div class="col-md-12 mb-3">
-                <div class="card mx-auto text-white" id="etatsilo-card" style="cursor: pointer; background: rgba(110, 125, 150, 0.5); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); max-width: 350px;">
-                    <div class="ratio" style="--bs-aspect-ratio: 40%;">
-                        <img src="{% static 'img/silos.png' %}" class="card-img-top img-fluid" alt="Image Title">
-                    </div>
-                    <div class="card-body p-0 mx-auto">
-                        <p class="card-title lead m-3">État Silos</p>
-                    </div>
-                 </div>
-            </div>
         </div>
+    </div>
+</div>
+<div class="card mt-4 mb-4 custom-card">
+    <div class="card-header card-header-secondary">
+        <p class="card-title lead" style="font-size: 26px; color: #45558A;">Échantillons</p>
+    </div>
+    <div class="table-responsive" style="padding: 20px;">
+        <table class="table table-hover" style="text-align: center;">
+            <thead>
+                    <tr class="tableBold">
+                        <th>Fraction</th>
+                        {% for poste in postes %}
+                            <th>{{ poste }}</th>
+                        {% endfor %}
+                    </tr>
+            </thead>
+            <tbody>
+                    <tr class="tableBold">
+                        <td>Tamis</td>
+                        {% for poste in postes %}
+                            <td>Refus (%) </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="tableBold">2,5mm</td>
+                        {% for t in tami_25 %}
+                            <td style="color: {{ t.color }};">{{ t.value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="tableBold">1,25mm</td>
+                        {% for t in tami_125 %}
+                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="tableBold">0,6mm</td>
+                        {% for t in tami_06 %}
+                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="tableBold">0,3mm</td>
+                        {% for t in tami_03 %}
+                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="tableBold">0 (<63µm)</td>
+                        {% for t in tami_063 %}
+                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="tableBold">Humidité (%)</td>
+                        {% for t in tami_h %}
+                            <td style="color: #2f75b5">{{ t }}</td>
+                        {% endfor %}
+                    </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 {% include 'validation_modal.html' %}

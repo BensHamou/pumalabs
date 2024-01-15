@@ -16,7 +16,7 @@ Utilisateur - {{ user_to_edit.username }}
 </div>
 <h4 class="text-white mb-4">Modification d'utilisateur {{ user_to_edit.username }}</h4>
 <form method="POST">
-  <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+  <div class="card card-body custom-card">
       {% csrf_token %}
       <div class="row mb-4">
         <div class="col-md-6 col-sm-6 mb-sm-2">
@@ -64,8 +64,8 @@ Utilisateur - {{ user_to_edit.username }}
         <div class="col-md-6 col-sm-6 mb-sm-2">
           <div class="form-outline">
             <label class="form-label labelCustom" for="usines">Usines</label>
-            <div id="usine" class="form-control select" style="background-color: #cacfd7;">
-              <input id="usine_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
+            <div id="usine" class="form-control select" style="background-color: #e0e5f5; border-color: transparent;">
+              <input id="usine_input" type="text" data-bs-toggle="dropdown" style="background-color: #e0e5f5; border-color: transparent;" />
               <div class="dropdown-menu"></div>
               <select name="usines" multiple hidden id="hidden_usines_select">
                 {% for usine in form.fields.usines.queryset %}
