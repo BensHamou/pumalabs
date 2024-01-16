@@ -37,7 +37,7 @@ Liste des rapports
         </div>
         <ul class="nav nav-tabs mt-3 showUl">
             <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
-                <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='#598ebd';" 
                 onMouseOut="this.style.color='{% if request.GET.state == state %}#D2A517{% else %}#45558A{% endif %}'" style="font-size: 1.15rem;{% if request.GET.state == state %}color: #D2A517;{% endif %}" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
                     All {% if not request.GET.state %}({{ all_total }}){% endif %}
                 </button>
@@ -45,7 +45,7 @@ Liste des rapports
             {% with allowed_states=role_state|get_item:user.role %}
                 {% for state in allowed_states %}            
                     <li class="nav-item {% if request.GET.state == state %}customActive{% endif %}">
-                        <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                        <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='#598ebd';" 
                         onMouseOut="this.style.color='{% if request.GET.state == state %}#D2A517{% else %}#45558A{% endif %}'" style="font-size: 1.15rem;{% if request.GET.state == state %}color: #D2A517;{% endif %}" type="submit" name="state" value="{{ state }}">
                             {{ state }} ({{ state_totals|get_item:state }})
                         </button>
@@ -144,8 +144,7 @@ Liste des rapports
                 {{ filter.form.usine }}
             </div>
             <div class="col-md-1 col-sm-6 mb-2">
-                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
-                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
+                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;" name="page_size">
             </div>
             <div class="col-md-1 col-sm-6 mb-2">
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
@@ -153,7 +152,7 @@ Liste des rapports
         </div>
         <ul class="nav nav-tabs mt-3 showUl">
             <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
-                <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='#598ebd';" 
                 onMouseOut="this.style.color='{% if request.GET.state == state %}#D2A517{% else %}#45558A{% endif %}'" style="font-size: 1.15rem;{% if request.GET.state == state %}color: #D2A517;{% endif %}" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
                     All {% if not request.GET.state %}({{ all_total }}){% endif %}
                 </button>
@@ -161,7 +160,7 @@ Liste des rapports
             {% with allowed_states=role_state|get_item:user.role %}
                 {% for state in allowed_states %}            
                     <li class="nav-item {% if request.GET.state == state %}customActive{% endif %}">
-                        <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                        <button class="nav-link text-decoration-none customUnactive" onMouseOver="this.style.borderColor='transparent'; this.style.color='#598ebd';" 
                         onMouseOut="this.style.color='{% if request.GET.state == state %}#D2A517{% else %}#45558A{% endif %}'" style="font-size: 1.15rem;{% if request.GET.state == state %}color: #D2A517;{% endif %}" type="submit" name="state" value="{{ state }}">
                             {{ state }} ({{ state_totals|get_item:state }})
                         </button>

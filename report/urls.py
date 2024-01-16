@@ -20,9 +20,10 @@ urlpatterns = [
     path('report/<int:pk>/delete/', delete_report, name='delete_report'),
     path('report/<int:pk>/', ReportDetail.as_view(), name='report_detail'),
 
-    path('report/<int:pk>/', ReportDetail.as_view(), name='confirm_report'),
-    path('report/<int:pk>/', ReportDetail.as_view(), name='cancel_report'),
-    path('report/<int:pk>/', ReportDetail.as_view(), name='refuse_report'),
+    path('report/<int:pk>/confirm/', views.confirmReport, name='confirm_report'),
+    path('report/<int:pk>/refuse/', views.refuseReport, name='refuse_report'),
+    path('report/<int:pk>/cancel/', views.cancelReport, name='cancel_report'),
+    path('report/<int:pk>/validate/', views.validateReport, name='validate_report'),
     
     path('report/get-data-by-usine/', views.get_data_by_usine, name='get_data_by_usine'),
 

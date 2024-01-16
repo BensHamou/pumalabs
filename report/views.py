@@ -18,6 +18,9 @@ from django.db.models import Count
 from django.template.defaulttags import register
 from functools import wraps
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.utils.html import format_html
+from datetime import datetime
 
 def check_creator(view_func):
     @wraps(view_func)
@@ -440,3 +443,280 @@ def get_data_by_usine(request):
 
     return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list })
 
+@login_required(login_url='login')
+@check_creator
+def confirmReport(request, pk):
+
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'usine': request.GET.get('usine', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+
+    try:
+        report = Report.objects.get(id=pk)
+    except Report.DoesNotExist:
+        messages.success(request, 'Le rapport n\'existe pas')
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+        return redirect(redirect_url)
+    
+    if report.state == 'Confirmé':
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+        return redirect(redirect_url)
+    
+    old_state = report.state
+
+    refusal_reason = '/'
+
+    if old_state != 'Brouillon':
+        refusal_reason = 'Corrigée.'
+    
+    report.state = 'Confirmé'
+    
+    new_state = report.state
+    actor = request.user
+
+    validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason=refusal_reason, report=report)
+    report.save()
+    validation.save()
+    report.save()
+
+    if report.usine.address:
+        recipient_list = report.usine.address.split('&')
+    else:
+        recipient_list = ['benshamou@gmail.com'] 
+     
+    recipient_list = ['benshamou@gmail.com']
+
+    messages.success(request, 'Rapport validé avec succès')
+    subject, formatHtml = getMail('confirm', report, request.user.fullname, old_state == 'Brouillon')
+    send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
+
+
+    url_path = reverse('report_detail', args=[report.id])
+    cache_param = str(uuid.uuid4())
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+    return redirect(redirect_url)
+
+@login_required(login_url='login')
+def cancelReport(request, pk):
+
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'usine': request.GET.get('usine', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+    try:
+        report = Report.objects.get(id=pk)
+    except Report.DoesNotExist:
+        messages.success(request, 'Le rapport n\'existe pas')
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+        return redirect(redirect_url)
+    
+    old_state = report.state
+    
+    report.state = 'Annulé'
+    
+    new_state = report.state
+    actor = request.user
+
+    validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
+    report.save()
+    validation.save()
+
+    if old_state != 'Brouillon':    
+        if report.usine.address:
+            recipient_list = report.usine.address.split('&')
+        else:
+            recipient_list = ['benshamou@gmail.com']
+        recipient_list = ['benshamou@gmail.com']
+        subject, formatHtml = getMail('cancel', report, request.user.fullname)
+        send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
+        
+    messages.success(request, 'Report Annulé successfully' )
+    url_path = reverse('report_detail', args=[report.id])
+    cache_param = str(uuid.uuid4())
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+    return redirect(redirect_url)
+
+@login_required(login_url='login')
+@Validator_required
+def validateReport(request, pk):
+    
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'usine': request.GET.get('usine', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+
+    try:
+        report = Report.objects.get(id=pk)
+    except Report.DoesNotExist:
+        messages.success(request, 'Le rapport n\'existe pas')
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
+    if report.state == 'Validé':
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+        return redirect(redirect_url)
+    
+    old_state = report.state
+
+    report.state = 'Validé'
+    
+    new_state = report.state
+    actor = request.user
+
+    validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
+    report.save()
+    validation.save()
+
+    if report.usine.address:
+        recipient_list = report.usine.address.split('&')
+    else:
+        recipient_list = ['benshamou@gmail.com']
+    recipient_list = ['benshamou@gmail.com']
+
+    subject, formatHtml = getMail('validate', report, request.user.fullname)
+    send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
+
+    messages.success(request, 'Rapport validé avec succès' )
+    url_path = reverse('report_detail', args=[report.id])
+    cache_param = str(uuid.uuid4())
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+    return redirect(redirect_url)
+
+@login_required(login_url='login')
+@Validator_required
+def refuseReport(request, pk):
+    
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'usine': request.GET.get('usine', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+
+    try:
+        report = Report.objects.get(id=pk)
+    except Report.DoesNotExist:
+        messages.success(request, 'Le rapport n\'existe pas')
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
+    if report.state == 'Refusé':
+        messages.success(request, 'Rapport refusé avec succès' )
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+        return redirect(redirect_url)
+    
+    old_state = report.state
+
+    report.state = 'Refusé'
+    
+    new_state = report.state
+    actor = request.user
+    refusal_reason = request.POST.get('refusal_reason')
+
+    validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason=refusal_reason, report=report)
+    report.save()
+    validation.save()
+
+    if report.usine.address:
+        recipient_list = report.usine.address.split('&')
+    else:
+        recipient_list = ['benshamou@gmail.com']
+     
+    recipient_list = ['benshamou@gmail.com']
+
+    subject, formatHtml = getMail('refuse', report, request.user.fullname, refusal_reason=refusal_reason)
+    send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
+
+    messages.success(request, 'Rapport refusé avec succès' )
+    url_path = reverse('report_detail', args=[report.id])
+    cache_param = str(uuid.uuid4())
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
+    return redirect(redirect_url)
+    
+def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
+
+    subject = 'Rapport de laboratoire ' + '[' + str(report.id) + ']' + ' - '  + report.usine.__str__()
+    address = 'http://127.0.0.1:8000/report/'
+    message = ''''''
+    if action == 'confirm':
+            if old_state:
+                oui_13 = 'Oui' if report.retour_1_3 else 'Non'
+                oui_06 = 'Oui' if report.retour_1_3 else 'Non'
+                message = '''
+                <p>Bonjour l'équipe,</p>
+                <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.usine.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
+                <ul>
+                    <li><b>N° Rapport :</b> <b style="color: #002060">''' + str(report.n_report) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
+                    <li><b>Type de Sable :</b> <b style="color: #002060">''' + report.type_sable + '''</b></li>
+                    <li><b>Date de prélevement :</b> <b style="color: #002060">''' + str(report.date_prelev) + '''</b></li>
+                    <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
+                    <li><b>Variateur (%) :</b> <b style="color: #002060">''' + str(report.variateur) + '''</b></li>
+                    <li><b>Débit (t/h) :</b> <b style="color: #002060">''' + str(report.debit) + '''</b></li>
+                    <li><b>T consigne (˚C) :</b> <b style="color: #002060">''' + str(report.t_consigne) + '''</b></li>
+                    <li><b>T réelle (˚C) :</b> <b style="color: #002060">''' + str(report.t_real) + '''</b></li>
+                    <li><b>Fréquence (HZ) B1 :</b> <b style="color: #002060">''' + str(report.freq_b1) + '''</b></li>
+                    <li><b>Fréquence (HZ) B2 :</b> <b style="color: #002060">''' + str(report.freq_b2) + '''</b></li>
+                    <li><b>Retour > 1,3 ? :</b> <b style="color: #002060">''' + oui_13 + '''</b></li>
+                    <li><b>Retour > 0,6 ? :</b> <b style="color: #002060">''' + oui_06 + '''</b></li>'''
+                message += '''</ul>'''
+                
+                message += '''<p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+            else:
+                message += '''<p><b style="color: #002060">''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
+
+    elif action == 'cancel':
+        message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>annulé</b> par <b>''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b></p>
+        </br>
+
+        <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    elif action == 'refuse':
+        message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>refusé</b> par <b>''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b></p>
+        </br>
+        <p><b>Motif: ''' + refusal_reason + '''</b></p></br>
+
+        <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    elif action == 'validate':
+        message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été <b>validé</b> par <b>''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b>
+    
+    <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    return subject, format_html(message)

@@ -21,8 +21,8 @@ class PosteFilter(FilterSet):
 
 class ReportFilter(FilterSet):
 
-    other = {'style': 'background-color: rgba(187, 191, 204, 0.2); border-color: transparent; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); color: #6c757d; height: 40px; border-radius: 5px;'}
-    other_line = {'style': 'background-color: rgba(187, 191, 204, 0.2); border-color: transparent; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); color: #6c757d; height: 40px; border-radius: 5px;'}
+    other = {'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;'}
+    other_line = {'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;'}
     search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
     state = ChoiceFilter(choices=Report.STATE_REPORT, widget=forms.Select(attrs=getAttrs('select')), empty_label="État")
     start_date = DateTimeFilter(field_name='date_prelev', lookup_expr='gte', widget=forms.widgets.DateTimeInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))

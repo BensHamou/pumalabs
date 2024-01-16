@@ -20,7 +20,7 @@
     <link rel="icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
 
   </head>
-  <body style="background-color: #EAEFFF; min-height: 100vh;">
+  <body style="background-color: rgba(186, 188, 204, 0.2); min-height: 100vh;">
     {% if not user.is_authenticated %}
       <div style="height: 100vh; background: linear-gradient(rgba(187, 187, 187, 0.7), rgba(255, 255, 255, 0)); position: relative; overflow: hidden;">
         {% block login %}
@@ -121,7 +121,7 @@
     <script>
       document.querySelectorAll(".select").forEach((el) => new bootstrap5.Select(el));
     </script>
-    <style>
+  <style>
     *{
       font-family: 'Arial', sans-serif;
       font-size: 15px;
@@ -207,8 +207,8 @@
       .roleStyle{
         color: transparent;
       }
-  }
-    </style>
+    }
+  </style>
 </body>
 
 </html>

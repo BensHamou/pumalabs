@@ -6,13 +6,13 @@ from django.db.models import Q
 
 def getAttrs(type, placeholder='', other={}):
     ATTRIBUTES = {
-        'control': {'class': 'form-control', 'style': 'background-color: #e0e5f5; border-color: transparent;', 'placeholder': ''},
-        'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
-        'select': {'class': 'form-select', 'style': 'background-color: #e0e5f5; border-color: transparent;'},
-        'select2': {'class': 'form-select custom-select', 'style': 'background-color: #e0e5f5; width: 100%; border-color: transparent;'},
-        'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5; border-color: transparent;'},
-        'datetime': {'type': 'datetime-local', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5; border-color: transparent;'},
-        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #e0e5f5; border-color: transparent;'}
+        'control': {'class': 'form-control', 'style': 'background-color: #e0e5f5;', 'placeholder': ''},
+        'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
+        'select': {'class': 'form-select', 'style': 'background-color: #e0e5f5;'},
+        'select2': {'class': 'form-select custom-select', 'style': 'background-color: #e0e5f5; width: 100%;'},
+        'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5;'},
+        'datetime': {'type': 'datetime-local', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5;'},
+        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #e0e5f5;'}
     }
 
     
@@ -71,7 +71,7 @@ class ReportForm(ModelForm):
     n_report = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','N° Rapport')))
     usine = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
-    date_prelev = forms.DateTimeField(initial=timezone.now().date(), widget=forms.widgets.DateTimeInput(attrs= getAttrs('datetime')))
+    date_prelev = forms.DateTimeField(initial=timezone.now().date(), widget=forms.widgets.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs= getAttrs('datetime')))
     type_sable = forms.ChoiceField(choices=Report.SAND_TYPE, widget=forms.Select(attrs=getAttrs('select')))
     variateur = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Variateur (%)')))
     debit = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Débit (t/h)')))

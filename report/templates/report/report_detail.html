@@ -13,7 +13,7 @@ Rapport - {{ report.n_report }}
     <div class="col-md-8">
         <div class="d-flex mb-5 justify-content-between">
             <div class="col-md-1">
-                <a href="{% url 'list_report' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+                <a href="{% url 'list_report' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
                     <i class="fas fa-caret-left me-2 retourC"></i>
                     <p class="lead m-0 p-0 retourC">retour</p>
                 </a>
@@ -43,7 +43,7 @@ Rapport - {{ report.n_report }}
                     {% if report.state in 'Brouillon,Refusé' %}
                         {% if user.role in 'Admin,Technicien' %}
                             {% if user.role == 'Admin' or user == report.creator  %}
-                                <a href="{% url 'confirm_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <a href="{% url 'confirm_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
                                     <p class="lead m-0 p-0">Confirmer</p>
                                 </a>
                                 <a onclick="confirmRepCan('{{report.id|escapejs}}')"
@@ -58,7 +58,7 @@ Rapport - {{ report.n_report }}
                         {% endif %}
                     {% elif report.state == 'Confirmé' %}
                         {% if user.role in 'Admin,Validateur' %}                            
-                            <a href="{% url 'validate_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
+                            <a href="{% url 'validate_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
                                 <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                             </a>
                             <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
@@ -305,7 +305,7 @@ Rapport - {{ report.n_report }}
                 'state': getParameterByName('state'),
                 'start_date': getParameterByName('start_date'),
                 'end_date': getParameterByName('end_date'),
-                'line': getParameterByName('line'),
+                'usine': getParameterByName('usine'),
             }
             var queryString = Object.keys(params).map(function(key) {
                 if(params[key] !== null && params[key] !== undefined && params[key] !== '') {
