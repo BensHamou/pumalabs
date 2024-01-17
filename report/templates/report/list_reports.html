@@ -28,8 +28,8 @@ Liste des rapports
                 {{ filter.form.usine }}
             </div>
             <div class="col-md-1 col-sm-6 mb-2">
-                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
-                border-color: #e0e5f5; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558A; height: 40px;" name="page_size">
+                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" 
+                style="background-color: #dde0e6; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;" name="page_size">
             </div>
             <div class="col-md-1 col-sm-6 mb-2">
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
@@ -76,7 +76,7 @@ Liste des rapports
         </div>
     </form>
     <section class="sectionList"> 
-        <div>
+        <div class="tableStyle">
             <table class="table table-borderless">
                 <thead style="border-bottom: 2px solid #45558A;">
                     <tr style="vertical-align: middle; color: #45558A;">

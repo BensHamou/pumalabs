@@ -79,8 +79,8 @@ class ReportForm(ModelForm):
     t_real = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','T réelle (˚C)')))
     freq_b1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Fréquence (HZ) B1')))
     freq_b2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Fréquence (HZ) B2')))
-    retour_1_3 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
-    retour_0_6 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non", 'style': " border-color: transparent;"}))
+    retour_1_3 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'primary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
+    retour_0_6 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'primary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
     observation = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):

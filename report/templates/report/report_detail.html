@@ -297,6 +297,38 @@ Rapport - {{ report.n_report }}
 
 <script charset="utf-8" src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script> 
 
+<style>
+    
+    @media only screen and (max-width: 767px) {
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .postTD{
+            width: 100%;
+        }
+        th {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .valueLead{
+            font-size: 16px;
+        }
+        .tdLabel{
+            display: block;
+            color: #698ed0;
+            font-size: 16px; 
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
 <script>
     
     async function getSamplePlot(sampleId) {

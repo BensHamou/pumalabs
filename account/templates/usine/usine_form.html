@@ -35,8 +35,8 @@
       <div class="col-md-12">
         <div class="form-outline">
           <label class="form-label labelCustom" for="horaires">Horaires</label>
-          <div id="horaire" class="form-control select" style="background-color: #e0e5f5; border-color: transparent;">
-            <input id="horaire_input" type="text" data-bs-toggle="dropdown" style="background-color: #e0e5f5; border-color: transparent;" />
+          <div id="horaire" class="form-control select" style="background-color: #e0e5f5;">
+            <input id="horaire_input" type="text" data-bs-toggle="dropdown" style="background-color: #e0e5f5;" />
             <div class="dropdown-menu"></div>
             <select name="horaires" multiple hidden id="hidden_horaires_select">
               {% for horaire in form.fields.horaires.queryset %}

@@ -9,7 +9,7 @@ class UserForm(ModelForm):
         model = User
         fields = ['username', 'fullname', 'email', 'role', 'usines', 'is_admin', 'first_name', 'last_name']
 
-    attr = {'class': 'form-control', 'style': 'background-color: #e0e5f5; border-color: transparent;', 'readonly':'readonly'}
+    attr = {'class': 'form-control', 'style': 'background-color: #e0e5f5;', 'readonly':'readonly'}
 
     username = forms.CharField(widget=forms.TextInput(attrs=attr))
     last_name = forms.CharField(widget=forms.TextInput(attrs=attr))
@@ -19,7 +19,7 @@ class UserForm(ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs=attr))
     role = forms.ChoiceField(choices=User.ROLE_CHOICES, widget=forms.Select(attrs=getAttrs('select')))
     usines = forms.SelectMultiple(attrs={'class': 'form-select'})
-    is_admin = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton'}))
+    is_admin = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'primary', 'data-toggle':'switchbutton',  'data-onlabel': "Admin", 'data-offlabel': "Normal"}))
 
 
 class HoraireForm(ModelForm):
