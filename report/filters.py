@@ -1,5 +1,5 @@
 import django_filters
-from django_filters import ChoiceFilter, CharFilter, DateFilter, ModelChoiceFilter, FilterSet, DateTimeFilter
+from django_filters import ChoiceFilter, CharFilter, ModelChoiceFilter, FilterSet, DateTimeFilter
 from django import forms
 from .forms import getAttrs
 from .models import *
