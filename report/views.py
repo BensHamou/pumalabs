@@ -21,11 +21,11 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.html import format_html
 from datetime import datetime
-import matplotlib
-matplotlib.use('Agg')
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.offline import plot
+import matplotlib
+matplotlib.use('Agg')
 
 def check_creator(view_func):
     @wraps(view_func)
@@ -294,7 +294,6 @@ class ReportInline():
             sample.report = self.object
             sample.save()
 
-
 class ReportCreate(LoginRequiredMixin, CheckCreatorMixin, ReportInline, CreateView):
 
     def get_context_data(self, **kwargs):
@@ -501,7 +500,7 @@ def confirmReport(request, pk):
     else:
         recipient_list = ['benshamou@gmail.com'] 
      
-    recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['benshamou@gmail.com']
 
     messages.success(request, 'Rapport validé avec succès')
     subject, formatHtml = getMail('confirm', report, request.user.fullname, old_state == 'Brouillon')
@@ -551,7 +550,7 @@ def cancelReport(request, pk):
             recipient_list = report.usine.address.split('&')
         else:
             recipient_list = ['benshamou@gmail.com']
-        recipient_list = ['benshamou@gmail.com']
+        #recipient_list = ['benshamou@gmail.com']
         subject, formatHtml = getMail('cancel', report, request.user.fullname)
         send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
         
@@ -606,7 +605,8 @@ def validateReport(request, pk):
         recipient_list = report.usine.address.split('&')
     else:
         recipient_list = ['benshamou@gmail.com']
-    recipient_list = ['benshamou@gmail.com']
+    
+    #recipient_list = ['benshamou@gmail.com']
 
     subject, formatHtml = getMail('validate', report, request.user.fullname)
     send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
@@ -665,7 +665,7 @@ def refuseReport(request, pk):
     else:
         recipient_list = ['benshamou@gmail.com']
      
-    recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['benshamou@gmail.com']
 
     subject, formatHtml = getMail('refuse', report, request.user.fullname, refusal_reason=refusal_reason)
     send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
@@ -679,7 +679,7 @@ def refuseReport(request, pk):
 def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
 
     subject = 'Rapport de laboratoire ' + '[' + str(report.id) + ']' + ' - '  + report.usine.__str__()
-    address = 'http://127.0.0.1:8000/report/'
+    address = 'http://10.10.10.53:8000/report/'
     message = ''''''
     if action == 'confirm':
             if old_state:
@@ -687,25 +687,46 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 oui_06 = 'Oui' if report.retour_1_3 else 'Non'
                 message = '''
                 <p>Bonjour l'équipe,</p>
-                <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.usine.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
+                <p>Un rapport a été créé par <b style="color: #45558a">''' + report.creator.fullname + '''</b> <b>(''' + report.usine.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
                 <ul>
-                    <li><b>N° Rapport :</b> <b style="color: #002060">''' + str(report.n_report) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
-                    <li><b>Type de Sable :</b> <b style="color: #002060">''' + report.type_sable + '''</b></li>
-                    <li><b>Date de prélevement :</b> <b style="color: #002060">''' + str(report.date_prelev) + '''</b></li>
-                    <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
-                    <li><b>Variateur (%) :</b> <b style="color: #002060">''' + str(report.variateur) + '''</b></li>
-                    <li><b>Débit (t/h) :</b> <b style="color: #002060">''' + str(report.debit) + '''</b></li>
-                    <li><b>T consigne (˚C) :</b> <b style="color: #002060">''' + str(report.t_consigne) + '''</b></li>
-                    <li><b>T réelle (˚C) :</b> <b style="color: #002060">''' + str(report.t_real) + '''</b></li>
-                    <li><b>Fréquence (HZ) B1 :</b> <b style="color: #002060">''' + str(report.freq_b1) + '''</b></li>
-                    <li><b>Fréquence (HZ) B2 :</b> <b style="color: #002060">''' + str(report.freq_b2) + '''</b></li>
-                    <li><b>Retour > 1,3 ? :</b> <b style="color: #002060">''' + oui_13 + '''</b></li>
-                    <li><b>Retour > 0,6 ? :</b> <b style="color: #002060">''' + oui_06 + '''</b></li>'''
+                    <li><b>N° Rapport :</b> <b style="color: #45558a">''' + str(report.n_report) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
+                    <li><b>Type de Sable :</b> <b style="color: #45558a">''' + report.type_sable + '''</b></li>
+                    <li><b>Date de prélevement :</b> <b style="color: #45558a">''' + str(report.date_prelev) + '''</b></li>
+                    <li><b>Horaire :</b> <b style="color: #45558a">''' + report.shift.__str__() + '''</b></li>
+                    <li><b>Variateur (%) :</b> <b style="color: #45558a">''' + str(report.variateur) + '''</b></li>
+                    <li><b>Débit (t/h) :</b> <b style="color: #45558a">''' + str(report.debit) + '''</b></li>
+                    <li><b>T consigne (˚C) :</b> <b style="color: #45558a">''' + str(report.t_consigne) + '''</b></li>
+                    <li><b>T réelle (˚C) :</b> <b style="color: #45558a">''' + str(report.t_real) + '''</b></li>
+                    <li><b>Fréquence (HZ) B1 :</b> <b style="color: #45558a">''' + str(report.freq_b1) + '''</b></li>
+                    <li><b>Fréquence (HZ) B2 :</b> <b style="color: #45558a">''' + str(report.freq_b2) + '''</b></li>
+                    <li><b>Retour > 1,3 - </b> <b style="color: #45558a">''' + oui_13 + '''</b></li>
+                    <li><b>Retour > 0,6 - </b> <b style="color: #45558a">''' + oui_06 + '''</b></li>'''
                 message += '''</ul>'''
+
+                message += '''<p><b>Avec les résultats de laboratoire suivants des échantillons</b></p>
+                '''
+
+                for sample in report.samples():
+                    standard = sample.poste.default_standard()
+                    color_25 = 'black' if standard.min_2_5_value <= sample.value_2_5 <= standard.max_2_5_value else 'red'
+                    color_125 = 'black' if standard.min_1_25_value <= sample.value_1_25 <= standard.max_1_25_value else 'red'
+                    color_06 = 'black' if standard.min_0_6_value <= sample.value_0_6 <= standard.max_0_6_value else 'red'
+                    color_03 = 'black' if standard.min_0_3_value <= sample.value_0_3 <= standard.max_0_3_value else 'red'
+                    color_0 = 'black' if standard.min_0_value <= sample.value_0 <= standard.max_0_value else 'red'
+                    message += f'''<p><b style="color: #45558a">{sample.poste.designation}</b></p>
+                        <ul>
+                        <li><b>Tamis 2,5mm :</b> <b style="color: {color_25}">{sample.value_2_5}</b></li>
+                        <li><b>Tamis 1,25mm :</b> <b style="color: {color_125}">{sample.value_1_25}</b></li>
+                        <li><b>Tamis 0,6mm :</b> <b style="color: {color_06}">{sample.value_0_6}</b></li>
+                        <li><b>Tamis 0,3mm :</b> <b style="color: {color_03}">{sample.value_0_3}</b></li>
+                        <li><b>Tamis 0mm :</b> <b style="color: {color_0}">{sample.value_0}</b></li>
+                        <li><b>Humidité :</b> <b style="color: #6da7d0">{sample.value_h}</b></li>
+                        </ul>'''
+
                 
                 message += '''<p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
             else:
-                message += '''<p><b style="color: #002060">''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
+                message += '''<p><b style="color: #45558a">''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
 
     elif action == 'cancel':
         message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>annulé</b> par <b>''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b></p>
@@ -726,7 +747,6 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
     <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
 
     return subject, format_html(message)
-
 
 @login_required(login_url='login')
 def get_sample_plot_by_poste(request):
