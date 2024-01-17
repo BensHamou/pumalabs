@@ -679,7 +679,7 @@ def refuseReport(request, pk):
 def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
 
     subject = 'Rapport de laboratoire ' + '[' + str(report.id) + ']' + ' - '  + report.usine.__str__()
-    address = 'http://10.10.10.53:8000/report/'
+    address = 'http://10.10.10.53:8088/report/'
     message = ''''''
     if action == 'confirm':
             if old_state:
