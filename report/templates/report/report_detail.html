@@ -244,47 +244,81 @@ Rapport - {{ report.n_report }}
                     <tr>
                         <td class="tableBold">2,5mm</td>
                         {% for t in tami_25 %}
-                            <td style="color: {{ t.color }};">{{ t.value }}</td>
+                            <td id="tami_25-{{ t.id }}" style="color: {{ t.color }};">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
                     <tr>
                         <td class="tableBold">1,25mm</td>
                         {% for t in tami_125 %}
-                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                            <td id="tami_125-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
                     <tr>
                         <td class="tableBold">0,6mm</td>
                         {% for t in tami_06 %}
-                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                            <td id="tami_06-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
                     <tr>
                         <td class="tableBold">0,3mm</td>
                         {% for t in tami_03 %}
-                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                            <td id="tami_03-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
                     <tr>
                         <td class="tableBold">0 (<63µm)</td>
                         {% for t in tami_063 %}
-                            <td style="color: {{ t.color }}">{{ t.value }}</td>
+                            <td id="tami_063-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
-                    <tr>
+                    <tr style="cursor: pointer;" id="image-card" onclick="getHumidityPlot({{ report.id }})">
                         <td class="tableBold">Humidité (%)</td>
                         {% for t in tami_h %}
                             <td style="color: #2f75b5">{{ t }}</td>
                         {% endfor %}
                     </tr>
+                    {% if report.state == 'Validé' %}
+                        <tr>
+                            <td class="tableBold">Graphs</td>
+                            {% for id in ids %}
+                                <td style="color: #2f75b5">
+                                    <p class="m-0 p-0" style="cursor: pointer;" id="image-card" onclick="getSamplePlot({{ id }})">Image</p>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
             </tbody>
         </table>
     </div>
 </div>
 {% include 'validation_modal.html' %}
+{% include 'sample_modal.html' %}
 {% include 'refuse_report_modal.html' %}
 
+<script charset="utf-8" src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script> 
+
 <script>
+    
+    async function getSamplePlot(sampleId) {
+        try {
+            const response = await $.ajax({ url: '{% url 'get_sample_plot' %}', type: 'GET', data: {'sampleId': sampleId},});
+            $('#imageModal .modal-body').html(response.interactive_plot);
+            $('#imageModal').modal('show');
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
+    async function getHumidityPlot(reportId) {
+        try {
+            const response = await $.ajax({ url: '{% url 'get_humidity_plot' %}', type: 'GET', data: {'reportId': reportId},});
+            $('#imageModal .modal-body').html(response.interactive_plot);
+            $('#imageModal').modal('show');
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
     const confirmRepCan = (repID) => {
         swal({ 
         title: `Confirmation de l'annulation.`,   

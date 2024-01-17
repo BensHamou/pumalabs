@@ -26,5 +26,7 @@ urlpatterns = [
     path('report/<int:pk>/validate/', views.validateReport, name='validate_report'),
     
     path('report/get-data-by-usine/', views.get_data_by_usine, name='get_data_by_usine'),
+    path('report/get-sample-plot-by-poste/', views.get_sample_plot_by_poste, name='get_sample_plot'),
+    path('report/get-humidity-plot-by-report/', views.get_humidity_plot_by_report, name='get_humidity_plot'),
 
     ]

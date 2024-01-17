@@ -21,6 +21,11 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.html import format_html
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.offline import plot
 
 def check_creator(view_func):
     @wraps(view_func)
@@ -329,16 +334,17 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
         samples = self.object.samples()
 
         postes = [s.poste.designation for s in samples]
+        sample_ids = [s.id for s in samples]
         standards = [s.poste.default_standard() for s in samples]
 
-        tami_25 = [{'value': s.value_2_5, 'color': 'black' if st.min_2_5_value <= s.value_2_5 <= st.max_2_5_value else 'red'} for s, st in zip(samples, standards)]
-        tami_125 = [{'value': s.value_1_25, 'color': 'black' if st.min_1_25_value <= s.value_1_25 <= st.max_1_25_value else 'red'} for s, st in zip(samples, standards)]
-        tami_06 = [{'value': s.value_0_6, 'color': 'black' if st.min_0_6_value <= s.value_0_6 <= st.max_0_6_value else 'red'} for s, st in zip(samples, standards)]
-        tami_03 = [{'value': s.value_0_3, 'color': 'black' if st.min_0_3_value <= s.value_0_3 <= st.max_0_3_value else 'red'} for s, st in zip(samples, standards)]
-        tami_063 = [{'value': s.value_0, 'color': 'black' if st.min_0_value <= s.value_0 <= st.max_0_value else 'red'} for s, st in zip(samples, standards)]
+        tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black' if st.min_2_5_value <= s.value_2_5 <= st.max_2_5_value else 'red'} for s, st in zip(samples, standards)]
+        tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black' if st.min_1_25_value <= s.value_1_25 <= st.max_1_25_value else 'red'} for s, st in zip(samples, standards)]
+        tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black' if st.min_0_6_value <= s.value_0_6 <= st.max_0_6_value else 'red'} for s, st in zip(samples, standards)]
+        tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black' if st.min_0_3_value <= s.value_0_3 <= st.max_0_3_value else 'red'} for s, st in zip(samples, standards)]
+        tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black' if st.min_0_value <= s.value_0 <= st.max_0_value else 'red'} for s, st in zip(samples, standards)]
         tami_h = [s.value_h for s in samples]
 
-        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h })
+        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h, 'ids': sample_ids })
 
         return context
 
@@ -720,3 +726,80 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
     <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
 
     return subject, format_html(message)
+
+
+@login_required(login_url='login')
+def get_sample_plot_by_poste(request):
+    sample_id = request.GET.get('sampleId')    
+    try:
+        sample = Sample.objects.get(id=sample_id)
+        poste_standard = sample.poste.default_standard()
+        interactive_plot = generate_standard_and_sample_plot(poste_standard, sample)
+
+        return JsonResponse({'interactive_plot': interactive_plot})
+    except Sample.DoesNotExist:
+        return JsonResponse({'error': 'Sample not found'}, status=404)
+    
+@login_required(login_url='login')
+def get_humidity_plot_by_report(request):
+    report_id = request.GET.get('reportId')    
+    try:
+        report = Report.objects.get(id=report_id)
+        interactive_plot = generate_humidity_plot(report.samples())
+
+        return JsonResponse({'interactive_plot': interactive_plot})
+    except Sample.DoesNotExist:
+        return JsonResponse({'error': 'Sample not found'}, status=404)
+
+def generate_standard_and_sample_plot(standard, sample):
+    standard_data = {
+        'Max Values': [standard.max_2_5_value, standard.max_1_25_value, standard.max_0_6_value, standard.max_0_3_value, standard.max_0_value],
+        'Min Values': [standard.min_2_5_value, standard.min_1_25_value, standard.min_0_6_value, standard.min_0_3_value, standard.min_0_value]
+    }
+    sample_data = {
+        'Sample Values': [sample.value_2_5, sample.value_1_25, sample.value_0_6, sample.value_0_3, sample.value_0]
+    }
+
+    df_standard = pd.DataFrame(standard_data, index=['2.5mm', '1.25mm', '0.6mm', '0.3mm', '0mm'])
+    df_sample = pd.DataFrame(sample_data, index=['2.5mm', '1.25mm', '0.6mm', '0.3mm', '0mm'])
+
+    trace_max = go.Scatter(x=df_standard.index, y=df_standard['Max Values'], mode='lines+markers',
+                           name='Max Valeurs', line=dict(color='blue', dash='dash', shape='spline'))
+    trace_min = go.Scatter(x=df_standard.index, y=df_standard['Min Values'], mode='lines+markers',
+                           name='Min Valeurs', line=dict(color='red', dash='dash', shape='spline'))
+    
+    trace_sample = go.Scatter(x=df_sample.index, y=df_sample['Sample Values'], mode='lines+markers',
+                              name='Valeurs d\'échantillant', line=dict(color='green', shape='spline'))
+
+    title = 'Les standard entre le poste - ' + standard.poste.designation + ' et les valeur d\'échantillant'
+    layout = go.Layout( title=title, xaxis=dict(title='Tamis'), yaxis=dict(title='Valeurs'), 
+                       plot_bgcolor='rgba(229, 232, 235, 1)', paper_bgcolor='rgba(229, 232, 235, 1)')
+
+    fig = go.Figure(data=[trace_max, trace_min, trace_sample], layout=layout)
+
+    interactive_plot = plot(fig, output_type='div', include_plotlyjs='cdn')
+
+    return interactive_plot
+
+def generate_humidity_plot(samples):
+
+    humidity_data = {
+        'Humidity Values': [s.value_h for s in samples]
+    }
+
+    df_humidity = pd.DataFrame(humidity_data, index=[s.poste.designation for s in samples])
+    
+    trace_humidity = go.Scatter(x=df_humidity.index, y=df_humidity['Humidity Values'], mode='lines+markers',
+                              name='Valeurs d\'humidité', line=dict(color='#698ed0', shape='spline'))
+
+    title = 'Taux d\'Humidité vs phassage'
+    layout = go.Layout( title=title, xaxis=dict(title='Axis'), yaxis=dict(title='Valeurs'), 
+                       plot_bgcolor='rgba(229, 232, 235, 1)', paper_bgcolor='rgba(229, 232, 235, 1)')
+
+    fig = go.Figure(data=[trace_humidity], layout=layout)
+
+    interactive_plot = plot(fig, output_type='div', include_plotlyjs='cdn')
+
+    return interactive_plot
+
+
