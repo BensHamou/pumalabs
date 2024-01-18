@@ -14,7 +14,7 @@ class ApiBackend(BaseBackend):
         
         auth = HTTPBasicAuth(username, password)
 
-        response = requests.post('https://api.ldap.groupe-hasnaoui.com/pumaprd/auth', auth=auth)
+        response = requests.post('https://api.ldap.groupe-hasnaoui.com/pumalabs/auth', auth=auth)
 
         if response.status_code == 200 and response.json().get('authenticated'):
             user = User.objects.get(username = response.json().get('userinfo')['ad2000'])
