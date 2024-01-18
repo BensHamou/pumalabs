@@ -84,22 +84,22 @@ DATABASES = {
     #    'HOST': '10.10.10.101',
     #    'PORT': '5434',
     #}
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'PumaLab',
-        'USER': 'lab_report',
-        'PASSWORD': 'lab_report',
-        'HOST': '10.10.10.53',
-        'PORT': '5400',
-    }
     #'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': os.environ.get('DB_NAME'),
-    #    'USER': os.environ.get('DB_USER'),
-    #    'PASSWORD': os.environ.get('DB_PASS'),
-    #    'HOST': os.environ.get('DB_HOST'),
-    #    'PORT': os.environ.get('DB_PORT'),
+    #    'NAME': 'PumaLab',
+    #    'USER': 'lab_report',
+    #    'PASSWORD': 'lab_report',
+    #    'HOST': '10.10.10.53',
+    #    'PORT': '5400',
     #}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    }
 }
 
 

@@ -13,8 +13,8 @@
                             <textarea class="form-control" placeholder="Veuillez indiquer la raison de votre refus." id="refusal_reason" name="refusal_reason" style="background-color: #e0e5f5;" rows="4"></textarea>
                 </div>
                 <div class="modal-footer" style="border-color: transparent;">
-                            <button type="submit" class="btn btn-block subButton">Soumettre</button>
-                            <button type="button" class="btn btn-secondary cancelButton" id="buttonRefuseCancel" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-block subButton">Soumettre</button>
+                    <button type="button" class="btn btn-secondary cancelButton" id="buttonRefuseCancel" data-dismiss="modal">Annuler</button>
                 </div>
             </div>
         </form>
@@ -23,7 +23,7 @@
 
 <style>
     .subButton{
-        background-color: #23305d; 
+        background-color: #45558a; 
         color: white;
     }
     .cancelButton{
@@ -32,10 +32,14 @@
         border-color: transparent;
     }
     .contentStyle {
-        background: rgba(107, 122, 147, 0.75); 
+        background: rgba(236, 239, 242, 0.95);
         border-radius: 16px; 
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
         backdrop-filter: blur(2px);
+    }
+    .headerStyle{
+        color: #586cb0;
+        font-weight: bold;
     }
     @media only screen and (max-width: 767px) {
         .contentStyle {
@@ -45,7 +49,7 @@
             backdrop-filter: blur(2px);
         }
         .headerStyle{
-            color: #0c2858;
+            color: #586cb0;
             font-weight: bold;
         }
     }

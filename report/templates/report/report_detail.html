@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Rapport - {{ report.n_report }}
+Rapport - {{ report.usine.designation }}-{{ report.n_report|stringformat:"04d" }}/{{ report.date_prelev|date:"y" }}
 {% endblock %}
 {% load static %} 
 {% block activeListReport %} {% include 'active_bar.html' %} {% endblock %}
@@ -88,7 +88,7 @@ Rapport - {{ report.n_report }}
                     <label class="col-sm-3 col-form-label" style="color: #0C2858;">N° Rapport</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-detail">
-                            {{ report.n_report }}
+                            {{ report.usine.designation }}-{{ report.n_report|stringformat:"04d" }}/{{ report.date_prelev|date:"y" }}
                         </div>
                     </div>
                 </div>
