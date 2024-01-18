@@ -271,7 +271,7 @@ Rapport - {{ report.usine.designation }}-{{ report.n_report|stringformat:"04d" }
                             <td id="tami_063-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
-                    <tr style="cursor: pointer;" id="image-card" onclick="getHumidityPlot({{ report.id }})">
+                    <tr {% if report.state == 'Validé' %} style="cursor: pointer;" id="image-card" onclick="getHumidityPlot({{ report.id }})" {% endif %}>
                         <td class="tableBold">Humidité (%)</td>
                         {% for t in tami_h %}
                             <td style="color: #2f75b5">{{ t }}</td>
