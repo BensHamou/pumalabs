@@ -424,10 +424,7 @@ Rapport
                     $('#id_samples-TOTAL_FORMS').attr('value', countSamples+1);
                     const selectPoste = document.getElementById(`id_samples-${countSamples}-poste`);
                     selectPoste.value = response.postes[i];
-                    document.querySelectorAll(`[id^="id_samples-${countSamples}-value_"]`).forEach(element => {
-                        console.log(element);
-                        element.required = true;
-                    });
+                    document.querySelectorAll(`[id^="id_samples-${countSamples}-value_"]`).forEach(element => {element.required = true;});
                     countSamples += 1;
                 }
 
