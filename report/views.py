@@ -835,15 +835,15 @@ def get_humidity_plot_by_report(request):
 
 def generate_standard_and_sample_plot(standard, sample):
     standard_data = {
-        'Max Values': [standard.max_2_5_value, standard.max_1_25_value, standard.max_0_6_value, standard.max_0_3_value, standard.max_0_value],
-        'Min Values': [standard.min_2_5_value, standard.min_1_25_value, standard.min_0_6_value, standard.min_0_3_value, standard.min_0_value]
+        'Max Values': [standard.max_0_value, standard.max_0_3_value, standard.max_0_6_value, standard.max_1_25_value, standard.max_2_5_value],
+        'Min Values': [standard.min_0_value, standard.min_0_3_value, standard.min_0_6_value, standard.min_1_25_value, standard.min_2_5_value]
     }
     sample_data = {
-        'Sample Values': [sample.value_2_5, sample.value_1_25, sample.value_0_6, sample.value_0_3, sample.value_0]
+        'Sample Values': [sample.value_0, sample.value_0_3, sample.value_0_6, sample.value_1_25, sample.value_2_5]
     }
 
-    df_standard = pd.DataFrame(standard_data, index=['2.5mm', '1.25mm', '0.6mm', '0.3mm', '0mm'])
-    df_sample = pd.DataFrame(sample_data, index=['2.5mm', '1.25mm', '0.6mm', '0.3mm', '0mm'])
+    df_standard = pd.DataFrame(standard_data, index=['0mm', '0.3mm', '0.6mm', '1.25mm', '2.5mm'])
+    df_sample = pd.DataFrame(sample_data, index=['0mm', '0.3mm', '0.6mm', '1.25mm', '2.5mm'])
 
     trace_max = go.Scatter(x=df_standard.index, y=df_standard['Max Values'], mode='lines+markers',
                            name='Max Valeurs', line=dict(color='blue', dash='dash', shape='spline'))
@@ -865,9 +865,7 @@ def generate_standard_and_sample_plot(standard, sample):
 
 def generate_humidity_plot(samples):
 
-    humidity_data = {
-        'Humidity Values': [s.value_h for s in samples]
-    }
+    humidity_data = {'Humidity Values': [s.value_h for s in samples]}
 
     df_humidity = pd.DataFrame(humidity_data, index=[s.poste.designation for s in samples])
     
