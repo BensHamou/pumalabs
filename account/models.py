@@ -56,6 +56,7 @@ class User(AbstractUser):
         ('Technicien', 'Technicien'),
         ('Validateur', 'Validateur'),
         ('Observateur', 'Observateur'),
+        ('Gestionnaire de production', 'Gestionnaire de production'),
         ('Admin', 'Admin'),
     ]
 

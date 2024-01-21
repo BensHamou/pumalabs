@@ -38,7 +38,7 @@
                   <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
                 </div>
               {% endif %}
-              {% if user.role not in 'Observateur,Nouveau' %}
+              {% if user.role not in 'Observateur,Nouveau,Gestionnaire de production' %}
                 <div class="d-flex" style="width: 100%; margin: 5px 10px;">
                   {% block activeCreateReport %}{% endblock %}
                   <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
@@ -74,6 +74,7 @@
                         <li><a href="{% url 'usines' %}" class="dropdown-item">Usines</a></li>
                         <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
                         <li><a href="{% url 'postes' %}" class="dropdown-item">Postes</a></li>
+                        <li><a href="{% url 'fournisseurs' %}" class="dropdown-item">Fournisseurs</a></li>
                       </ul>
                     </li>
                   </h4>

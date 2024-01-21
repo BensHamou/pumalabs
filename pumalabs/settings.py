@@ -59,7 +59,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'account', 'templates', 'user'), os.path.join(BASE_DIR, 'account', 'templates', 'usine'),
                  os.path.join(BASE_DIR, 'account', 'templates', 'horaire'), os.path.join(BASE_DIR, 'account', 'templates', 'fragment'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'poste'), os.path.join(BASE_DIR, 'report', 'templates', 'report'), 
-                 os.path.join(BASE_DIR, 'report', 'templates', 'modal')
+                 os.path.join(BASE_DIR, 'report', 'templates', 'modal'), os.path.join(BASE_DIR, 'report', 'templates', 'fournisseur')
                  ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -76,14 +76,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "pumalabs.wsgi.application"
 
 DATABASES = {
-    #'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': 'LabDBDev',
-    #    'USER': 'puma_prod',
-    #    'PASSWORD': 'puma_prod',
-    #    'HOST': '10.10.10.101',
-    #    'PORT': '5434',
-    #}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'LabDBDev',
+        'USER': 'puma_prod',
+        'PASSWORD': 'puma_prod',
+        'HOST': '10.10.10.101',
+        'PORT': '5434',
+    }
     #'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': 'PumaLab',
@@ -92,14 +92,14 @@ DATABASES = {
     #    'HOST': '10.10.10.53',
     #    'PORT': '5400',
     #}
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASS'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
-    }
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql',
+    #    'NAME': os.environ.get('DB_NAME'),
+    #    'USER': os.environ.get('DB_USER'),
+    #    'PASSWORD': os.environ.get('DB_PASS'),
+    #    'HOST': os.environ.get('DB_HOST'),
+    #    'PORT': os.environ.get('DB_PORT'),
+    #}
 }
 
 

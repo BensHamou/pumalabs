@@ -19,6 +19,19 @@ class PosteFilter(FilterSet):
         model = Poste
         fields = ['search']
 
+class FournisseurFilter(FilterSet):
+
+    search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher Fournisseur..') ))
+
+    def filter_search(self, queryset, name, value):
+        return queryset.filter(
+            Q(designation__icontains=value)
+        ).distinct()
+
+    class Meta:
+        model = Fournisseur
+        fields = ['search']
+
 class ReportFilter(FilterSet):
 
     other = {'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;'}
@@ -36,6 +49,7 @@ class ReportFilter(FilterSet):
         return queryset.filter(
             Q(n_report__icontains=value) | 
             Q(creator__fullname__icontains=value) | 
+            Q(fournisseur__designation__icontains=value) | 
             Q(usine__designation__icontains=value)
         ).distinct()
 

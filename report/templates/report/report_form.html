@@ -32,9 +32,9 @@ Rapport
                 </div>
             </div>
         </div>
-        <!-- USINE - SHIFT -->
+        <!-- USINE - SHIFT - GP -->
         <div class="row mb-4">
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="usine">Usine</label>
                     {{ form.usine|attr:"id:usine-select" }}
@@ -47,7 +47,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="shift">Horaire</label>
                     {{ form.shift }}
@@ -60,10 +60,23 @@ Rapport
                     {% endif %}
                 </div>
             </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="gp_user">Gestionnaire de production</label>
+                    {{ form.gp_user }}
+                    {% if form.gp_user.errors %}
+                        <div style="color: red;">
+                        {% for error in form.gp_user.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <!-- DATE - HORAIRE -->
+        <!-- DATE - HORAIRE - FOURNISSEUR -->
         <div class="row mb-4">
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="date_prelev">Date de Prélèvement</label>
                     {{ form.date_prelev }}
@@ -76,13 +89,26 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="type_sable">Type de Sable</label>
                     {{ form.type_sable }}
                     {% if form.type_sable.errors %}
                         <div style="color: red;">
                         {% for error in form.type_sable.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="fournisseur">Fournisseur</label>
+                    {{ form.fournisseur }}
+                    {% if form.fournisseur.errors %}
+                        <div style="color: red;">
+                        {% for error in form.fournisseur.errors %}
                             *{{ error }}
                         {% endfor %}
                         </div>
@@ -366,7 +392,6 @@ Rapport
     }
     
     .select2-container--bootstrap-5 .select2-selection {
-        border-color: #e0e5f5 !important;
         background-color: #e0e5f5 !important;
     }
 </style>
@@ -399,6 +424,10 @@ Rapport
                     $('#id_samples-TOTAL_FORMS').attr('value', countSamples+1);
                     const selectPoste = document.getElementById(`id_samples-${countSamples}-poste`);
                     selectPoste.value = response.postes[i];
+                    document.querySelectorAll(`[id^="id_samples-${countSamples}-value_"]`).forEach(element => {
+                        console.log(element);
+                        element.required = true;
+                    });
                     countSamples += 1;
                 }
 

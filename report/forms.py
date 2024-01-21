@@ -35,6 +35,13 @@ class PosteForm(ModelForm):
     usine = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
     active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton',  'data-onlabel': "Active", 'data-offlabel': "Unactive"}))
 
+class FournisseurForm(ModelForm):
+    class Meta:
+        model = Fournisseur
+        fields = ['designation']
+
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Désignation')))
+
 class StandardForm(ModelForm):
     class Meta:
         model = Standard
@@ -64,15 +71,17 @@ class StandardForm(ModelForm):
 class ReportForm(ModelForm):
     class Meta:
         model = Report
-        fields = ['n_report', 'usine', 'shift', 'date_prelev', 'type_sable', 'variateur', 'debit', 't_consigne', 't_real', 
+        fields = ['n_report', 'usine', 'shift', 'gp_user', 'date_prelev', 'type_sable', 'fournisseur', 'variateur', 'debit', 't_consigne', 't_real', 
                   'freq_b1', 'freq_b2', 'retour_1_3', 'retour_0_6', 'observation']
                 
 
     n_report = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','N° Rapport')))
     usine = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
+    gp_user = forms.ModelChoiceField(queryset=User.objects.filter(role='Gestionnaire de production'), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Gestionnaire de production")
     date_prelev = forms.DateTimeField(initial=timezone.now().date(), widget=forms.widgets.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs= getAttrs('datetime')))
     type_sable = forms.ChoiceField(choices=Report.SAND_TYPE, widget=forms.Select(attrs=getAttrs('select')))
+    fournisseur = forms.ModelChoiceField(queryset=Fournisseur.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Fournisseur")
     variateur = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Variateur (%)')))
     debit = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Débit (t/h)')))
     t_consigne = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','T consigne (˚C)')))
@@ -99,14 +108,16 @@ class SampleForm(ModelForm):
     class Meta:
         model = Sample
         fields = ['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0', 'value_h']
+
+    min_max = {'max': '100', 'min': '0', 'step': '0.001'}
     
     poste = forms.ModelChoiceField(label = 'Poste', queryset=Poste.objects.all(), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Poste")
-    value_2_5 = forms.FloatField(label = '2,5mm', widget=forms.NumberInput(attrs= getAttrs('control','2,5mm')))
-    value_1_25 = forms.FloatField(label = '1,25mm', widget=forms.NumberInput(attrs= getAttrs('control','1,25mm')))
-    value_0_6 = forms.FloatField(label = '0,6mm', widget=forms.NumberInput(attrs= getAttrs('control','0,6mm')))
-    value_0_3 = forms.FloatField(label = '0,3mm', widget=forms.NumberInput(attrs= getAttrs('control','0,3mm')))
-    value_0 = forms.FloatField(label = '0 (<63µm)', widget=forms.NumberInput(attrs= getAttrs('control','0 (<63µm)')))
-    value_h = forms.FloatField(label = 'Humidité (%)', widget=forms.NumberInput(attrs= getAttrs('control','Humidité (%)')))
+    value_2_5 = forms.FloatField(label = '2,5mm', widget=forms.NumberInput(attrs= getAttrs('control','2,5mm', min_max)), required=True)
+    value_1_25 = forms.FloatField(label = '1,25mm', widget=forms.NumberInput(attrs= getAttrs('control','1,25mm', min_max)), required=True)
+    value_0_6 = forms.FloatField(label = '0,6mm', widget=forms.NumberInput(attrs= getAttrs('control','0,6mm', min_max)), required=True)
+    value_0_3 = forms.FloatField(label = '0,3mm', widget=forms.NumberInput(attrs= getAttrs('control','0,3mm', min_max)), required=True)
+    value_0 = forms.FloatField(label = '0 (<63µm)', widget=forms.NumberInput(attrs= getAttrs('control','0 (<63µm)', min_max)), required=True)
+    value_h = forms.FloatField(label = 'Humidité (%)', widget=forms.NumberInput(attrs= getAttrs('control','Humidité (%)', min_max)), required=True)
         
     def __init__(self, *args, **kwargs):
         poste = kwargs.pop('poste', None)

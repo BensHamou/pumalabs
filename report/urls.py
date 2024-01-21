@@ -19,6 +19,11 @@ urlpatterns = [
     path('report/<int:pk>/update/', ReportUpdate.as_view(), name='update_report'),
     path('report/<int:pk>/delete/', delete_report, name='delete_report'),
     path('report/<int:pk>/', ReportDetail.as_view(), name='report_detail'),
+    
+    path('fournisseurs/', views.listFournisseurView, name='fournisseurs'),
+    path("fournisseurs/delete-fournisseur/<int:id>", views.deleteFournisseurView, name="delete_fournisseur"),
+    path("fournisseurs/edit-fournisseur/<int:id>", views.editFournisseurView, name="edit_fournisseur"),
+    path("fournisseurs/create-fournisseur/", views.createFournisseurView, name="create_fournisseur"),
 
     path('report/<int:pk>/confirm/', views.confirmReport, name='confirm_report'),
     path('report/<int:pk>/refuse/', views.refuseReport, name='refuse_report'),

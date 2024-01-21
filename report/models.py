@@ -19,6 +19,12 @@ class Poste(models.Model):
     def __str__(self):
         return self.designation
 
+class Fournisseur(models.Model):
+    designation = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.designation
+    
 class Report(models.Model):
  
     STATE_REPORT = [
@@ -37,9 +43,11 @@ class Report(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     state = models.CharField(choices=STATE_REPORT, max_length=40)
-    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'Technicien'})
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'Technicien'}, related_name='creator')
     usine = models.ForeignKey(Usine, on_delete=models.SET_NULL, null=True)
     shift = models.ForeignKey(Horaire, null=True, on_delete=models.SET_NULL)
+    gp_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'Gestionnaire de production'}, related_name='gp_user')
+    fournisseur = models.ForeignKey(Fournisseur, null=True, on_delete=models.SET_NULL)
    
     n_report = models.IntegerField()
     date_prelev = models.DateTimeField()

@@ -118,6 +118,68 @@ def editPosteView(request, id):
     return render(request, 'poste_form.html', context)
 
 
+# Fournisseur
+@login_required(login_url='login')
+@admin_required
+def listFournisseurView(request):
+    fournisseurs = Fournisseur.objects.all().order_by('id')
+    filteredData = FournisseurFilter(request.GET, queryset=fournisseurs)
+    fournisseurs = filteredData.qs
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(fournisseurs, page_size)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    context = {
+        'page': page, 'filtredData': filteredData, 
+    }
+    return render(request, 'list_fournisseurs.html', context)
+
+@login_required(login_url='login')
+@admin_required
+def deleteFournisseurView(request, id):
+    fournisseur = Fournisseur.objects.get(id=id)
+    fournisseur.delete()
+    cache_param = str(uuid.uuid4())
+    url_path = reverse('fournisseurs')
+    redirect_url = f'{url_path}?cache={cache_param}'
+    return redirect(redirect_url)
+
+@login_required(login_url='login')
+@admin_required
+def createFournisseurView(request):
+    form = FournisseurForm()
+    if request.method == 'POST':
+        form = FournisseurForm(request.POST)
+        if form.is_valid():
+            form.save()
+            cache_param = str(uuid.uuid4())
+            url_path = reverse('fournisseurs')
+            redirect_url = f'{url_path}?cache={cache_param}'
+            return redirect(redirect_url)
+    context = {'form': form}
+    return render(request, 'fournisseur_form.html', context)
+
+@login_required(login_url='login')
+@admin_required
+def editFournisseurView(request, id):
+    fournisseur = Fournisseur.objects.get(id=id)
+    form = FournisseurForm(instance=fournisseur)
+    if request.method == 'POST':
+        form = FournisseurForm(request.POST, instance=fournisseur)
+        if form.is_valid():
+            form.save()
+            cache_param = str(uuid.uuid4())
+            url_path = reverse('fournisseurs')
+            page = request.GET.get('page', '1')
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
+            return redirect(redirect_url)
+    context = {'form': form, 'fournisseur': fournisseur}
+
+    return render(request, 'fournisseur_form.html', context)
+
 #STANDARD
 
 @login_required(login_url='login')
