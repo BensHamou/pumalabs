@@ -298,7 +298,7 @@ Rapport - {{ report.usine.designation }}-{{ report.n_report|stringformat:"04d" }
                             <td class="tableBold">Graphs</td>
                             {% for id in ids %}
                                 <td style="color: #2f75b5">
-                                    <p class="m-0 p-0" style="cursor: pointer;" id="image-card" onclick="getSamplePlot({{ id }})">Image</p>
+                                    <p class="m-0 p-0" style="cursor: pointer;" id="image-card" onclick="getSamplePlot({{ id }})"><i class="fas fa-chart-line"></i></p>
                                 </td>
                             {% endfor %}
                         </tr>

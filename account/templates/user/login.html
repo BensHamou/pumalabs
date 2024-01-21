@@ -5,7 +5,7 @@
 {% load static %} 
 {% block login %}
 <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-  <div class="card" style="background: rgba(14, 42, 91, 0.4); backdrop-filter: blur(30px); border-radius: 1rem; border-color: transparent; width: 90%">
+  <div class="card" style="background: rgba(69, 85, 138, 0.75); backdrop-filter: blur(30px); border-radius: 1rem; border-color: transparent; width: 90%">
     <div class="row">
       <div class="col-md-6 d-none d-md-block">
         <img src="{% static 'img/login_logo.png' %}" alt="login form" class="img-fluid" style="margin: 15% 0;" />
@@ -29,8 +29,7 @@
               </div>
             </div>
             <div class="d-flex align-items-center justify-content-center pt-1 mb-4">
-              <button class="btn btn-lg btn-block btn-success" style="background-color: #113574; border-color: transparent; 
-              box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" type="submit">Se connecter</button>
+              <button class="btn btn-lg btn-block btn-success customSaveButton" type="submit">Se connecter</button>
             </div>
             {% if form.errors %}
             <div class="alert alert-danger">
