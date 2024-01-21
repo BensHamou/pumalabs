@@ -76,14 +76,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "pumalabs.wsgi.application"
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'LabDBDev',
-        'USER': 'puma_prod',
-        'PASSWORD': 'puma_prod',
-        'HOST': '10.10.10.101',
-        'PORT': '5434',
-    }
+    #default': {
+    #   'ENGINE': 'django.db.backends.postgresql',
+    #   'NAME': 'LabDBDev',
+    #   'USER': 'puma_prod',
+    #   'PASSWORD': 'puma_prod',
+    #   'HOST': '10.10.10.101',
+    #   'PORT': '5434',
+    #
     #'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': 'PumaLab',
@@ -92,14 +92,14 @@ DATABASES = {
     #    'HOST': '10.10.10.53',
     #    'PORT': '5400',
     #}
-    #'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': os.environ.get('DB_NAME'),
-    #    'USER': os.environ.get('DB_USER'),
-    #    'PASSWORD': os.environ.get('DB_PASS'),
-    #    'HOST': os.environ.get('DB_HOST'),
-    #    'PORT': os.environ.get('DB_PORT'),
-    #}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    }
 }
 
 
@@ -140,7 +140,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'pumaprod.reports@gmail.com'
-EMAIL_HOST_PASSWORD = 'azefzqrsebojhusd'
+EMAIL_HOST_USER = 'pumalabs001@gmail.com'
+EMAIL_HOST_PASSWORD = 'bvliwpvyejfhfaln'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'pumaprod.reports@gmail.com'
+DEFAULT_FROM_EMAIL = 'pumalabs001@gmail.com'
