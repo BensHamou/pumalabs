@@ -64,7 +64,7 @@ class ReportFilter(FilterSet):
             if user.role == 'Technicien':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
                                         ['Confirmé', 'Validé', 'Refusé']]
-            elif user.role == 'Nouveau':
+            elif user.role in ['Nouveau', 'Gestionnaire de production']:
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
                                         ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']]
             self.filters['usine'].queryset = user.usines.all()

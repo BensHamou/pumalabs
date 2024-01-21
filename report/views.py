@@ -437,7 +437,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         elif role == 'Validateur':
             queryset = queryset.filter(Q(usine__in=usines) & Q(state__in=self.all_V))
                 
-        elif role == 'Nouveau':
+        elif role in ['Nouveau', 'Gestionnaire de production']:
             queryset = queryset.filter(Q(state__in=self.all_NV))
 
         elif role in ['Admin', 'Observateur']:
@@ -456,7 +456,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         context['page'] = page_obj
         context['state_totals'] = self.get_state_totals()
         context['all_total'] = len(context['reports'])
-        role_state = {'Technicien': self.all_T, 'Validateur': self.all_V, 'Admin': self.all_A, 'Observateur': self.all_A, 'Nouveau': self.all_NV}
+        role_state = {'Technicien': self.all_T, 'Validateur': self.all_V, 'Admin': self.all_A, 'Observateur': self.all_A, 'Nouveau': self.all_NV, 'Gestionnaire de production': self.all_NV}
         context['role_state'] = role_state
         return context
     
