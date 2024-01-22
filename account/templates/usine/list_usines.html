@@ -22,6 +22,7 @@
                 <th class="d-none d-md-table-cell">#</th>
                 <th>Désignation</th>
                 <th>Address</th>
+                <th>Préfixe</th>
                 <th>Horaires</th>
                 <th style="width: 6vh;">Actions</th>
                 </tr>
@@ -32,6 +33,7 @@
                     <td class="d-none d-md-table-cell">{{ usine.id }}</td>
                     <td>{{ usine.designation }}</td>
                     <td>{{ usine.address }}</td>
+                    <td>{{ usine.prefix_site }}</td>
                     <td class="d-none d-md-table-cell">
                         {% for horaire in usine.horaires.all %}
                             <button onclick="window.location='{% url 'edit_horaire' horaire.id %}?redirect_url=usines{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}'"  

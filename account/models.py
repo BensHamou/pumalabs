@@ -33,6 +33,7 @@ class Usine(models.Model):
     designation = models.CharField(max_length=100)
     horaires = models.ManyToManyField(Horaire, blank=True)
     address = models.CharField(max_length=250, null=True)
+    prefix_site = models.CharField(max_length=6, blank=True, null=True)
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

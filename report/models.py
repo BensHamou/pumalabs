@@ -8,6 +8,8 @@ class Poste(models.Model):
 
     designation = models.CharField(max_length=100)
     usine = models.ForeignKey(Usine, on_delete=models.SET_NULL, null=True)
+    header = models.CharField(max_length=100, null=True)
+    sequence = models.IntegerField(default=1, validators=[MinValueValidator(0)])
     active = models.BooleanField(default=True)
     
     def standards(self):
@@ -20,6 +22,12 @@ class Poste(models.Model):
         return self.designation
 
 class Fournisseur(models.Model):
+    designation = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.designation
+    
+class SableType(models.Model):
     designation = models.CharField(max_length=100)
     
     def __str__(self):
@@ -48,10 +56,10 @@ class Report(models.Model):
     shift = models.ForeignKey(Horaire, null=True, on_delete=models.SET_NULL)
     gp_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'role': 'Gestionnaire de production'}, related_name='gp_user')
     fournisseur = models.ForeignKey(Fournisseur, null=True, on_delete=models.SET_NULL)
+    type_sable = models.ForeignKey(SableType, null=True, on_delete=models.SET_NULL)
    
     n_report = models.IntegerField()
     date_prelev = models.DateTimeField()
-    type_sable = models.CharField(choices=SAND_TYPE, max_length=40)
     variateur = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     debit =  models.FloatField(default=0, validators=[MinValueValidator(0)])
     t_consigne =  models.FloatField(default=0)
@@ -128,4 +136,4 @@ class Validation(models.Model):
 
     def __str__(self):
         return "Validation - " + str(self.report.id) + " - " + str(self.date)
-    
+

@@ -36,10 +36,11 @@ class HoraireForm(ModelForm):
 class UsineForm(ModelForm):
     class Meta:
         model = Usine
-        fields = ['designation', 'horaires', 'address']
+        fields = ['designation', 'horaires', 'address', 'prefix_site']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Désignation')))
     address = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Address')))
+    prefix_site = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Préfixe')))
     horaires = forms.SelectMultiple(attrs={'class': 'form-select'})
 
 

@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}
-Postes
+Types de Sable
 {% endblock %}
 {% load static %} 
 {% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
@@ -25,7 +25,7 @@ Postes
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
             </div>
             <div class="col-md-1 mb-2">
-                <a href="{% url 'create_poste' %}" class="btn btn-secondary customSaveButton" style="height: 40px;">Nouveau</a>
+                <a href="{% url 'create_sable_type' %}" class="btn btn-secondary customSaveButton" style="height: 40px;">Nouveau</a>
             </div>
         </div>
     </form>  
@@ -36,25 +36,17 @@ Postes
                 <tr style="vertical-align: middle; color: #45558A;">
                 <th>#</th>
                 <th>Désignation</th>
-                <th>Header</th>
-                <th>Séquence</th>
-                <th>Usine</th>
-                <th>Active</th>
                 <th style="width: 5vw;">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for poste in page %}
+                {% for sable_type in page %}
                 <tr style="color: #0C2858;">
-                    <td>{{ poste.id }}</td>
-                    <td>{{ poste.designation }}</td>
-                    <td>{{ poste.header }}</td>
-                    <td>{{ poste.sequence }}</td>
-                    <td>{{ poste.usine }}</td>
-                    <td>{% if poste.active %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-x"></i>{% endif %}</td>
+                    <td>{{ sable_type.id }}</td>
+                    <td>{{ sable_type.designation }}</td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_poste' poste.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
-                        <button type="button" onclick="confirmPosteDel('{{poste.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_sable_type' sable_type.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
+                        <button type="button" onclick="confirmSableTypeDel('{{sable_type.id|escapejs}}', '{{sable_type.designation|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -69,12 +61,12 @@ Postes
     {% endif %}
 </div>
 <script>
-    const confirmPosteDel = (posteId, posteDes) => {
+    const confirmSableTypeDel = (sableTypeId, sableTypeDes) => {
         swal({ 
         title: `Confirmation de la suppression.`,   
-        text: `Etes-vous sûr que vous voulez supprimer ${posteDes}?`,   
+        text: `Etes-vous sûr que vous voulez supprimer ${sableTypeDes}?`,   
         type: "warning",
-        showCancelButton: true,
+        showCancelButton: true,   
         confirmButtonColor: "#DD6B55",   
         confirmButtonText: "Oui",   
         cancelButtonText: "Non",   
@@ -82,7 +74,7 @@ Postes
         closeOnCancel: true }, 
         function(isConfirm){   
             if (isConfirm){
-              window.location.href = "{% url 'delete_poste' 123456789 %}".replace(/123456789/, posteId);
+              window.location.href = "{% url 'delete_sable_type' 123456789 %}".replace(/123456789/, sableTypeId);
             }});
     }
 </script>

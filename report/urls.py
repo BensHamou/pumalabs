@@ -24,6 +24,11 @@ urlpatterns = [
     path("fournisseurs/delete-fournisseur/<int:id>", views.deleteFournisseurView, name="delete_fournisseur"),
     path("fournisseurs/edit-fournisseur/<int:id>", views.editFournisseurView, name="edit_fournisseur"),
     path("fournisseurs/create-fournisseur/", views.createFournisseurView, name="create_fournisseur"),
+    
+    path('type-sable/', views.listSableTypeView, name='sable_types'),
+    path("type-sable/delete-type-sable/<int:id>", views.deleteSableTypeView, name="delete_sable_type"),
+    path("type-sable/edit-type-sable/<int:id>", views.editSableTypeView, name="edit_sable_type"),
+    path("type-sable/create-type-sable/", views.createSableTypeView, name="create_sable_type"),
 
     path('report/<int:pk>/confirm/', views.confirmReport, name='confirm_report'),
     path('report/<int:pk>/refuse/', views.refuseReport, name='refuse_report'),

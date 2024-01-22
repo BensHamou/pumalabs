@@ -59,7 +59,8 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'account', 'templates', 'user'), os.path.join(BASE_DIR, 'account', 'templates', 'usine'),
                  os.path.join(BASE_DIR, 'account', 'templates', 'horaire'), os.path.join(BASE_DIR, 'account', 'templates', 'fragment'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'poste'), os.path.join(BASE_DIR, 'report', 'templates', 'report'), 
-                 os.path.join(BASE_DIR, 'report', 'templates', 'modal'), os.path.join(BASE_DIR, 'report', 'templates', 'fournisseur')
+                 os.path.join(BASE_DIR, 'report', 'templates', 'sable_type'), os.path.join(BASE_DIR, 'report', 'templates', 'fournisseur'),
+                 os.path.join(BASE_DIR, 'report', 'templates', 'modal')
                  ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -76,14 +77,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "pumalabs.wsgi.application"
 
 DATABASES = {
-    #default': {
+    #'default': {
     #   'ENGINE': 'django.db.backends.postgresql',
     #   'NAME': 'LabDBDev',
     #   'USER': 'puma_prod',
     #   'PASSWORD': 'puma_prod',
     #   'HOST': '10.10.10.101',
     #   'PORT': '5434',
-    #
+    #}
     #'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': 'PumaLab',

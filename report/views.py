@@ -25,6 +25,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.offline import plot
 import matplotlib
+from collections import Counter
 matplotlib.use('Agg')
 
 def check_creator(view_func):
@@ -40,12 +41,13 @@ def check_creator(view_func):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key,0)
+
 # POSTE
 
 @login_required(login_url='login')
 @admin_required
 def listPosteView(request):
-    postes = Poste.objects.all().order_by('id')
+    postes = Poste.objects.all().order_by('usine', 'sequence')
     filteredData = PosteFilter(request.GET, queryset=postes)
     postes = filteredData.qs
     page_size_param = request.GET.get('page_size')
@@ -118,7 +120,7 @@ def editPosteView(request, id):
     return render(request, 'poste_form.html', context)
 
 
-# Fournisseur
+# FOURNISSEUR
 @login_required(login_url='login')
 @admin_required
 def listFournisseurView(request):
@@ -180,7 +182,70 @@ def editFournisseurView(request, id):
 
     return render(request, 'fournisseur_form.html', context)
 
-#STANDARD
+# SABLE TYPE
+@login_required(login_url='login')
+@admin_required
+def listSableTypeView(request):
+    sable_types = SableType.objects.all().order_by('id')
+    filteredData = SableTypeFilter(request.GET, queryset=sable_types)
+    sable_types = filteredData.qs
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(sable_types, page_size)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    context = {
+        'page': page, 'filtredData': filteredData, 
+    }
+    return render(request, 'list_type_sables.html', context)
+
+@login_required(login_url='login')
+@admin_required
+def deleteSableTypeView(request, id):
+    sable_type = SableType.objects.get(id=id)
+    sable_type.delete()
+    cache_param = str(uuid.uuid4())
+    url_path = reverse('sable_types')
+    redirect_url = f'{url_path}?cache={cache_param}'
+    return redirect(redirect_url)
+
+@login_required(login_url='login')
+@admin_required
+def createSableTypeView(request):
+    form = SableTypeForm()
+    if request.method == 'POST':
+        form = SableTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            cache_param = str(uuid.uuid4())
+            url_path = reverse('sable_types')
+            redirect_url = f'{url_path}?cache={cache_param}'
+            return redirect(redirect_url)
+    context = {'form': form}
+    return render(request, 'sable_type_form.html', context)
+
+@login_required(login_url='login')
+@admin_required
+def editSableTypeView(request, id):
+    sable_type = SableType.objects.get(id=id)
+    form = SableType(instance=sable_type)
+    if request.method == 'POST':
+        form = SableTypeForm(request.POST, instance=sable_type)
+        if form.is_valid():
+            form.save()
+            cache_param = str(uuid.uuid4())
+            url_path = reverse('sable_types')
+            page = request.GET.get('page', '1')
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
+            return redirect(redirect_url)
+    context = {'form': form, 'sable_type': sable_type}
+
+    return render(request, 'sable_type_form.html', context)
+
+
+# STANDARD
 
 @login_required(login_url='login')
 @admin_required
@@ -398,14 +463,22 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
         sample_ids = [s.id for s in samples]
         standards = [s.poste.default_standard() for s in samples]
 
-        tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black' if st.min_2_5_value <= s.value_2_5 <= st.max_2_5_value else 'red'} for s, st in zip(samples, standards)]
-        tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black' if st.min_1_25_value <= s.value_1_25 <= st.max_1_25_value else 'red'} for s, st in zip(samples, standards)]
-        tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black' if st.min_0_6_value <= s.value_0_6 <= st.max_0_6_value else 'red'} for s, st in zip(samples, standards)]
-        tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black' if st.min_0_3_value <= s.value_0_3 <= st.max_0_3_value else 'red'} for s, st in zip(samples, standards)]
-        tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black' if st.min_0_value <= s.value_0 <= st.max_0_value else 'red'} for s, st in zip(samples, standards)]
+        headers_counter = Counter(s.poste.header for s in samples)
+        unique_headers_counts = [{'header': header, 'number': count} for header, count in headers_counter.items()]
+            
+        #tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black' if st.min_2_5_value <= s.value_2_5 <= st.max_2_5_value else 'red'} for s, st in zip(samples, standards)]
+        #tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black' if st.min_1_25_value <= s.value_1_25 <= st.max_1_25_value else 'red'} for s, st in zip(samples, standards)]
+        #tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black' if st.min_0_6_value <= s.value_0_6 <= st.max_0_6_value else 'red'} for s, st in zip(samples, standards)]
+        #tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black' if st.min_0_3_value <= s.value_0_3 <= st.max_0_3_value else 'red'} for s, st in zip(samples, standards)]
+        #tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black' if st.min_0_value <= s.value_0 <= st.max_0_value else 'red'} for s, st in zip(samples, standards)]
+        tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
+        tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
+        tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
+        tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
+        tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
         tami_h = [s.value_h for s in samples]
 
-        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h, 'ids': sample_ids })
+        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h, 'ids': sample_ids, 'headers': unique_headers_counts })
 
         return context
 
@@ -414,7 +487,7 @@ class ReportList(LoginRequiredMixin, FilterView):
     template_name = "list_reports.html"
     context_object_name = "reports"
     filterset_class = ReportFilter
-    ordering = ['-date_prelev']
+    ordering = ['-date_prelev', '-id']
         
     all_T = ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']
     all_A = ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']
@@ -505,7 +578,7 @@ def get_data_by_usine(request):
     
     usine = Usine.objects.get(pk=usine_id)
     
-    poste_list = [ poste.id for poste in Poste.objects.filter(usine_id=usine_id, active=True)]
+    poste_list = [ poste.id for poste in Poste.objects.filter(usine_id=usine_id, active=True).order_by('sequence')]
     horaires_list = [{'id': horaire.id, 'designation': horaire.__str__()} for horaire in usine.horaires.all()]
 
     return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list })
@@ -752,7 +825,9 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 <p>Un rapport a été créé par <b style="color: #45558a">''' + report.creator.fullname + '''</b> <b>(''' + report.usine.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
                 <ul>
                     <li><b>N° Rapport :</b> <b style="color: #45558a">''' + str(report.n_report) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
-                    <li><b>Type de Sable :</b> <b style="color: #45558a">''' + report.type_sable + '''</b></li>
+                    <li><b>Gestionnaire de production :</b> <b style="color: #45558a">''' + report.gp_user.fullname + '''</b></li>
+                    <li><b>Type de Sable :</b> <b style="color: #45558a">''' + report.type_sable.designation + '''</b></li>
+                    <li><b>Fournisseur :</b> <b style="color: #45558a">''' + report.fournisseur.designation + '''</b></li>
                     <li><b>Date de prélevement :</b> <b style="color: #45558a">''' + str(report.date_prelev) + '''</b></li>
                     <li><b>Horaire :</b> <b style="color: #45558a">''' + report.shift.__str__() + '''</b></li>
                     <li><b>Variateur (%) :</b> <b style="color: #45558a">''' + str(report.variateur) + '''</b></li>
@@ -768,20 +843,31 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 message += '''<p><b>Avec les résultats de laboratoire suivants des échantillons</b></p>
                 '''
 
+                # for sample in report.samples():
+                #     standard = sample.poste.default_standard()
+                #     color_25 = 'black' if standard.min_2_5_value <= sample.value_2_5 <= standard.max_2_5_value else 'red'
+                #     color_125 = 'black' if standard.min_1_25_value <= sample.value_1_25 <= standard.max_1_25_value else 'red'
+                #     color_06 = 'black' if standard.min_0_6_value <= sample.value_0_6 <= standard.max_0_6_value else 'red'
+                #     color_03 = 'black' if standard.min_0_3_value <= sample.value_0_3 <= standard.max_0_3_value else 'red'
+                #     color_0 = 'black' if standard.min_0_value <= sample.value_0 <= standard.max_0_value else 'red'
+                #     message += f'''<p><b style="color: #45558a">{sample.poste.designation}</b></p>
+                #         <ul>
+                #         <li><b>Tamis 2,5mm :</b> <b style="color: {color_25}">{sample.value_2_5}</b></li>
+                #         <li><b>Tamis 1,25mm :</b> <b style="color: {color_125}">{sample.value_1_25}</b></li>
+                #         <li><b>Tamis 0,6mm :</b> <b style="color: {color_06}">{sample.value_0_6}</b></li>
+                #         <li><b>Tamis 0,3mm :</b> <b style="color: {color_03}">{sample.value_0_3}</b></li>
+                #         <li><b>Tamis 0mm :</b> <b style="color: {color_0}">{sample.value_0}</b></li>
+                #         <li><b>Humidité :</b> <b style="color: #6da7d0">{sample.value_h}</b></li>
+                #         </ul>'''
+
                 for sample in report.samples():
-                    standard = sample.poste.default_standard()
-                    color_25 = 'black' if standard.min_2_5_value <= sample.value_2_5 <= standard.max_2_5_value else 'red'
-                    color_125 = 'black' if standard.min_1_25_value <= sample.value_1_25 <= standard.max_1_25_value else 'red'
-                    color_06 = 'black' if standard.min_0_6_value <= sample.value_0_6 <= standard.max_0_6_value else 'red'
-                    color_03 = 'black' if standard.min_0_3_value <= sample.value_0_3 <= standard.max_0_3_value else 'red'
-                    color_0 = 'black' if standard.min_0_value <= sample.value_0 <= standard.max_0_value else 'red'
                     message += f'''<p><b style="color: #45558a">{sample.poste.designation}</b></p>
                         <ul>
-                        <li><b>Tamis 2,5mm :</b> <b style="color: {color_25}">{sample.value_2_5}</b></li>
-                        <li><b>Tamis 1,25mm :</b> <b style="color: {color_125}">{sample.value_1_25}</b></li>
-                        <li><b>Tamis 0,6mm :</b> <b style="color: {color_06}">{sample.value_0_6}</b></li>
-                        <li><b>Tamis 0,3mm :</b> <b style="color: {color_03}">{sample.value_0_3}</b></li>
-                        <li><b>Tamis 0mm :</b> <b style="color: {color_0}">{sample.value_0}</b></li>
+                        <li><b>Tamis 2,5mm :</b> <b>{sample.value_2_5}</b></li>
+                        <li><b>Tamis 1,25mm :</b> <b>{sample.value_1_25}</b></li>
+                        <li><b>Tamis 0,6mm :</b> <b>{sample.value_0_6}</b></li>
+                        <li><b>Tamis 0,3mm :</b> <b>{sample.value_0_3}</b></li>
+                        <li><b>Tamis 0mm :</b> <b>{sample.value_0}</b></li>
                         <li><b>Humidité :</b> <b style="color: #6da7d0">{sample.value_h}</b></li>
                         </ul>'''
 
@@ -867,7 +953,7 @@ def generate_humidity_plot(samples):
 
     humidity_data = {'Humidity Values': [s.value_h for s in samples]}
 
-    df_humidity = pd.DataFrame(humidity_data, index=[s.poste.designation for s in samples])
+    df_humidity = pd.DataFrame(humidity_data, index=[s.poste.designation + ' (' + s.poste.header + ')' for s in samples])
     
     trace_humidity = go.Scatter(x=df_humidity.index, y=df_humidity['Humidity Values'], mode='lines+markers',
                               name='Valeurs d\'humidité', line=dict(color='#698ed0', shape='spline'))

@@ -63,6 +63,34 @@ Poste
                 </div>
             </div>
         </div>
+        <div class="row mb-4">
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="header">Header</label>
+                    {{ form.header }}
+                        {% if form.header.errors %}
+                            <div style="color: red;">
+                            {% for error in form.header.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="sequence">Séquence</label>
+                    {{ form.sequence }}
+                        {% if form.sequence.errors %}
+                            <div style="color: red;">
+                            {% for error in form.sequence.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
     <div class="float-end mt-4">
         <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
