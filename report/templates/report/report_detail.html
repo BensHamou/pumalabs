@@ -243,10 +243,10 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
     <div class="table-responsive" style="padding: 20px;">
         <table class="table table-hover" style="text-align: center;">
             <thead>
-                    <tr class="tableBold">
+                    <tr class="tableBold brd">
                         <th></th>
                         {% for header in headers %}
-                            <th colspan="{{ header.number }}">{{ header.header }}</th>
+                            <th colspan="{{ header.number }}" style="background-color: #ccc; border-left: 1px solid #f4f4f6; border-right: 1px solid #f4f4f6;">{{ header.header }}</th>
                         {% endfor %}
                     </tr>
             </thead>
@@ -322,7 +322,12 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
 <script charset="utf-8" src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script> 
 
 <style>
-    
+    .brd > th:nth-child(2){
+        border-radius:5px 0px 0px 0px;
+    }
+    .brd > th:last-child{
+        border-radius:0px 5px 0px 0px;
+    }
     @media only screen and (max-width: 767px) {
         td {
             display: block;
