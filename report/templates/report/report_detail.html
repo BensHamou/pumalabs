@@ -85,6 +85,14 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                     </div>
                 </div>
                 <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">N° Lot</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.usine.prefix_site }}{{ report.n_lot|stringformat:"04d" }}/{{ report.date_prelev|date:"y" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
                     <label class="col-sm-3 col-form-label" style="color: #0C2858;">Technicien</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-detail">
@@ -148,6 +156,14 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                         </div>
                     </div>
                 </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Observation</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {% if report.observation  %}{{ report.observation }}{% else %}/{% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -201,10 +217,28 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                 </div>
                 <div class="form-group row mb-1">
                     <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Variateur B1 (%)</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.variateur_b1 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
                     <label class="col-sm-3 col-form-label" style="color: #0C2858;">Fréquence (HZ) B2</label>
                     <div class="col-sm-6">
                         <div class="form-control-plaintext text-detail">
                             {{ report.freq_b2 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Variateur B2 (%)</label>
+                    <div class="col-sm-6">
+                        <div class="form-control-plaintext text-detail">
+                            {{ report.variateur_b2 }}
                         </div>
                     </div>
                 </div>
@@ -221,14 +255,6 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-detail">
                             {% if report.retour_0_6 %} Oui {% else %} Non {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Observation</label>
-                    <div class="col-sm-9">
-                        <div class="form-control-plaintext text-detail">
-                            {% if report.observation  %}{{ report.observation }}{% else %}/{% endif %}
                         </div>
                     </div>
                 </div>

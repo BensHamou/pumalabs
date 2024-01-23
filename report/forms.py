@@ -29,9 +29,10 @@ def getAttrs(type, placeholder='', other={}):
 class PosteForm(ModelForm):
     class Meta:
         model = Poste
-        fields = ['designation', 'usine', 'header', 'sequence', 'active']
+        fields = ['designation', 'code', 'usine', 'header', 'sequence', 'active']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))    
+    code = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Code')))    
     usine = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
     header = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Header')))    
     sequence = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Séquence')))
@@ -80,11 +81,12 @@ class StandardForm(ModelForm):
 class ReportForm(ModelForm):
     class Meta:
         model = Report
-        fields = ['n_report', 'usine', 'shift', 'gp_user', 'date_prelev', 'type_sable', 'fournisseur', 'variateur', 'debit', 't_consigne', 't_real', 
-                  'freq_b1', 'freq_b2', 'retour_1_3', 'retour_0_6', 'observation']
+        fields = ['n_report', 'n_lot', 'usine', 'shift', 'gp_user', 'date_prelev', 'type_sable', 'fournisseur', 'variateur', 'debit', 't_consigne', 't_real', 
+                  'freq_b1', 'variateur_b1', 'freq_b2', 'variateur_b2', 'retour_1_3', 'retour_0_6', 'observation']
                 
 
     n_report = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','N° Rapport')))
+    n_lot = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','N° Lot')))
     usine = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Usine")
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
     gp_user = forms.ModelChoiceField(queryset=User.objects.filter(role='Gestionnaire de production'), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Gestionnaire de production")
@@ -96,7 +98,9 @@ class ReportForm(ModelForm):
     t_consigne = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','T consigne (˚C)')))
     t_real = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','T réelle (˚C)')))
     freq_b1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Fréquence (HZ) B1')))
+    variateur_b1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Variateur B1 (%)')))
     freq_b2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Fréquence (HZ) B2')))
+    variateur_b2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Variateur B2 (%)')))
     retour_1_3 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'primary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
     retour_0_6 = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'primary', 'data-toggle':'switchbutton',  'data-onlabel': "Oui", 'data-offlabel': "Non"}))
     observation = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
@@ -115,6 +119,7 @@ class ReportForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         n_report = cleaned_data.get('n_report')
+        n_lot = cleaned_data.get('n_lot')
         usine = cleaned_data.get('usine')
         date_prelev = cleaned_data.get('date_prelev')
 
@@ -126,6 +131,15 @@ class ReportForm(ModelForm):
             if n_report and n_report != 0 and usine:
                 if existing_report:
                     self.add_error('n_report', 'Un rapport avec ce numéro existe déjà pour cette usine.')
+
+        if n_lot and n_lot != 0 and usine:
+            if self.instance.pk:
+                existing_report = Report.objects.filter(n_lot=n_lot, usine=usine, date_prelev__year=date_prelev.year).exclude( Q(id=self.instance.pk) | Q(state='Annulé')).exists()
+            else:
+                existing_report = Report.objects.filter(n_lot=n_lot, usine=usine, date_prelev__year=date_prelev.year).exclude(state='Annulé').exists()
+            if n_lot and n_lot != 0 and usine:
+                if existing_report:
+                    self.add_error('n_lot', 'Un rapport avec ce numéro de lot existe déjà pour cette usine.')
 
         return cleaned_data
 

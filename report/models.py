@@ -7,6 +7,7 @@ class Poste(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     designation = models.CharField(max_length=100)
+    code = models.CharField(max_length=100, null=True)
     usine = models.ForeignKey(Usine, on_delete=models.SET_NULL, null=True)
     header = models.CharField(max_length=100, null=True)
     sequence = models.IntegerField(default=1, validators=[MinValueValidator(0)])
@@ -42,11 +43,6 @@ class Report(models.Model):
         ('Refusé', 'Refusé'),
         ('Annulé', 'Annulé'),
     ]
- 
-    SAND_TYPE = [
-        ('Gris', 'Gris'),
-        ('Blanc', 'Blanc'),
-    ]
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -59,13 +55,16 @@ class Report(models.Model):
     type_sable = models.ForeignKey(SableType, null=True, on_delete=models.SET_NULL)
    
     n_report = models.IntegerField()
+    n_lot = models.IntegerField()
     date_prelev = models.DateTimeField()
     variateur = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     debit =  models.FloatField(default=0, validators=[MinValueValidator(0)])
     t_consigne =  models.FloatField(default=0)
     t_real =  models.FloatField(default=0)
     freq_b1 =  models.FloatField(default=0)
+    variateur_b1 =  models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     freq_b2 =  models.FloatField(default=0)
+    variateur_b2 =  models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     retour_1_3 = models.BooleanField(default=True)
     retour_0_6 = models.BooleanField(default=True)
     observation = models.TextField(null=True, blank=True)

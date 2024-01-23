@@ -16,15 +16,28 @@ Rapport
         <input type="hidden" value="1" id="isUpdating"/> 
     {% endif %}
     <div class="card card-body mb-5 custom-card">
-        <!-- N RAPPORT -->
+        <!-- N RAPPORT - N LOT -->
         <div class="row mb-4">
-            <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="n_report">N° Rapport</label>
                     {{ form.n_report }}
                     {% if form.n_report.errors %}
                         <div style="color: red;">
                         {% for error in form.n_report.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="n_report">N° Lot</label>
+                    {{ form.n_lot }}
+                    {% if form.n_lot.errors %}
+                        <div style="color: red;">
+                        {% for error in form.n_lot.errors %}
                             *{{ error }}
                         {% endfor %}
                         </div>
@@ -63,7 +76,7 @@ Rapport
             <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="gp_user">Gestionnaire de production</label>
-                    {{ form.gp_user }}
+                    {{ form.gp_user|attr:"id:gp-select" }}
                     {% if form.gp_user.errors %}
                         <div style="color: red;">
                         {% for error in form.gp_user.errors %}
@@ -180,7 +193,7 @@ Rapport
             </div>
         </div>
         <div class="row m-4">
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="col-lg-2 col-md-6 col-sm-6 mb-4">
                 <h5 class="card-title text-white-c">Broyeurs</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="freq_b1">Fréquence (HZ) B1</label>
@@ -194,7 +207,21 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <h5 class="card-title text-white-c">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="variateur_b1">Variateur B1 (%)</label>
+                    {{ form.variateur_b1 }}
+                    {% if form.variateur_b1.errors %}
+                        <div style="color: red;">
+                        {% for error in form.variateur_b1.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-6">
                 <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="freq_b2">Fréquence (HZ) B2</label>
@@ -208,7 +235,21 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <h5 class="card-title text-white-c">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="variateur_b2">Variateur B2 (%)</label>
+                    {{ form.variateur_b2 }}
+                    {% if form.variateur_b2.errors %}
+                        <div style="color: red;">
+                        {% for error in form.variateur_b2.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-6">
                 <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="retour_1_3" style="margin-right: 20px;">Retour > 1,3</label>
@@ -223,7 +264,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="col-lg-2 col-md-6 col-sm-6">
                 <h5 class="card-title text-white-c">&nbsp;</h5>
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="retour_0_6" style="margin-right: 20px;">Retour > 0,6</label>
@@ -436,7 +477,15 @@ Rapport
                 $.each(response.horaires_list, function(index, horaire) {
                     horaire_options += '<option value="' + horaire.id + '">' + horaire.designation + '</option>';
                 });
-                $('#shift-select').html(horaire_options);               
+                $('#shift-select').html(horaire_options);   
+
+                // GESTIONNAIRE DE STOCK
+                var gp_options = '';
+                gp_options += '<option value> Gestionnaire de production </option>';
+                $.each(response.gp_list, function(index, gp) {
+                    gp_options += '<option value="' + gp.id + '">' + gp.fullname + '</option>';
+                });
+                $('#gp-select').html(gp_options);               
 
               },
               error: function(xhr, errmsg, err) {

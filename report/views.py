@@ -228,7 +228,7 @@ def createSableTypeView(request):
 @admin_required
 def editSableTypeView(request, id):
     sable_type = SableType.objects.get(id=id)
-    form = SableType(instance=sable_type)
+    form = SableTypeForm(instance=sable_type)
     if request.method == 'POST':
         form = SableTypeForm(request.POST, instance=sable_type)
         if form.is_valid():
@@ -459,9 +459,9 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
         context = super().get_context_data(**kwargs)
         samples = self.object.samples()
 
-        postes = [s.poste.designation for s in samples]
+        postes = [s.poste.code for s in samples]
         sample_ids = [s.id for s in samples]
-        standards = [s.poste.default_standard() for s in samples]
+        # standards = [s.poste.default_standard() for s in samples]
 
         headers_counter = Counter(s.poste.header for s in samples)
         unique_headers_counts = [{'header': header, 'number': count} for header, count in headers_counter.items()]
@@ -471,11 +471,11 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
         #tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black' if st.min_0_6_value <= s.value_0_6 <= st.max_0_6_value else 'red'} for s, st in zip(samples, standards)]
         #tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black' if st.min_0_3_value <= s.value_0_3 <= st.max_0_3_value else 'red'} for s, st in zip(samples, standards)]
         #tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black' if st.min_0_value <= s.value_0 <= st.max_0_value else 'red'} for s, st in zip(samples, standards)]
-        tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
-        tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
-        tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
-        tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
-        tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black'} for s, st in zip(samples, standards)]
+        tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black'} for s in samples]
+        tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black'} for s in samples]
+        tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black'} for s in samples]
+        tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black'} for s in samples]
+        tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black'} for s in samples]
         tami_h = [s.value_h for s in samples]
 
         context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h, 'ids': sample_ids, 'headers': unique_headers_counts })
@@ -580,8 +580,9 @@ def get_data_by_usine(request):
     
     poste_list = [ poste.id for poste in Poste.objects.filter(usine_id=usine_id, active=True).order_by('sequence')]
     horaires_list = [{'id': horaire.id, 'designation': horaire.__str__()} for horaire in usine.horaires.all()]
+    gp_list = [ {'id': user.id, 'fullname': user.__str__()} for user in User.objects.filter(usines__in=usine_id, role='Gestionnaire de production')]
 
-    return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list })
+    return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list, 'gp_list': gp_list })
 
 @login_required(login_url='login')
 @check_creator

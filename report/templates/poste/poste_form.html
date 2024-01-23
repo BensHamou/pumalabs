@@ -22,7 +22,7 @@ Poste
   {% csrf_token %}
     <div class="card card-body custom-card">
         <div class="row mb-4">
-            <div class="col-lg-6 col-md-5 col-sm-12 mb-2">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="designation">Désignation</label>
                     {{ form.designation }}
@@ -35,7 +35,20 @@ Poste
                         {% endif %}
                 </div>
             </div>
-            <div class="col-lg-4 col-md-5 col-sm-12 mb-2">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="code">Code</label>
+                    {{ form.code }}
+                        {% if form.code.errors %}
+                            <div style="color: red;">
+                            {% for error in form.code.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="usine">Usine</label>
                     {{ form.usine }}
@@ -48,23 +61,9 @@ Poste
                         {% endif %}
                 </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6 mb-sm-2">
-                <div class="form-outline">
-                    <label class="form-label labelCustom" for="active">Active?</label>
-                    </br>
-                    {{ form.active }}
-                        {% if form.active.errors %}
-                            <div style="color: red;">
-                            {% for error in form.active.errors %}
-                                *{{ error }}
-                            {% endfor %}
-                            </div>
-                        {% endif %}
-                </div>
-            </div>
         </div>
         <div class="row mb-4">
-            <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="header">Header</label>
                     {{ form.header }}
@@ -77,13 +76,27 @@ Poste
                         {% endif %}
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="sequence">Séquence</label>
                     {{ form.sequence }}
                         {% if form.sequence.errors %}
                             <div style="color: red;">
                             {% for error in form.sequence.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-sm-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="active">Active?</label>
+                    </br>
+                    {{ form.active }}
+                        {% if form.active.errors %}
+                            <div style="color: red;">
+                            {% for error in form.active.errors %}
                                 *{{ error }}
                             {% endfor %}
                             </div>
