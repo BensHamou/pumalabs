@@ -55,7 +55,7 @@ class Report(models.Model):
     type_sable = models.ForeignKey(SableType, null=True, on_delete=models.SET_NULL)
    
     n_report = models.IntegerField()
-    n_lot = models.IntegerField()
+    n_lot = models.IntegerField(null=True)
     date_prelev = models.DateTimeField()
     variateur = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     debit =  models.FloatField(default=0, validators=[MinValueValidator(0)])
