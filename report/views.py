@@ -825,7 +825,8 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 <p>Bonjour l'équipe,</p>
                 <p>Un rapport a été créé par <b style="color: #45558a">''' + report.creator.fullname + '''</b> <b>(''' + report.usine.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
                 <ul>
-                    <li><b>N° Rapport :</b> <b style="color: #45558a">''' + str(report.n_report) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
+                    <li><b>N° Rapport :</b> <b style="color: #45558a">''' + report.usine.prefix_site + ''''''  + str(report.n_report).zfill(4) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
+                    <li><b>N° Lot :</b> <b style="color: #002060">''' + report.usine.prefix_site + '''''' + str(report.n_lot).zfill(4) + '''/''' + report.date_prelev.strftime("%y") + '''</b></li>
                     <li><b>Gestionnaire de production :</b> <b style="color: #45558a">''' + report.gp_user.fullname + '''</b></li>
                     <li><b>Type de Sable :</b> <b style="color: #45558a">''' + report.type_sable.designation + '''</b></li>
                     <li><b>Fournisseur :</b> <b style="color: #45558a">''' + report.fournisseur.designation + '''</b></li>
@@ -836,7 +837,9 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                     <li><b>T consigne (˚C) :</b> <b style="color: #45558a">''' + str(report.t_consigne) + '''</b></li>
                     <li><b>T réelle (˚C) :</b> <b style="color: #45558a">''' + str(report.t_real) + '''</b></li>
                     <li><b>Fréquence (HZ) B1 :</b> <b style="color: #45558a">''' + str(report.freq_b1) + '''</b></li>
+                    <li><b>Variateur B1 (%) :</b> <b style="color: #45558a">''' + str(report.variateur_b1) + '''</b></li>
                     <li><b>Fréquence (HZ) B2 :</b> <b style="color: #45558a">''' + str(report.freq_b2) + '''</b></li>
+                    <li><b>Variateur B2 (%) :</b> <b style="color: #45558a">''' + str(report.variateur_b2) + '''</b></li>
                     <li><b>Retour > 1,3 - </b> <b style="color: #45558a">''' + oui_13 + '''</b></li>
                     <li><b>Retour > 0,6 - </b> <b style="color: #45558a">''' + oui_06 + '''</b></li>'''
                 message += '''</ul>'''
@@ -861,18 +864,54 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 #         <li><b>Humidité :</b> <b style="color: #6da7d0">{sample.value_h}</b></li>
                 #         </ul>'''
 
-                for sample in report.samples():
-                    message += f'''<p><b style="color: #45558a">{sample.poste.designation}</b></p>
-                        <ul>
-                        <li><b>Tamis 2,5mm :</b> <b>{sample.value_2_5}</b></li>
-                        <li><b>Tamis 1,25mm :</b> <b>{sample.value_1_25}</b></li>
-                        <li><b>Tamis 0,6mm :</b> <b>{sample.value_0_6}</b></li>
-                        <li><b>Tamis 0,3mm :</b> <b>{sample.value_0_3}</b></li>
-                        <li><b>Tamis 0mm :</b> <b>{sample.value_0}</b></li>
-                        <li><b>Humidité :</b> <b style="color: #6da7d0">{sample.value_h}</b></li>
-                        </ul>'''
+                headers_counter = Counter(s.poste.header for s in report.samples())
+                unique_headers_counts = [{'header': header, 'number': count} for header, count in headers_counter.items()]
 
+                message += '<table style="border-collapse: collapse; text-align: center; width: 100%;">'
+                message += '<thead><tr><th></th>'
                 
+                for header in unique_headers_counts:
+                    message += f'''<th colspan="{ header['number'] }" style="background-color: #ccc; border-left: 1px solid #f4f4f6; border-right: 1px solid #f4f4f6;">{ header['header'] }</th>'''
+                
+                message += '</tr></thead><thead>'
+                message += '<thead style="border-bottom: 1px solid black;"><tr style="color: #45558a; border-bottom: 1px solid black;"><th>Fraction</th>'
+                for sample in report.samples():
+                    message += f'<th style="color: #45558a;">{sample.poste.code}</th>'
+                
+                message += '</tr></thead><tbody>'
+
+                message += '<tr><td><b>2.5mm</b></td>'
+                for sample in report.samples():
+                    message += f'<td>{sample.value_2_5}</td>'
+                message += '</tr>'
+
+                message += '<tr><td><b>1.25mm</b></td>'
+                for sample in report.samples():
+                    message += f'<td>{sample.value_1_25}</td>'
+                message += '</tr>'
+
+                message += '<tr><td><b>0.6mm</b></td>'
+                for sample in report.samples():
+                    message += f'<td>{sample.value_0_6}</td>'
+                message += '</tr>'
+                
+                message += '<tr><td><b>0.3mm</b></td>'
+                for sample in report.samples():
+                    message += f'<td>{sample.value_0_3}</td>'
+                message += '</tr>'
+                
+                message += '<tr><td><b>0mm</b></td>'
+                for sample in report.samples():
+                    message += f'<td>{sample.value_0}</td>'
+                message += '</tr>'
+                
+                message += '<tr><td><b>Humidité</b></td>'
+                for sample in report.samples():
+                    message += f'<td style="color: #6da7d0">{sample.value_h}</td>'
+                message += '</tr>'
+                
+                message += '</tbody></table>'
+
                 message += '''<p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
             else:
                 message += '''<p><b style="color: #45558a">''' + fullname + '''</b><b>(''' + report.usine.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
