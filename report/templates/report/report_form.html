@@ -249,8 +249,37 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-2 col-md-6 col-sm-6">
+            <div class="col-lg-2 col-md-6 col-sm-6 sidBelAbbes">
                 <h5 class="card-title text-white-c">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="freq_b3">Fréquence (HZ) B3</label>
+                    {{ form.freq_b3 }}
+                    {% if form.freq_b3.errors %}
+                        <div style="color: red;">
+                        {% for error in form.freq_b3.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-6 sidBelAbbes">
+                <h5 class="card-title text-white-c">&nbsp;</h5>
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="variateur_b3">Variateur B3 (%)</label>
+                    {{ form.variateur_b3 }}
+                    {% if form.variateur_b3.errors %}
+                        <div style="color: red;">
+                        {% for error in form.variateur_b3.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row m-4">
+            <div class="col-lg-4 col-md-12 col-sm-12 d-flex justify-content-center mt-2">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="retour_1_3" style="margin-right: 20px;">Retour > 1,3</label>
                 </br>
@@ -264,8 +293,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <h5 class="card-title text-white-c">&nbsp;</h5>
+            <div class="col-lg-4 col-md-12 col-sm-12 d-flex justify-content-center">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="retour_0_6" style="margin-right: 20px;">Retour > 0,6</label>
                 </br>
@@ -277,6 +305,20 @@ Rapport
                         {% endfor %}
                         </div>
                     {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 d-flex justify-content-center sidBelAbbes">
+                <div class="form-outline sidBelAbbes">
+                    <label class="form-label mt-2 labelCustom" for="retour_2_5" style="margin-right: 20px;">Retour > 2,5</label>
+                    </br>
+                        {{ form.retour_2_5 }}
+                        {% if form.retour_2_5.errors %}
+                            <div style="color: red;">
+                            {% for error in form.retour_2_5.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
                 </div>
             </div>
         </div>
@@ -444,6 +486,19 @@ Rapport
         $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
         onChangeUsine = $('#usine-select').change(function() {
             var usine_id = $(this).val();
+            if (usine_id) {
+                // check if the usine selected = 'Sidi Bel Abbes'
+                if (usine_id == 1) {
+                    $('.sidBelAbbes').each(function() {
+                        $(this).show();
+                        console.log($(this));
+                    });
+                } else {
+                    $('.sidBelAbbes').each(function() {
+                        $(this).hide();
+                    });
+                }
+            }
             $.ajax({ url: '{% url 'get_data_by_usine' %}', type: 'GET', data: {'usine_id': usine_id, 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),},
               success: function(response) {
                 // CLEAR SAMPLES
@@ -453,6 +508,13 @@ Rapport
                     var checkboxElement = rows[i].querySelector('input[type="checkbox"]');
                     checkboxElement.checked = true;
                     rows[i].style.display = 'none';
+                    var formElements = rows[i].getElementsByTagName('input');
+                    for (var j = 0; j < formElements.length; j++) {
+                        // Check if the form element is required and remove the attribute
+                        if (formElements[j].hasAttribute('required')) {
+                            formElements[j].removeAttribute('required');
+                        }
+                    }
                 }
 
                 // SAMPLES
@@ -477,7 +539,7 @@ Rapport
                 $.each(response.horaires_list, function(index, horaire) {
                     horaire_options += '<option value="' + horaire.id + '">' + horaire.designation + '</option>';
                 });
-                $('#shift-select').html(horaire_options);   
+                $('#id_shift').html(horaire_options);   
 
                 // GESTIONNAIRE DE STOCK
                 var gp_options = '';

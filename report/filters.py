@@ -6,15 +6,17 @@ from .models import *
 from django.db.models import Q
 
 class PosteFilter(FilterSet):
+    other = {'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;'}
 
     search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher Poste..')))
+    usine = ModelChoiceFilter(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select', other=other)), empty_label="Usine")
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(Q(designation__icontains=value) | Q(code__icontains=value) | Q(header__icontains=value)).distinct()
 
     class Meta:
         model = Poste
-        fields = ['search']
+        fields = ['search', 'usine']
 
 class FournisseurFilter(FilterSet):
 
@@ -40,7 +42,6 @@ class SableTypeFilter(FilterSet):
 class ReportFilter(FilterSet):
 
     other = {'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;'}
-    other_line = {'style': 'background-color: rgba(202, 207, 215, 0.5); box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;'}
     search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
     state = ChoiceFilter(choices=Report.STATE_REPORT, widget=forms.Select(attrs=getAttrs('select')), empty_label="État")
 

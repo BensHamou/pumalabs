@@ -242,6 +242,26 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                         </div>
                     </div>
                 </div>
+                {% if report.usine.designation == 'Sidi Bel Abbes' %}
+                    <div class="form-group row mb-1">
+                        <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                        <label class="col-sm-3 col-form-label" style="color: #0C2858;">Fréquence (HZ) B3</label>
+                        <div class="col-sm-6">
+                            <div class="form-control-plaintext text-detail">
+                                {{ report.freq_b3 }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-1">
+                        <label class="col-sm-3 col-form-label" style="color: #0C2858;">&nbsp;</label>
+                        <label class="col-sm-3 col-form-label" style="color: #0C2858;">Variateur B3 (%)</label>
+                        <div class="col-sm-6">
+                            <div class="form-control-plaintext text-detail">
+                                {{ report.variateur_b3 }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="form-group row mb-1">
                     <label class="col-sm-3 col-form-label" style="color: #0C2858;">Retour > 1,3</label>
                     <div class="col-sm-9">
@@ -258,6 +278,16 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                         </div>
                     </div>
                 </div>
+                {% if report.usine.designation == 'Sidi Bel Abbes' %}
+                    <div class="form-group row mb-1">
+                        <label class="col-sm-3 col-form-label" style="color: #0C2858;">Retour > 2,5</label>
+                        <div class="col-sm-9">
+                            <div class="form-control-plaintext text-detail">
+                                {% if report.retour_2_5 %} Oui {% else %} Non {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -51,7 +51,7 @@
                     </td>
                     <td style="vertical-align: middle;">
                         <button type="button" onclick="window.location='{% url 'edit_usine' usine.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
-                        <button type="button" onclick="confirmUsineDel('{{usine.id|escapejs}}', '{{usine|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" disabled onclick="confirmUsineDel('{{usine.id|escapejs}}', '{{usine|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}

@@ -17,6 +17,9 @@ Postes
                     {{ filtredData.form.search }}
                 </div>
             </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filtredData.form.usine }}
+            </div>
             <div class="col-md-1 col-sm-6 mb-2">
                 <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" 
                 style="background-color: #dde0e6; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;" name="page_size">
@@ -56,7 +59,7 @@ Postes
                     <td>{% if poste.active %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-x"></i>{% endif %}</td>
                     <td style="vertical-align: middle;">
                         <button type="button" onclick="window.location='{% url 'edit_poste' poste.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: #45558A;"></i></button>
-                        <button type="button" onclick="confirmPosteDel('{{poste.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" disabled onclick="confirmPosteDel('{{poste.id|escapejs}}', '{{poste.designation|escapejs}}')" class="btn" style="color: #45558A; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}

@@ -459,11 +459,11 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
         context = super().get_context_data(**kwargs)
         samples = self.object.samples()
 
-        postes = [s.poste.code for s in samples]
+        postes = [s.poste.code if s.poste else 'REMOVED' for s in samples]
         sample_ids = [s.id for s in samples]
         # standards = [s.poste.default_standard() for s in samples]
 
-        headers_counter = Counter(s.poste.header for s in samples)
+        headers_counter = Counter(s.poste.header if s.poste else 'REMOVED' for s in samples)
         unique_headers_counts = [{'header': header, 'number': count} for header, count in headers_counter.items()]
             
         #tami_25 = [{'value': s.value_2_5, 'id': s.id, 'color': 'black' if st.min_2_5_value <= s.value_2_5 <= st.max_2_5_value else 'red'} for s, st in zip(samples, standards)]
@@ -580,6 +580,7 @@ def get_data_by_usine(request):
     
     poste_list = [ poste.id for poste in Poste.objects.filter(usine_id=usine_id, active=True).order_by('sequence')]
     horaires_list = [{'id': horaire.id, 'designation': horaire.__str__()} for horaire in usine.horaires.all()]
+    print(usine.horaires.all())
     gp_list = [ {'id': user.id, 'fullname': user.__str__()} for user in User.objects.filter(usines__in=usine_id, role='Gestionnaire de production')]
 
     return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list, 'gp_list': gp_list })
@@ -820,7 +821,8 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
     if action == 'confirm':
             if old_state:
                 oui_13 = 'Oui' if report.retour_1_3 else 'Non'
-                oui_06 = 'Oui' if report.retour_1_3 else 'Non'
+                oui_06 = 'Oui' if report.retour_0_6 else 'Non'
+                oui_25 = 'Oui' if report.retour_2_5 else 'Non'
                 message = '''
                 <p>Bonjour l'équipe,</p>
                 <p>Un rapport a été créé par <b style="color: #45558a">''' + report.creator.fullname + '''</b> <b>(''' + report.usine.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
@@ -839,9 +841,15 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                     <li><b>Fréquence (HZ) B1 :</b> <b style="color: #45558a">''' + str(report.freq_b1) + '''</b></li>
                     <li><b>Variateur B1 (%) :</b> <b style="color: #45558a">''' + str(report.variateur_b1) + '''</b></li>
                     <li><b>Fréquence (HZ) B2 :</b> <b style="color: #45558a">''' + str(report.freq_b2) + '''</b></li>
-                    <li><b>Variateur B2 (%) :</b> <b style="color: #45558a">''' + str(report.variateur_b2) + '''</b></li>
-                    <li><b>Retour > 1,3 - </b> <b style="color: #45558a">''' + oui_13 + '''</b></li>
+                    <li><b>Variateur B2 (%) :</b> <b style="color: #45558a">''' + str(report.variateur_b2) + '''</b></li>'''
+                if report.usine.designation == 'Sidi Bel Abbes':
+                    message += '''<li><b>Fréquence (HZ) B3 :</b> <b style="color: #45558a">''' + str(report.freq_b3) + '''</b></li>
+                    <li><b>Variateur B3 (%) :</b> <b style="color: #45558a">''' + str(report.variateur_b3) + '''</b></li>
+                    <li><b>Retour > 2,5 - </b> <b style="color: #45558a">''' + oui_25 + '''</b></li>'''
+                
+                message += '''<li><b>Retour > 1,3 - </b> <b style="color: #45558a">''' + oui_13 + '''</b></li>
                     <li><b>Retour > 0,6 - </b> <b style="color: #45558a">''' + oui_06 + '''</b></li>'''
+
                 message += '''</ul>'''
 
                 message += '''<p><b>Avec les résultats de laboratoire suivants des échantillons</b></p>
