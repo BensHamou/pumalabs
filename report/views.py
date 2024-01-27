@@ -816,7 +816,7 @@ def refuseReport(request, pk):
 def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
 
     subject = 'Rapport de laboratoire ' + '[' + str(report.id) + ']' + ' - '  + report.usine.__str__()
-    address = 'http://10.10.10.53:8088/report/'
+    address = 'http://mylab.grupopuma-dz.com/report/'
     message = ''''''
     if action == 'confirm':
             if old_state:
@@ -832,7 +832,7 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                     <li><b>Gestionnaire de production :</b> <b style="color: #45558a">''' + report.gp_user.fullname + '''</b></li>
                     <li><b>Type de Sable :</b> <b style="color: #45558a">''' + report.type_sable.designation + '''</b></li>
                     <li><b>Fournisseur :</b> <b style="color: #45558a">''' + report.fournisseur.designation + '''</b></li>
-                    <li><b>Date de prélevement :</b> <b style="color: #45558a">''' + str(report.date_prelev) + '''</b></li>
+                    <li><b>Date de prélevement :</b> <b style="color: #45558a">''' + report.date_prelev.strftime("%Y-%m-%d %H:%M:%S") + '''</b></li>
                     <li><b>Horaire :</b> <b style="color: #45558a">''' + report.shift.__str__() + '''</b></li>
                     <li><b>Variateur (%) :</b> <b style="color: #45558a">''' + str(report.variateur) + '''</b></li>
                     <li><b>Débit (t/h) :</b> <b style="color: #45558a">''' + str(report.debit) + '''</b></li>
