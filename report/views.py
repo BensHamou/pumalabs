@@ -850,7 +850,7 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 message += '''<li><b>Retour > 1,3 - </b> <b style="color: #45558a">''' + oui_13 + '''</b></li>
                     <li><b>Retour > 0,6 - </b> <b style="color: #45558a">''' + oui_06 + '''</b></li>'''
 
-                message += '''</ul>'''
+                message += '''<li><b>Observation :</b> <b style="color: #45558a">''' + str(report.observation) + '''</b></li></ul>'''
 
                 message += '''<p><b>Avec les résultats de laboratoire suivants des échantillons</b></p>
                 '''
