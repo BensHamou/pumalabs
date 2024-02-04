@@ -26,6 +26,7 @@ import plotly.graph_objects as go
 from plotly.offline import plot
 import matplotlib
 from collections import Counter
+from datetime import timedelta
 matplotlib.use('Agg')
 
 def check_creator(view_func):
@@ -487,7 +488,7 @@ class ReportList(LoginRequiredMixin, FilterView):
     template_name = "list_reports.html"
     context_object_name = "reports"
     filterset_class = ReportFilter
-    ordering = ['-date_prelev', '-id']
+    ordering = ['-date_created', '-date_prelev']
         
     all_T = ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']
     all_A = ['Brouillon', 'Confirmé', 'Validé', 'Refusé', 'Annulé']
@@ -819,6 +820,8 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
     address = 'http://mylab.grupopuma-dz.com/report/'
     message = ''''''
     if action == 'confirm':
+            new_date_prelev = report.date_prelev + timedelta(hours=1)
+            formatted_date = new_date_prelev.strftime("%Y-%m-%d %H:%M:%S")
             if old_state:
                 oui_13 = 'Oui' if report.retour_1_3 else 'Non'
                 oui_06 = 'Oui' if report.retour_0_6 else 'Non'
@@ -832,7 +835,7 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                     <li><b>Gestionnaire de production :</b> <b style="color: #45558a">''' + report.gp_user.fullname + '''</b></li>
                     <li><b>Type de Sable :</b> <b style="color: #45558a">''' + report.type_sable.designation + '''</b></li>
                     <li><b>Fournisseur :</b> <b style="color: #45558a">''' + report.fournisseur.designation + '''</b></li>
-                    <li><b>Date de prélevement :</b> <b style="color: #45558a">''' + report.date_prelev.strftime("%Y-%m-%d %H:%M:%S") + '''</b></li>
+                    <li><b>Date de prélevement :</b> <b style="color: #45558a">''' + formatted_date + '''</b></li>
                     <li><b>Horaire :</b> <b style="color: #45558a">''' + report.shift.__str__() + '''</b></li>
                     <li><b>Variateur (%) :</b> <b style="color: #45558a">''' + str(report.variateur) + '''</b></li>
                     <li><b>Débit (t/h) :</b> <b style="color: #45558a">''' + str(report.debit) + '''</b></li>

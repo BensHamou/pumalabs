@@ -122,7 +122,6 @@ class ReportForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         n_report = cleaned_data.get('n_report')
-        n_lot = cleaned_data.get('n_lot')
         usine = cleaned_data.get('usine')
         date_prelev = cleaned_data.get('date_prelev')
 
@@ -134,15 +133,6 @@ class ReportForm(ModelForm):
             if n_report and n_report != 0 and usine:
                 if existing_report:
                     self.add_error('n_report', 'Un rapport avec ce numéro existe déjà pour cette usine.')
-
-        if n_lot and n_lot != 0 and usine:
-            if self.instance.pk:
-                existing_report = Report.objects.filter(n_lot=n_lot, usine=usine, date_prelev__year=date_prelev.year).exclude( Q(id=self.instance.pk) | Q(state='Annulé')).exists()
-            else:
-                existing_report = Report.objects.filter(n_lot=n_lot, usine=usine, date_prelev__year=date_prelev.year).exclude(state='Annulé').exists()
-            if n_lot and n_lot != 0 and usine:
-                if existing_report:
-                    self.add_error('n_lot', 'Un rapport avec ce numéro de lot existe déjà pour cette usine.')
 
         return cleaned_data
 
