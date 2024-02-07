@@ -581,7 +581,6 @@ def get_data_by_usine(request):
     
     poste_list = [ poste.id for poste in Poste.objects.filter(usine_id=usine_id, active=True).order_by('sequence')]
     horaires_list = [{'id': horaire.id, 'designation': horaire.__str__()} for horaire in usine.horaires.all()]
-    print(usine.horaires.all())
     gp_list = [ {'id': user.id, 'fullname': user.__str__()} for user in User.objects.filter(usines__in=usine_id, role='Gestionnaire de production')]
 
     return JsonResponse({ 'postes': poste_list, 'horaires_list': horaires_list, 'gp_list': gp_list })
