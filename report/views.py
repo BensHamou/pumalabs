@@ -738,15 +738,15 @@ def validateReport(request, pk):
     report.save()
     validation.save()
 
-    if report.usine.address:
-        recipient_list = report.usine.address.split('&')
-    else:
-        recipient_list = ['benshamou@gmail.com']
+    # if report.usine.address:
+    #     recipient_list = report.usine.address.split('&')
+    # else:
+    #     recipient_list = ['benshamou@gmail.com']
     
     #recipient_list = ['benshamou@gmail.com']
 
-    subject, formatHtml = getMail('validate', report, request.user.fullname)
-    send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
+    # subject, formatHtml = getMail('validate', report, request.user.fullname)
+    # send_mail(subject, "", 'Puma Labs', recipient_list, html_message=formatHtml)
 
     messages.success(request, 'Rapport validé avec succès' )
     url_path = reverse('report_detail', args=[report.id])
