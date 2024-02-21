@@ -31,12 +31,14 @@
             <div class="d-flex align-items-center justify-content-center pt-1 mb-4">
               <button class="btn btn-lg btn-block customSaveButton" type="submit" style="color: white">Se connecter</button>
             </div>
-            {% if messages %}
+            {% if messages|is_login %}
               <div class="alert alert-danger">
                   <strong style="font-weight: normal;">Erreur:</strong>
                   <ul>
                     {% for message in messages %}
-                      {{ message }}
+                      {% if message|startwith:'LOGIN : ' %}
+                        <li>{{ message|loginerror:'LOGIN : ' }}</li>
+                      {% endif %}
                     {% endfor %}
                   </ul>
               </div>
