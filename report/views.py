@@ -493,10 +493,12 @@ class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
         tami_125 = [{'value': s.value_1_25, 'id': s.id, 'color': 'black'} for s in samples]
         tami_06 = [{'value': s.value_0_6, 'id': s.id, 'color': 'black'} for s in samples]
         tami_03 = [{'value': s.value_0_3, 'id': s.id, 'color': 'black'} for s in samples]
-        tami_063 = [{'value': s.value_0, 'id': s.id, 'color': 'black'} for s in samples]
+        tami_0063 = [{'value': s.value_0_06 or '-', 'id': s.id, 'color': 'black'} for s in samples]
+        tami_0 = [{'value': s.value_0, 'id': s.id, 'color': 'black'} for s in samples]
         tami_h = [s.value_h for s in samples]
 
-        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 'tami_063': tami_063, 'tami_h': tami_h, 'ids': sample_ids, 'headers': unique_headers_counts })
+        context.update({ 'postes': postes, 'tami_25': tami_25, 'tami_125': tami_125, 'tami_06': tami_06, 'tami_03': tami_03, 
+                        'tami_0063': tami_0063, 'tami_0': tami_0, 'tami_h': tami_h, 'ids': sample_ids, 'headers': unique_headers_counts })
 
         return context
 
@@ -928,6 +930,15 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
                 message += '<tr><td><b>0.3mm</b></td>'
                 for sample in report.samples():
                     message += f'<td>{sample.value_0_3}</td>'
+                message += '</tr>'
+                
+                message += '<tr><td><b>0.063mm</b></td>'
+                for sample in report.samples():
+                    if sample.value_0_06:
+                       value = sample.value_0_06
+                    else:
+                        value = '-'
+                    message += f'<td>{value}</td>'
                 message += '</tr>'
                 
                 message += '<tr><td><b>0mm</b></td>'

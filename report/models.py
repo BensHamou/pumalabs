@@ -91,6 +91,7 @@ class Sample(models.Model):
     value_1_25 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     value_0_6 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     value_0_3 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    value_0_06 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], null=True, blank=True)
     value_0 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     value_h = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
@@ -107,11 +108,13 @@ class Standard(models.Model):
     max_1_25_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     max_0_6_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     max_0_3_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    max_0_06_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], null=True, blank=True)
     max_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     min_2_5_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     min_1_25_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     min_0_6_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     min_0_3_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    min_0_06_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], null=True, blank=True)
     min_0_value = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):

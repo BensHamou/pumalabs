@@ -346,9 +346,15 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                         {% endfor %}
                     </tr>
                     <tr>
+                        <td class="tableBold">0,063mm</td>
+                        {% for t in tami_0063 %}
+                            <td id="tami_0063-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
                         <td class="tableBold">0 (<63µm)</td>
-                        {% for t in tami_063 %}
-                            <td id="tami_063-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
+                        {% for t in tami_0 %}
+                            <td id="tami_0-{{ t.id }}" style="color: {{ t.color }}">{{ t.value }}</td>
                         {% endfor %}
                     </tr>
                     <tr {% if report.state == 'Validé' %} style="cursor: pointer;" id="image-card" onclick="getHumidityPlot({{ report.id }})" {% endif %}>

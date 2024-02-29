@@ -55,8 +55,8 @@ class SableTypeForm(ModelForm):
 class StandardForm(ModelForm):
     class Meta:
         model = Standard
-        fields = ['poste', 'active', 'max_2_5_value', 'max_1_25_value', 'max_0_6_value', 'max_0_3_value', 'max_0_value', 'min_2_5_value', 'min_1_25_value', 
-                  'min_0_6_value', 'min_0_3_value', 'min_0_value']
+        fields = ['poste', 'active', 'max_2_5_value', 'max_1_25_value', 'max_0_6_value', 'max_0_3_value', 'max_0_06_value', 'max_0_value', 
+                  'min_2_5_value', 'min_1_25_value', 'min_0_6_value', 'min_0_3_value', 'min_0_06_value', 'min_0_value']
 
     poste = forms.ModelChoiceField(queryset=Poste.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Poste")
     active = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton'}))
@@ -64,11 +64,13 @@ class StandardForm(ModelForm):
     max_1_25_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 1,25mm')))
     max_0_6_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0,6mm')))
     max_0_3_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0,3mm')))
+    max_0_06_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0,063mm')))
     max_0_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Max 0 (<63µm)')))
     min_2_5_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 2,5mm')))
     min_1_25_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 1,25mm')))
     min_0_6_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,6mm')))
     min_0_3_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,3mm')))
+    min_0_06_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0,063mm')))
     min_0_value = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Min 0 (<63µm)')))
         
     def __init__(self, *args, **kwargs):
@@ -140,7 +142,7 @@ class ReportForm(ModelForm):
 class SampleForm(ModelForm):
     class Meta:
         model = Sample
-        fields = ['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0', 'value_h']
+        fields = ['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0_06', 'value_0', 'value_h']
 
     min_max = {'max': '100', 'min': '0', 'step': '0.001'}
     
@@ -149,6 +151,7 @@ class SampleForm(ModelForm):
     value_1_25 = forms.FloatField(label = '1,25mm', widget=forms.NumberInput(attrs= getAttrs('control','1,25mm', min_max)), required=True)
     value_0_6 = forms.FloatField(label = '0,6mm', widget=forms.NumberInput(attrs= getAttrs('control','0,6mm', min_max)), required=True)
     value_0_3 = forms.FloatField(label = '0,3mm', widget=forms.NumberInput(attrs= getAttrs('control','0,3mm', min_max)), required=True)
+    value_0_06 = forms.FloatField(label = '0,063mm', widget=forms.NumberInput(attrs= getAttrs('control','0,063mm', min_max)), required=False)
     value_0 = forms.FloatField(label = '0 (<63µm)', widget=forms.NumberInput(attrs= getAttrs('control','0 (<63µm)', min_max)), required=True)
     value_h = forms.FloatField(label = 'Humidité (%)', widget=forms.NumberInput(attrs= getAttrs('control','Humidité (%)', min_max)), required=True)
         
@@ -160,4 +163,4 @@ class SampleForm(ModelForm):
         self.fields['poste'].widget.attrs['disabled'] = True
 
 
-SamplesFormSet = inlineformset_factory(Report, Sample, form=SampleForm, fields=['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0', 'value_h'], extra=0)
+SamplesFormSet = inlineformset_factory(Report, Sample, form=SampleForm, fields=['poste', 'value_2_5', 'value_1_25', 'value_0_6', 'value_0_3', 'value_0_06', 'value_0', 'value_h'], extra=0)

@@ -46,8 +46,6 @@ Standard
             </div>
         </div>
         <div class="row mb-4">
-            <div class="col-lg-1 col-md-1 col-sm-2">
-            </div>
             <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="max_2_5_value">Max 2,5mm</label>
@@ -102,6 +100,19 @@ Standard
             </div>
             <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
                 <div class="form-outline">
+                    <label class="form-label labelCustom" for="max_0_06_value">Max 0,063mm</label>
+                    {{ form.max_0_06_value }}
+                        {% if form.max_0_06_value.errors %}
+                            <div style="color: red;">
+                            {% for error in form.max_0_06_value.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
                     <label class="form-label labelCustom" for="max_0_value">Max 0 (&lt;63µm)</label>
                     {{ form.max_0_value }}
                         {% if form.max_0_value.errors %}
@@ -115,8 +126,6 @@ Standard
             </div>
         </div>
         <div class="row mb-4">
-            <div class="col-lg-1 col-md-0 col-sm-0">
-            </div>
             <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="min_2_5_value">Min 2,5mm</label>
@@ -163,6 +172,19 @@ Standard
                         {% if form.min_0_3_value.errors %}
                             <div style="color: red;">
                             {% for error in form.min_0_3_value.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="min_0_06_value">Min 0,06mm</label>
+                    {{ form.min_0_06_value }}
+                        {% if form.min_0_06_value.errors %}
+                            <div style="color: red;">
+                            {% for error in form.min_0_06_value.errors %}
                                 *{{ error }}
                             {% endfor %}
                             </div>

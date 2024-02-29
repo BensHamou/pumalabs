@@ -381,6 +381,7 @@ Rapport
                     <th class="d-none d-md-table-cell text-white-c text-center">1,25mm</th>
                     <th class="d-none d-md-table-cell text-white-c text-center">0,6mm</th>
                     <th class="d-none d-md-table-cell text-white-c text-center">0,3mm</th>
+                    <th class="d-none d-md-table-cell text-white-c text-center">0,063mm</th>
                     <th class="d-none d-md-table-cell text-white-c text-center">0 (<63µm)</th>
                     <th class="d-none d-md-table-cell text-white-c text-center">Humidité (%)</th>
                 </thead>
@@ -395,12 +396,10 @@ Rapport
                             {% for field in formss.visible_fields %}
                                 {% if not field.label == 'Supprimer' %}
                                     <td {% if field.label == 'Poste' %} style="width: 20vw;" {% endif %}>
-                                        
                                         <div>
                                             <p class="tdLabel">{{ field.label }}</p>
                                             <p class="valueLead mb-0">{{ field }}</p>
                                         </div>
-                                        
                                         {% for error in field.errors %}
                                             <span style="color: red">*{{ error }}</span>
                                         {% endfor %}
@@ -477,6 +476,15 @@ Rapport
     .select2-container--bootstrap-5 .select2-selection {
         background-color: #e0e5f5 !important;
     }
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 
 <script>
@@ -491,7 +499,6 @@ Rapport
                 if (usine_id == 1) {
                     $('.sidBelAbbes').each(function() {
                         $(this).show();
-                        console.log($(this));
                     });
                 } else {
                     $('.sidBelAbbes').each(function() {
@@ -528,7 +535,13 @@ Rapport
                     const selectPoste = document.getElementById(`id_samples-${countSamples}-poste`);
                     selectPoste.value = response.postes[i];
                     document.querySelectorAll(`[id^="id_samples-${countSamples}-value_"]`).forEach(element => {
-                        element.required = true;
+                        if (element.id.includes('value_0_06')) {
+                            element.required = false;
+                        }
+                        else {
+                            element.required = true;
+                        }
+                        
                     });
                     countSamples += 1;
                 }
@@ -557,7 +570,6 @@ Rapport
         });
         shift = $('#id_shift').val();
         formInstance = $('#isUpdating').val();
-        console.log(formInstance);
         if(!formInstance && !shift) {
             onChangeUsine.trigger('change');
         }

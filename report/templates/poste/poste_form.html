@@ -115,7 +115,11 @@ Poste
 </br>
 
 {% if poste %}
-<h4 class="mb-4 retourC">Standards liés à ce poste <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_standard' poste.id %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span></h4>
+<h4 class="mb-4 retourC">Standards liés à ce poste <span class="badge" style="background-color: #b5b5b5;">
+    <a href="{% url 'create_standard' poste.id %}?redirect_url=usines&usine={{ usine.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" 
+    style="color: white; text-decoration: none;">
+    <i class="fas fa-add"></i></a></span>
+</h4>
     {% for standard in poste.standards.all %}
         <div class="card card-body mb-3 custom-card">
             <div class="row text-center">
@@ -136,8 +140,6 @@ Poste
             </div>
 
             <div class="row mb-4">
-                <div class="col-lg-1 col-md-1 col-sm-2">
-                </div>
                 <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
                     <div class="form-outline">
                         <label class="form-label labelCustom" for="max_2_5_value">Max 2,5mm</label>
@@ -164,14 +166,18 @@ Poste
                 </div>
                 <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
                     <div class="form-outline">
+                        <label class="form-label labelCustom" for="max_0_06_value">Max 0,063mm</label>
+                        <input type="text" id="max_0_06_value" class="form-control" value="{{ standard.max_0_06_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
                         <label class="form-label labelCustom" for="max_0_value">Max 0 (&lt;63µm)</label>
                         <input type="text" id="max_0_value" class="form-control" value="{{ standard.max_0_value }}" disabled/>
                     </div>
                 </div>
             </div>
             <div class="row mb-4">
-                <div class="col-lg-1 col-md-0 col-sm-0">
-                </div>
                 <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
                     <div class="form-outline">
                         <label class="form-label labelCustom" for="min_2_5_value">Min 2,5mm</label>
@@ -194,6 +200,12 @@ Poste
                     <div class="form-outline">
                         <label class="form-label labelCustom" for="min_0_3_value">Min 0,3mm</label>
                         <input type="text" id="min_0_3_value" class="form-control" value="{{ standard.min_0_3_value }}" disabled/>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
+                    <div class="form-outline">
+                        <label class="form-label labelCustom" for="min_0_06_value">Min 0,063mm</label>
+                        <input type="text" id="min_0_06_value" class="form-control" value="{{ standard.min_0_06_value }}" disabled/>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-12 col-sm-12 mb-2">
