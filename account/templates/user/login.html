@@ -4,32 +4,65 @@
 {% block title %}PUMA Labs{% endblock %}
 {% load static %} 
 {% block login %}
-<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-  <div class="card" style="background: rgba(69, 85, 138, 0.75); backdrop-filter: blur(30px); border-radius: 1rem; border-color: transparent; width: 90%">
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh; position: relative;">
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('{% static "img/image_fond.png" %}'); 
+    background-position: center;  background-repeat: no-repeat;  background-size: cover;">
+  </div>
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(3, 36, 76, 0.25); z-index: 0;">
+  </div>
+  <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1; text-align: center; padding-top: 20px;">
+    <img src="{% static 'img/site_logo.png' %}" alt="Website Logo" style="width: 125px; height: auto;">
+  </div>
+  <div class="d-none d-lg-block" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1; text-align: center; margin-top: 25vh;">
+    <img src="{% static 'img/logo_mylab.png' %}" alt="Website Logo" style="width: 600px; height: auto;">
+  </div>
+  <div class="card" style="background: rgba(255, 255, 255, 0.25); border-radius: 3rem 3rem 0 0; border-color: transparent; width: 60%; position: absolute; bottom: 0;">
     <div class="row">
-      <div class="col-md-6 d-none d-md-block">
-        <img src="{% static 'img/login_logo.png' %}" alt="login form" class="img-fluid" style="margin: 15% 0;" />
-      </div>
-      <div class="col-md-4 d-flex justify-content-center align-items-center" style="margin: auto">
+      <div class="col-md-12 d-flex justify-content-center align-items-center" style="margin: auto">
         <div class="card-body text-white">
           <form method="POST">
             {% csrf_token %}
-            <h5 class="fw-normal mb-3 ml-3 pb-3" style="letter-spacing: 1px;">Connectez-vous à votre compte</h5>
-            <div class="form-outline mb-4">
-                <label class="form-label">Email / AD 2000</label>
-                {{ form.username }}
-            </div>
-            <div class="form-outline mb-4">
-              <label class="form-label">Mot de passe</label>
-              <div class="input-group">
-                {{ form.password|attr:"id:password" }}
-                <span class="input-group-text">
-                  <i class="fas fa-eye-slash" onClick="togglePass()" id="togglePassword"></i>
-                </span>
+            <h5 class="fw-bold mb-3 ml-3 pb-3 text-center" style="letter-spacing: 5px; color: #001532;">Connectez-vous à votre compte</h5>
+            <div class="form-outline mb-4 row">
+              <div class="col-lg-1 col-md-0 col-sm-0">
+              </div>
+              <div class="col-lg-3 col-md-5 col-sm-12">
+                <label class="form-label" style="font-size: 1.7rem;">Adresse mail</label>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-12">
+                <div class="input-group">
+                  <span class="input-group-text" style="border-radius: 35px 0px 0px 35px;">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  {{ form.username }}
+                </div>
               </div>
             </div>
-            <div class="d-flex align-items-center justify-content-center pt-1 mb-4">
-              <button class="btn btn-lg btn-block customSaveButton" type="submit" style="color: white">Se connecter</button>
+            <div class="form-outline mb-5 row">
+              <div class="col-lg-1 col-md-0 col-sm-0">
+              </div>
+              <div class="col-lg-3 col-md-5 col-sm-12">
+                <label class="form-label" style="font-size: 1.7rem;">Mot de passe</label>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-12">
+                <div class="input-group">
+                  <span class="input-group-text" style="border-radius: 35px 0px 0px 35px;">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                  {{ form.password|attr:"id:password" }}
+                  <span class="input-group-text" style="border-radius: 0px 35px 35px 0px;">
+                    <i class="fas fa-eye-slash" onClick="togglePass()" id="togglePassword"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-outline mb-4 row">
+              <div class="col-lg-11 col-md-11 col-sm-12 text-end">
+                  <b>
+                  <a href="/logout" class="text-reset" style="font-size: 1.9rem; line-height: 1.9rem; text-decoration: none;">
+                    <i class="fas fa-arrow-right-from-bracket" style="font-size: 1.9rem; margin-right: 10px; color: #032047;"></i>Se Connecter
+                  </a></b>
+              </div>
             </div>
             {% if messages|is_login %}
               <div class="alert alert-danger">
@@ -49,6 +82,13 @@
     </div>
   </div>
 </div>
+
+{% block style %}
+  *{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+  }
+{% endblock %}
 
 <script>
   const togglePass = () => {

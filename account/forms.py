@@ -46,5 +46,8 @@ class UsineForm(ModelForm):
 
 class CustomLoginForm(AuthenticationForm):
     
-    username = forms.CharField( label="Email / AD 2000", widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder':'Email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Mot de passe'}))
+    username = forms.CharField(label="Email / AD 2000", widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder':'Adresse mail', 
+                                                                            'style':'padding-left: 20px; border-radius: 0px 35px 35px 0px; height: 45px;'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Mot de passe', 
+                                                                            'style':'padding-left: 20px; height: 45px;'}))
+    
