@@ -11,10 +11,10 @@
   <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(3, 36, 76, 0.25); z-index: 0;">
   </div>
   <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1; text-align: center; padding-top: 20px;">
-    <img src="{% static 'img/site_logo.png' %}" alt="Website Logo" style="width: 125px; height: auto;">
+    <img src="{% static 'img/login_logo_mylabs.png' %}" alt="Website Logo" style="width: 125px; height: auto;">
   </div>
   <div class="d-none d-lg-block" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1; text-align: center; margin-top: 25vh;">
-    <img src="{% static 'img/logo_mylab.png' %}" alt="Website Logo" style="width: 600px; height: auto;">
+    <img src="{% static 'img/login_header.png' %}" alt="Website Logo" style="width: 600px; height: auto;">
   </div>
   <div class="card" style="background: rgba(255, 255, 255, 0.25); border-radius: 3rem 3rem 0 0; border-color: transparent; width: 60%; position: absolute; bottom: 0;">
     <div class="row">
@@ -58,10 +58,9 @@
             </div>
             <div class="form-outline mb-4 row">
               <div class="col-lg-11 col-md-11 col-sm-12 text-end">
-                  <b>
-                  <a href="/logout" class="text-reset" style="font-size: 1.9rem; line-height: 1.9rem; text-decoration: none;">
-                    <i class="fas fa-arrow-right-from-bracket" style="font-size: 1.9rem; margin-right: 10px; color: #032047;"></i>Se Connecter
-                  </a></b>
+                <button type="submit" class="btn btn-link text-reset" style="font-size: 1.9rem; line-height: 1.9rem; text-decoration: none;">
+                  <i class="fas fa-arrow-right-from-bracket" style="font-size: 1.9rem; margin-right: 10px; color: #032047;"></i>Se Connecter
+                </button>
               </div>
             </div>
             {% if messages|is_login %}
