@@ -490,6 +490,19 @@ Rapport
 <script>
 
     $(document).ready(function() {
+        var usine_id = document.getElementById("usine-select").value;
+        if (usine_id) {
+            // check if the usine selected = 'Sidi Bel Abbes'
+            if (usine_id == 1) {
+                $('.sidBelAbbes').each(function() {
+                    $(this).show();
+                });
+            } else {
+                $('.sidBelAbbes').each(function() {
+                    $(this).hide();
+                });
+            }
+        }
         $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
         $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
         onChangeUsine = $('#usine-select').change(function() {
