@@ -90,8 +90,8 @@ DATABASES = {
     #    'NAME': 'PumaLab',
     #    'USER': 'lab_report',
     #    'PASSWORD': 'lab_report',
-    #    'HOST': '10.10.10.53',
-    #    'PORT': '5400',
+    #    'HOST': '10.10.10.20',
+    #    'PORT': '5168',
     #}
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
