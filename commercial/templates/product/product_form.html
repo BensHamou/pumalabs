@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+
+{% block title %}
+Produit
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'products' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+      <i class="fas fa-caret-left me-2  retourC"></i>
+    <p class="lead m-0 p-0 retourC">retour</p>
+</a>
+</div>
+<h4 class="mb-4 retourC">{% if product %}Modification du {{ product.designation }}{% else %}Création d'un produit{% endif %}</h4>
+
+<form method="POST">
+  {% csrf_token %}
+  <div class="card card-body custom-card">
+    <div class="row mb-4">
+        <div class="col">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="designation">Désignation</label>
+              {{ form.designation }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="float-end mt-4">
+    <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+  </div>
+</form>
+{% endblock %}

@@ -33,12 +33,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "account",
     "report",
-    'bootstrap5',
-    'fontawesomefree',
-    'django_filters',
-    'widget_tweaks',
-    'django_extensions',
-    'django_crontab'
+    "commercial",
+    "bootstrap5",
+    "fontawesomefree",
+    "django_filters",
+    "widget_tweaks",
+    "django_extensions",
+    "django_crontab"
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,7 @@ TEMPLATES = [
                  os.path.join(BASE_DIR, 'account', 'templates', 'horaire'), os.path.join(BASE_DIR, 'account', 'templates', 'fragment'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'poste'), os.path.join(BASE_DIR, 'report', 'templates', 'report'), 
                  os.path.join(BASE_DIR, 'report', 'templates', 'sable_type'), os.path.join(BASE_DIR, 'report', 'templates', 'fournisseur'),
+                 os.path.join(BASE_DIR, 'commercial', 'templates', 'emplacement'), os.path.join(BASE_DIR, 'commercial', 'templates', 'product'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'modal')
                  ],
         "APP_DIRS": True,
