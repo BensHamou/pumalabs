@@ -12,6 +12,7 @@ from functools import wraps
 from django.contrib import messages
 from django.http import JsonResponse
 from .utils import *
+from django.forms import modelformset_factory
 
 
 # DECORATORS
@@ -178,14 +179,23 @@ def deleteComplaintView(request, id):
 @admin_required
 def createComplaintView(request):
     form = ComplaintCommForm(user=request.user)
+    ImageFormSet = modelformset_factory(Image,form=ImageForm, extra=1)
     if request.method == 'POST':
         form = ComplaintCommForm(request.POST, user=request.user)
-        if form.is_valid():
-            complaint = form.save()
+        formset = ImageFormSet(request.POST, request.FILES, queryset=Image.objects.none())
+        if form.is_valid() and formset.is_valid():
+            complaint = form.save(commit=False)
             complaint.state = 'Brouillon'
             complaint.save()
+            for pic in formset.cleaned_data:
+                if pic:
+                    image = pic['image']
+                    photo = Image(complaint=complaint, image=image)
+                    photo.save()
             return redirect(getRedirectionURL(request, reverse('list_complaint')))
-    context = {'form': form }
+    else:
+        formset = ImageFormSet(queryset=Image.objects.none())
+    context = {'form': form, 'formset': formset }
     return render(request, 'complaint_form.html', context)
 
 @login_required(login_url='login')
@@ -193,12 +203,21 @@ def createComplaintView(request):
 def editComplaintView(request, id):
     complaint = Complaint.objects.get(id=id)
     form = ComplaintCommForm(instance=complaint, user=request.user)
+    ImageFormSet = modelformset_factory(Image,form=ImageForm, extra=1)
     if request.method == 'POST':
         form = ComplaintCommForm(request.POST, instance=complaint, user=request.user)
-        if form.is_valid():
+        formset = ImageFormSet(request.POST, request.FILES, queryset=Image.objects.filter(complaint=complaint))
+        if form.is_valid() and formset.is_valid():
             form.save()
+            for pic in formset.cleaned_data:
+                if pic:
+                    image = pic['image']
+                    photo = Image(complaint=complaint, image=image)
+                    photo.save()
             return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
-    context = {'form': form, 'complaint': complaint }
+    else:
+        formset = ImageFormSet(queryset=Image.objects.filter(complaint=complaint))
+    context = {'form': form, 'complaint': complaint, 'formset': formset }
     return render(request, 'complaint_form.html', context)
 
 @login_required(login_url='login')
@@ -242,7 +261,6 @@ def cancelComplaint(request, id):
     cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
     complaint.save()
     cycle.save()
-    print(cycle)
     messages.success(request, 'Complaint Annulé avec succès')
     return redirect(getRedirectionURL(request, url_path))
 
@@ -265,7 +283,6 @@ def completeComplaintView(request, id):
             return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
     context = {'form': form, 'complaint': complaint }
     return render(request, 'complete_complaint_form.html', context)
-
 
 @login_required(login_url='login')
 @direc_required
@@ -308,6 +325,15 @@ def live_search(request):
         return JsonResponse([{'id': obj[0], 'name': f'''{obj[1]} - [ref: 0{obj[0]}] : ({obj[0]})'''.replace("'","\\'")} for obj in records], safe=False)
         
     return JsonResponse([], safe=False)
+
+@login_required(login_url='login')
+def deleteImageView(request, id):
+    image = Image.objects.get(id=id)
+    complaint_id = image.complaint.id
+    if request.method == "POST":
+        image.image.delete()
+        image.delete()
+    return redirect(reverse('complaint_detail', kwargs={'id': complaint_id}))
 
 def getRedirectionURL(request, url_path):
     params = {

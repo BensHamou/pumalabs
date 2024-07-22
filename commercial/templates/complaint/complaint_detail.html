@@ -207,7 +207,17 @@ Réclamation - {{ complaint.n_reclamation }}
             </div>
         </div>
     </div>
-    <div class="col-lg-4 col-md-12" style="margin-bottom: 20px;">
+    <div class="col-lg-4 col-md-12 justify-content-center">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <div class="card mx-auto custom-card" id="gallery-card" style="cursor: pointer; max-width: 350px;">
+                    <img src="{% static 'img/gallery.png' %}" class="card-img-top img-fluid" alt="Gallery Image" style="object-fit: contain; max-height: 200px;">
+                    <div class="card-body p-0 mx-auto">
+                        <p class="card-title lead m-3" style="font-size: 20px; color: #45558A;">Gallery</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% if complaint.state in 'Traité,Clôturé' %}
@@ -284,43 +294,27 @@ Réclamation - {{ complaint.n_reclamation }}
 {% endif %}
 
 {% include 'cycle_modal.html' %}
+{% include 'gallery_modal.html' %}
 
-<script charset="utf-8" src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
 <style>
-    .brd > th:nth-child(2){
-        border-radius:5px 0px 0px 0px;
+    .gallery img {
+        width: 150px;
+        height: auto;
+        margin: 5px;
     }
-    .brd > th:last-child{
-        border-radius:0px 5px 0px 0px;
-    }
-    @media only screen and (max-width: 767px) {
-        td {
-            display: block;
-            width: 100%;
-            text-align: left;
-            box-sizing: border-box;
-            margin-bottom: 5px;
-        }
-        .postTD{
-            width: 100%;
-        }
-        th {
-            display: block;
-            width: 100%;
-            text-align: left;
-            box-sizing: border-box;
-            margin-bottom: 5px;
-        }
-        .valueLead{
-            font-size: 16px;
-        }
-        .tdLabel{
-            display: block;
-            color: #698ed0;
-            font-size: 16px; 
-            margin-bottom: 5px;
-        }
+    .gallery .delete-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: rgba(255, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        padding: 2px 6px;
+        cursor: pointer;
     }
 </style>
 

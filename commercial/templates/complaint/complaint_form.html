@@ -10,7 +10,7 @@ Réclamation Client
 {% load static %} 
 {% block activeCreateComplaint %} {% include 'active_bar.html' %} {% endblock %}
 {% block content %}
-<form class="container" method="POST">
+<form class="container" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card mt-4 custom-card">
         <div class="card-header card-header-secondary">
@@ -85,6 +85,23 @@ Réclamation Client
                         </div>
                     {% endif %}
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4 custom-card">
+        <div class="card-header card-header-secondary d-flex justify-content-between align-items-center">
+            <p class="card-title lead mb-0" style="font-size: 26px; color: #45558A;">Gallery</p>
+            <button type="button" class="btn btn-primary" id="addImage">+</button>
+        </div>
+        <div class="row m-4">
+            <div class="row" id="imageContainer">
+                {% for form in formset %}
+                    <div class="col-md-4 mb-3 image-form">
+                        <div class="form-outline">{{ form.image }}</div>
+                        <div class="image-preview"></div>
+                        <button type="button" class="btn btn-danger remove-form" style="display: none;">Remove</button>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -288,7 +305,24 @@ Réclamation Client
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
+    .preview-img {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+        object-fit: cover;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #45558A;
+        border: none;
+    }
     #suggestions {
       top: 100%;
       left: 0;
@@ -383,6 +417,41 @@ Réclamation Client
     };
 
     $(document).ready(function() {
+        let formIdx = {{ formset.total_form_count|default:0 }};  // Initialize form index based on formset count
+
+        function addForm() {
+            const formHtml = `
+                <div class="col-md-4 mb-3 image-form">
+                    <div class="form-outline">
+                        <input type="file" name="form-${formIdx}-image" multiple="" accept="image/*" id="id_form-${formIdx}-image">
+                    </div>
+                    <div class="image-preview"></div>
+                    <button type="button" class="btn btn-danger remove-form">Remove</button>
+                </div>`;
+            
+            $('#imageContainer').append(formHtml);
+            formIdx++;
+        }
+        $('#addImage').click(function () {
+            addForm();
+        });
+
+        $('#imageContainer').on('click', '.remove-form', function () {
+            $(this).closest('.image-form').remove();
+        });
+        $('#imageContainer').on('change', 'input[type="file"]', function (event) {
+            const input = $(this)[0];
+            const previewDiv = $(this).siblings('.image-preview');
+            previewDiv.empty();
+
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = $('<img>').attr('src', e.target.result).addClass('preview-img');
+                    previewDiv.append(img);
+                };
+            });
+        });
         $('.search-input').keyup(function() {
             var suggestions = $(this).siblings('#suggestions');
             var searchInput = $(this);

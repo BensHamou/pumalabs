@@ -1,5 +1,7 @@
 from django.urls import path
 from .views import *
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
@@ -23,8 +25,10 @@ urlpatterns = [
     path('complaints/<int:id>/cancel/', cancelComplaint, name='cancel_complaint'),
     path('complaints/<int:id>/complete/', completeComplaintView, name='complete_complaint'),
     path('complaints/<int:id>/finish/', finishComplaintView, name='finish_complaint'),
+    path('complaints/image/delete/<int:id>/', deleteImageView, name='delete_image'),
     
     path('live_search/', live_search, name='live_search'),
     
 ]
 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

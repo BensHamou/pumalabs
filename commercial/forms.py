@@ -76,3 +76,10 @@ class ComplaintDirectorForm(ModelForm):
         fields = ['decision']
 
     decision = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Décision final')))
+
+class ImageForm(ModelForm):
+    class Meta:
+        model = Image
+        fields = ['image']
+
+    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={"multiple": True}))

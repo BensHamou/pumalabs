@@ -1,6 +1,8 @@
 from django.db import models
 from account.models import User, Usine
 from django.core.validators import MinValueValidator
+from django.template.defaultfilters import slugify
+from PIL import Image as PILImage
 
 class Setting(models.Model):
     name = models.CharField(max_length=50)
@@ -76,6 +78,9 @@ class Complaint(models.Model):
     
     def cycles(self):
         return self.cycle_set.all()
+    
+    def images(self):
+        return self.image_set.all()
 
     @property
     def n_reclamation(self):
@@ -83,6 +88,23 @@ class Complaint(models.Model):
 
     def __str__(self):
         return self.n_reclamation
+    
+def get_image_filename(instance, filename):
+    title = instance.complaint.n_reclamation
+    slug = slugify(title)
+    return "complaint_images/%s-%s" % (slug, filename)  
+
+class Image(models.Model):
+    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=get_image_filename, verbose_name='Image')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            img = PILImage.open(self.image.path)
+            max_size = (1080, 1080)
+            img.thumbnail(max_size, PILImage.LANCZOS)
+            img.save(self.image.path, quality=85, optimize=True)
     
 class Cycle(models.Model):
 
