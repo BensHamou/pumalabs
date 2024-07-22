@@ -10,6 +10,8 @@ import uuid
 from django.urls import reverse
 from functools import wraps
 from django.contrib import messages
+from django.http import JsonResponse
+from .utils import *
 
 
 # DECORATORS
@@ -18,10 +20,10 @@ def check_creator(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if 'id' in kwargs:
-            plan_id = kwargs['id']
+            complaint_id = kwargs['id']
         elif 'pk' in kwargs:
-            plan_id = kwargs['pk']
-        complaint = Complaint.objects.get(id=plan_id)
+            complaint_id = kwargs['pk']
+        complaint = Complaint.objects.get(id=complaint_id)
         if complaint.creator != request.user and request.user.role != 'Admin':
             return render(request, '403.html', status=403)
         return view_func(request, *args, **kwargs)
@@ -163,24 +165,26 @@ def listComplaintsList(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = { 'page': page, 'filtredData': filteredData }
-    return render(request, 'list_complaits.html', context)
+    return render(request, 'list_complaints.html', context)
 
 @login_required(login_url='login')
 @admin_required
 def deleteComplaintView(request, id):
     complaint = Complaint.objects.get(id=id)
     complaint.delete()
-    return redirect(getRedirectionURL(request, reverse('complaints')))
+    return redirect(getRedirectionURL(request, reverse('list_complaint')))
 
 @login_required(login_url='login')
 @admin_required
 def createComplaintView(request):
-    form = ComplaintCommForm()
+    form = ComplaintCommForm(user=request.user)
     if request.method == 'POST':
-        form = ComplaintCommForm(request.POST)
+        form = ComplaintCommForm(request.POST, user=request.user)
         if form.is_valid():
-            form.save()
-            return redirect(getRedirectionURL(request, reverse('complaints')))
+            complaint = form.save()
+            complaint.state = 'Brouillon'
+            complaint.save()
+            return redirect(getRedirectionURL(request, reverse('list_complaint')))
     context = {'form': form }
     return render(request, 'complaint_form.html', context)
 
@@ -188,44 +192,24 @@ def createComplaintView(request):
 @check_creator
 def editComplaintView(request, id):
     complaint = Complaint.objects.get(id=id)
-    form = ComplaintCommForm(instance=complaint)
+    form = ComplaintCommForm(instance=complaint, user=request.user)
     if request.method == 'POST':
-        form = ComplaintCommForm(request.POST, instance=complaint)
+        form = ComplaintCommForm(request.POST, instance=complaint, user=request.user)
         if form.is_valid():
             form.save()
-            return redirect(getRedirectionURL(request, reverse('view_complaint', args=[complaint.id])))
+            return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
     context = {'form': form, 'complaint': complaint }
     return render(request, 'complaint_form.html', context)
 
 @login_required(login_url='login')
-@resp_required
-def completeComplaintView(request, id):
-    complaint = Complaint.objects.get(id=id)
-    form = ComplaintCommForm(instance=complaint)
-    if request.method == 'POST':
-        form = ComplaintCommForm(request.POST, instance=complaint)
-        if form.is_valid():
-            form.save()
-            old_state = complaint.state
-            complaint.state = 'Traité'
-            new_state = complaint.state
-            actor = request.user
-            validation = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
-            complaint.save()
-            validation.save()
-            return redirect(getRedirectionURL(request, reverse('view_complaint', args=[complaint.id])))
-    context = {'form': form, 'complaint': complaint }
-    return render(request, 'complete_complaint_form.html', context)
-
-@login_required(login_url='login')
 @check_creator
-def confirmComplaint(request, pk):
+def confirmComplaint(request, id):
     try:
-        complaint = Complaint.objects.get(id=pk)
+        complaint = Complaint.objects.get(id=id)
     except Complaint.DoesNotExist:
         messages.success(request, 'Complaint Does not exit')
 
-    url_path = reverse('view_complaint', args=[complaint.id])
+    url_path = reverse('complaint_detail', args=[complaint.id])
     if complaint.state == 'En traitement':
         return redirect(getRedirectionURL(request, url_path))
     
@@ -233,21 +217,21 @@ def confirmComplaint(request, pk):
     complaint.state = 'En traitement'
     new_state = complaint.state
     actor = request.user
-    validation = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
+    cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
     complaint.save()
-    validation.save()
+    cycle.save()
     messages.success(request, 'Complaint En traitement avec succès')
     return redirect(getRedirectionURL(request, url_path))
 
 @login_required(login_url='login')
 @check_creator
-def cancelComplaint(request, pk):
+def cancelComplaint(request, id):
     try:
-        complaint = Complaint.objects.get(id=pk)
+        complaint = Complaint.objects.get(id=id)
     except Complaint.DoesNotExist:
         messages.success(request, 'Complaint Does not exit')
 
-    url_path = reverse('view_complaint', args=[complaint.id])
+    url_path = reverse('complaint_detail', args=[complaint.id])
     if complaint.state == 'Annulé':
         return redirect(getRedirectionURL(request, url_path))
     
@@ -255,11 +239,32 @@ def cancelComplaint(request, pk):
     complaint.state = 'Annulé'
     new_state = complaint.state
     actor = request.user
-    validation = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
+    cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
     complaint.save()
-    validation.save()
+    cycle.save()
+    print(cycle)
     messages.success(request, 'Complaint Annulé avec succès')
     return redirect(getRedirectionURL(request, url_path))
+
+@login_required(login_url='login')
+@resp_required
+def completeComplaintView(request, id):
+    complaint = Complaint.objects.get(id=id)
+    form = ComplaintResponsableForm(instance=complaint)
+    if request.method == 'POST':
+        form = ComplaintResponsableForm(request.POST, instance=complaint)
+        if form.is_valid():
+            complaint = form.save()
+            old_state = complaint.state
+            complaint.state = 'Traité'
+            new_state = complaint.state
+            actor = request.user
+            cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
+            complaint.save()
+            cycle.save()
+            return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
+    context = {'form': form, 'complaint': complaint }
+    return render(request, 'complete_complaint_form.html', context)
 
 
 @login_required(login_url='login')
@@ -275,10 +280,10 @@ def finishComplaintView(request, id):
             complaint.state = 'Clôturé'
             new_state = complaint.state
             actor = request.user
-            validation = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
+            cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
             complaint.save()
-            validation.save()
-            return redirect(getRedirectionURL(request, reverse('view_complaint', args=[complaint.id])))
+            cycle.save()
+            return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
     context = {'form': form, 'complaint': complaint }
     return render(request, 'finish_complaint_form.html', context)
 
@@ -289,6 +294,20 @@ def detailComplaintView(request, id):
     context = {'complaint': complaint }
     return render(request, 'complaint_detail.html', context)
 
+@login_required(login_url='login')
+def live_search(request):
+    search_for = request.GET.get('search_for', '')
+    term = request.GET.get('search_term', '')
+
+    if search_for == 'distributeur':
+        records = getDistributeurId(term)
+    elif search_for == 'client':
+        records = getClientId(term)
+
+    if len(records) > 0:
+        return JsonResponse([{'id': obj[0], 'name': f'''{obj[1]} - [ref: 0{obj[0]}] : ({obj[0]})'''.replace("'","\\'")} for obj in records], safe=False)
+        
+    return JsonResponse([], safe=False)
 
 def getRedirectionURL(request, url_path):
     params = {
@@ -296,6 +315,7 @@ def getRedirectionURL(request, url_path):
         'page_size': request.GET.get('page_size', '12'),
         'search': request.GET.get('search', ''),
         'state': request.GET.get('state', ''),
+        'usine': request.GET.get('usine', ''),
     }
     cache_param = str(uuid.uuid4())
     query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])

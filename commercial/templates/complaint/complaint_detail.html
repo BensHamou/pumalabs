@@ -1,0 +1,375 @@
+{% extends "main.html" %}
+{% load humanize %}
+
+{% block title %}
+Réclamation - {{ complaint.n_reclamation }}
+{% endblock %}
+{% load static %} 
+{% block activeListComplaint %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="d-flex mb-5 justify-content-between">
+            <div class="col-md-1">
+                <a href="{% url 'list_complaint' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+                    <i class="fas fa-caret-left me-2 retourC"></i>
+                    <p class="lead m-0 p-0 retourC">retour</p>
+                </a>
+            </div>
+            <div class="col-md-7">
+                <input class="form-control lead"  value="{{ complaint.state }}" style="background-color: #45558A; border-color: transparent; color: white;" disabled>
+            </div>
+            <div class="col-md-3 d-flex justify-content-end">
+                <button id="validation-card" class="btn btn-secondary btn-block customSaveButton">
+                    <i class="fas fa-arrows-spin"></i>
+                </button>
+                {% if complaint.state == 'Brouillon' and user.role in 'Admin,Commercial' and user == complaint.creator %}
+                <button onclick="window.location='{% url 'edit_complaint' complaint.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
+                    <i class="fas fa-edit"></i>
+                </button>
+                {% elif user.role == 'Admin' %}
+                <button onclick="window.location='{% url 'edit_complaint' complaint.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
+                    <i class="fas fa-edit"></i>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 justify-content-center">
+        <div class="row">
+            <div class="d-flex justify-content-center">
+                    {% if complaint.state in 'Brouillon' %}
+                        {% if user.role in 'Admin,Commercial' %}
+                            {% if user.role == 'Admin' or user == complaint.creator  %}
+                                <a href="{% url 'confirm_complaint' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                    <p class="lead m-0 p-0">Confirmer</p>
+                                </a>
+                                <a onclick="confirmComplaintCan('{{complaint.id|escapejs}}')"
+                                    class="btn btn-danger text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                    <p class="lead m-0 p-0">Annuler</p>
+                                </a>
+                            {% else %}
+                                <h4 class="lead text-white"><strong></br></strong></h4>
+                            {% endif %}
+                        {% else %}
+                            <h4 class="lead text-white"><strong></br></strong></h4>
+                        {% endif %}
+                    {% elif complaint.state == 'En traitement' %}
+                        {% if user.role in 'Admin,Résponsable' %}
+                            <a href="{% url 'complete_complaint' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <p class="lead m-0 p-0">Completer</p>
+                            </a>
+                        {% else %}
+                            <h4 class="lead text-white"><strong></br></strong></h4>
+                        {% endif %}
+                    {% elif complaint.state == 'Traité' %}
+                        {% if user.role in 'Admin,Directeur' %}
+                            <a href="{% url 'finish_complaint' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <p class="lead m-0 p-0">Cloturer</p>
+                            </a>
+                        {% else %}
+                            <h4 class="lead text-white"><strong></br></strong></h4>
+                        {% endif %}
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-lg-8 col-md-12" style="margin-bottom: 20px;">
+        <div class="card custom-card">
+            <div class="card-header card-header-secondary">
+                <p class="card-title lead" style="font-size: 26px; color: #45558A;">Information générale de la réclamation</p>
+            </div>
+            <div class="card-body p-3">
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">N° Réclamation</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.n_reclamation }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Distributeur</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.distributeur }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Client</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.client }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Site</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.emplacement }} ({{ complaint.emplacement.region }})
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Projet</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.project }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Commercial</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.creator }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card custom-card mt-3">
+            <div class="card-header card-header-secondary">
+                <p class="card-title lead" style="font-size: 26px; color: #45558A;">Donnée Sommaire</p>
+            </div>
+            <div class="card-body p-3">
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Produit</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.product }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Usine</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.usine }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">N° BC</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.n_bc }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Date Livraison</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.date_delivery }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Quantité</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.qte|intcomma }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">N° Lot</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.n_lot }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Date de Production</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail">
+                            {{ complaint.date_prod }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Observation</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-detail" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                            {% if complaint.observation  %}{{ complaint.observation|linebreaks }}{% else %}/{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-12" style="margin-bottom: 20px;">
+    </div>
+</div>
+{% if complaint.state in 'Traité,Clôturé' %}
+    <div class="row mt-3">
+        <div class="col-lg-12 col-md-12" style="margin-bottom: 20px;">
+            <div class="card custom-card">
+                <div class="card-header card-header-secondary">
+                    <p class="card-title lead" style="font-size: 22px; color: #45558A;">Traitement de la Réclamation Au Laboratoire</p>
+                </div>
+                <div class="card-body p-3">
+                    <div class="form-group row mb-1">
+                        <div class="col-sm-12">
+                            <div class="form-control-plaintext text-detail">
+                                {{ complaint.treatment_labo|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12" style="margin-bottom: 20px;">
+            <div class="card custom-card">
+                <div class="card-header card-header-secondary">
+                    <p class="card-title lead" style="font-size: 22px; color: #45558A;">Traitement de la Réclamation sur Site</p>
+                </div>
+                <div class="card-body p-3">
+                    <div class="form-group row mb-1">
+                        <div class="col-sm-12">
+                            <div class="form-control-plaintext text-detail">
+                                {{ complaint.treatment_site|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12" style="margin-bottom: 20px;">
+            <div class="card custom-card">
+                <div class="card-header card-header-secondary">
+                    <p class="card-title lead" style="font-size: 22px; color: #45558A;">Actions à mettre en œuvre</p>
+                </div>
+                <div class="card-body p-3">
+                    <div class="form-group row mb-1">
+                        <div class="col-sm-12">
+                            <div class="form-control-plaintext text-detail">
+                                {{ complaint.actions|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if complaint.state in 'Clôturé' %}
+    <div class="row mt-3">
+        <div class="col-lg-12 col-md-12" style="margin-bottom: 20px;">
+            <div class="card custom-card">
+                <div class="card-header card-header-secondary">
+                    <p class="card-title lead" style="font-size: 22px; color: #45558A;">Décision final</p>
+                </div>
+                <div class="card-body p-3">
+                    <div class="form-group row mb-1">
+                        <div class="col-sm-12">
+                            <div class="form-control-plaintext text-detail">
+                                {{ complaint.decision|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% include 'cycle_modal.html' %}
+
+<script charset="utf-8" src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script> 
+
+<style>
+    .brd > th:nth-child(2){
+        border-radius:5px 0px 0px 0px;
+    }
+    .brd > th:last-child{
+        border-radius:0px 5px 0px 0px;
+    }
+    @media only screen and (max-width: 767px) {
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .postTD{
+            width: 100%;
+        }
+        th {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .valueLead{
+            font-size: 16px;
+        }
+        .tdLabel{
+            display: block;
+            color: #698ed0;
+            font-size: 16px; 
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<script>
+    const confirmComplaintCan = (repID) => {
+        swal({ 
+        title: `Confirmation de l'annulation.`,   
+        text: `Voulez-vous vraiment annuler cette réclamation?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){
+            var url = "{% url 'cancel_complaint' 123456789 %}".replace(/123456789/, repID);
+            var params = {
+                'page': getParameterByName('page'),
+                'page_size': getParameterByName('page_size'),
+                'search': getParameterByName('search'),
+                'state': getParameterByName('state'),
+                'start_date': getParameterByName('start_date'),
+                'end_date': getParameterByName('end_date'),
+                'usine': getParameterByName('usine'),
+            }
+            var queryString = Object.keys(params).map(function(key) {
+                if(params[key] !== null && params[key] !== undefined && params[key] !== '') {
+                    return key + '=' + params[key];
+                }
+                return null;
+            }).filter(Boolean).join('&');
+
+            if (queryString) {
+                url += '?' + queryString;
+            }
+            if (isConfirm){
+                window.location.href = url;
+            }
+        });
+    }
+    function getParameterByName(name) {
+        var url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+</script>
+{% endblock content %}

@@ -16,13 +16,15 @@ urlpatterns = [
 
     path('complaints/', listComplaintsList, name='list_complaint'),
     path('complaints/create/', createComplaintView, name='create_complaint'),
-    path('complaints/<int:pk>/', detailComplaintView , name='complaint_detail'),
-    path('complaints/<int:pk>/delete/', deleteComplaintView, name='delete_complaint'),
-    path('complaints/<int:pk>/update/', editComplaintView, name='edit_complaint'),
-    path('complaints/<int:pk>/confirm/', confirmComplaint, name='confirm_complaint'),
-    path('complaints/<int:pk>/cancel/', cancelComplaint, name='cancel_complaint'),
-    path('complaints/<int:pk>/complete/', completeComplaintView, name='complete_complaint'),
-    path('complaints/<int:pk>/finish/', finishComplaintView, name='finish_complaint'),
+    path('complaints/<int:id>/', detailComplaintView , name='complaint_detail'),
+    path('complaints/<int:id>/delete/', deleteComplaintView, name='delete_complaint'),
+    path('complaints/<int:id>/update/', editComplaintView, name='edit_complaint'),
+    path('complaints/<int:id>/confirm/', confirmComplaint, name='confirm_complaint'),
+    path('complaints/<int:id>/cancel/', cancelComplaint, name='cancel_complaint'),
+    path('complaints/<int:id>/complete/', completeComplaintView, name='complete_complaint'),
+    path('complaints/<int:id>/finish/', finishComplaintView, name='finish_complaint'),
+    
+    path('live_search/', live_search, name='live_search'),
     
 ]
 

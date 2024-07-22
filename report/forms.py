@@ -14,7 +14,8 @@ def getAttrs(type, placeholder='', other={}):
         'select2': {'class': 'form-select custom-select', 'style': 'background-color: #e0e5f5; width: 100%;'},
         'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5;'},
         'datetime': {'type': 'datetime-local', 'class': 'form-control dateinput','style': 'background-color: #e0e5f5;'},
-        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #e0e5f5;'}
+        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #e0e5f5;'},
+        'textarea2': {"rows": "5", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #e9e9ff; border-radius: 0 ;'}
     }
 
     

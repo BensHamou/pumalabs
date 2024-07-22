@@ -2,6 +2,13 @@ from django.db import models
 from account.models import User, Usine
 from django.core.validators import MinValueValidator
 
+class Setting(models.Model):
+    name = models.CharField(max_length=50)
+    value = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name + ' : ' + self.value
+
 class Product(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -66,9 +73,16 @@ class Complaint(models.Model):
     actions = models.TextField(null=True, blank=True)
 
     decision = models.TextField(null=True, blank=True)
+    
+    def cycles(self):
+        return self.cycle_set.all()
+
+    @property
+    def n_reclamation(self):
+        return f"{self.id:05d}/{self.date_created.strftime('%y')}"
 
     def __str__(self):
-        return self.designation
+        return self.n_reclamation
     
 class Cycle(models.Model):
 

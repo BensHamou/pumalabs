@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "account",
     "report",
     "commercial",
@@ -62,7 +63,8 @@ TEMPLATES = [
                  os.path.join(BASE_DIR, 'report', 'templates', 'poste'), os.path.join(BASE_DIR, 'report', 'templates', 'report'), 
                  os.path.join(BASE_DIR, 'report', 'templates', 'sable_type'), os.path.join(BASE_DIR, 'report', 'templates', 'fournisseur'),
                  os.path.join(BASE_DIR, 'commercial', 'templates', 'emplacement'), os.path.join(BASE_DIR, 'commercial', 'templates', 'product'),
-                 os.path.join(BASE_DIR, 'report', 'templates', 'modal')
+                 os.path.join(BASE_DIR, 'report', 'templates', 'modal'), os.path.join(BASE_DIR, 'commercial', 'templates', 'complaint'), 
+                 os.path.join(BASE_DIR, 'commercial', 'templates', 'modal'),
                  ],
         "APP_DIRS": True,
         "OPTIONS": {

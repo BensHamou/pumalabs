@@ -160,7 +160,7 @@ Rapport - {{ report.usine.prefix_site }}{{ report.n_report|stringformat:"04d" }}
                     <label class="col-sm-3 col-form-label" style="color: #0C2858;">Observation</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-detail">
-                            {% if report.observation  %}{{ report.observation }}{% else %}/{% endif %}
+                            {% if report.observation  %}{{ report.observation|linebreaks }}{% else %}/{% endif %}
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,172 @@
+{% extends "main.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Liste des Réclamations
+{% endblock %}
+{% load static %} 
+{% block activeListComplaints %}{% include 'active_bar.html' %}{% endblock %}
+{% block content %}
+<div class="row mb-3">
+    <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
+        {% csrf_token %}
+        <div class="row height d-flex justify-content-center align-items-center">
+            <div class="col-lg-4 col-md-3 col-sm-6 mb-2">
+                <div class="form" style="position: relative;">
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filtredData.form.search }}
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filtredData.form.usine }}
+            </div>
+            <div class="col-md-4 col-sm-12 mb-2">
+                {{ filtredData.form.state }}
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" 
+                style="background-color: #dde0e6; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #45558a; height: 40px; border-radius: 5px;" name="page_size">
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
+            </div>
+        </div>
+    </form>
+    {% if page %}
+        <section class="sectionList"> 
+            <div class="tableStyle">
+                <table class="table table-borderless">
+                    <thead style="border-bottom: 2px solid #45558A;">
+                        <th>N° Réclamation</th>
+                        <th>Commercial</th>
+                        <th>Distributeur</th>
+                        <th>Client</th>
+                        <th>Site</th>
+                        <th>Projet</th>
+                        <th>Produit</th>
+                        <th>Quntatié</th>
+                        <th>Date Livraison</th>
+                        <th>Date de production</th>
+                        <th>BC N°</th>
+                        <th>Lot N°</th>
+                        <th>État</th>
+                        {% if user.role in 'Admin,Commercial' %}
+                            <th class="d-none d-md-table-cell" style="width: 6vh;">Actions</th>
+                        {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in page %}
+                        <tr style="color: #0C2858;">
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.n_reclamation }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.creator }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.distributeur }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.client }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.emplacement }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.project }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.product }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.qte }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.date_delivery|date:"d/m/Y" }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.date_prod|date:"d/m/Y" }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.n_bc }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.n_lot }}</td>
+                            <td onclick="window.location='{% url 'complaint_detail' complaint.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.usine %}&usine={{ request.GET.usine }}{% endif %}'" style="cursor: pointer;">{{ complaint.state }}</td>
+                            {% if user.role == 'Commercial' and complaint.creator == user or user.role == 'Admin' %}
+                            <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
+                                <button type="button" onclick="window.location='{% url 'complaint_detail' complaint.id %}'"  style="padding: 2px;"
+                                class="btn" {% if complaint.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: #45558A;"></i></button>
+                                {% if complaint.creator and complaint.creator == user %}
+                                    <button type="button" {% if complaint.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmCompDel('{{complaint.id|escapejs}}')" class="btn">
+                                        <i class="far fa-trash-alt" style="color: #45558A;"></i>
+                                    </button>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if page.has_other_pages %}
+                {% include 'pagination.html' %}
+            {% endif %}    
+        </section>
+    {% else %}
+        {% include 'empty_list.html' %}
+    {% endif %}
+</div>
+<style>
+    @media only screen and (max-width: 820px) {
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  85vw;
+        }
+    }
+    @media only screen and (max-width: 767px) {
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  85vw;
+        }
+    }
+    @media only screen and (max-width: 700px) {
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  84vw;
+        }
+    }
+    @media only screen and (max-width: 600px) {
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  79vw;
+        }
+    }
+</style>
+<script>
+    const confirmCompDel = (repID) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Voulez-vous vraiment supprimer la réclamation #${repID} ?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_complaint' 123456789 %}".replace(/123456789/, repID);
+            }});
+      }
+</script>
+{% endblock content %}

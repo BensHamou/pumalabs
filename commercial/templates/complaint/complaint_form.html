@@ -1,0 +1,421 @@
+{% extends "main.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Réclamation Client 
+{% endblock %}
+{% block scripts %}
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet" />
+{% endblock %}
+{% load static %} 
+{% block activeCreateComplaint %} {% include 'active_bar.html' %} {% endblock %}
+{% block content %}
+<form class="container" method="POST">
+    {% csrf_token %}
+    <div class="card mt-4 custom-card">
+        <div class="card-header card-header-secondary">
+            <p class="card-title lead" style="font-size: 26px; color: #45558A;">Information générale de la réclamation</p>
+        </div>
+        <div class="row m-4">
+            <div class="col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="creator">Commercial</label><br>
+                    {{ form.creator }}
+                    {% if form.creator.errors %}
+                        <div style="color: red;">
+                        {% for error in form.creator.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="distributeur">Distributeur</label><br>
+                    {{ form.distributeur }}
+                    {{ form.distributeur_id }}
+                    <div id="suggestions" class="sugdiv"></div>
+                    {% if form.distributeur.errors %}
+                        <div style="color: red;">
+                        {% for error in form.distributeur.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="client">Client</label><br>
+                    {{ form.client }}
+                    {{ form.client_id }}
+                    <div id="suggestions" class="sugdiv"></div>
+                    {% if form.client.errors %}
+                        <div style="color: red;">
+                        {% for error in form.client.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="emplacement">Site</label><br>
+                    {{ form.emplacement }}
+                    {% if form.emplacement.errors %}
+                        <div style="color: red;">
+                        {% for error in form.emplacement.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="project">Projet</label><br>
+                    {{ form.project }}
+                    {% if form.project.errors %}
+                        <div style="color: red;">
+                        {% for error in form.project.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4 custom-card">
+        <div class="card-header card-header-secondary">
+            <p class="card-title lead" style="font-size: 26px; color: #45558A;">Donnée Sommaire </p>
+        </div>
+        <div class="row m-4">
+            <div class="col-lg-12 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="usine">Usine</label><br>
+                    {{ form.usine }}
+                    {% if form.usine.errors %}
+                        <div style="color: red;">
+                        {% for error in form.usine.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="product">Produit</label><br>
+                    {{ form.product }}
+                    {% if form.product.errors %}
+                        <div style="color: red;">
+                        {% for error in form.product.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="qte">Quantité</label><br>
+                    {{ form.qte }}
+                    {% if form.qte.errors %}
+                        <div style="color: red;">
+                        {% for error in form.qte.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="n_bc">N° BC</label><br>
+                    {{ form.n_bc }}
+                    {% if form.n_bc.errors %}
+                        <div style="color: red;">
+                        {% for error in form.n_bc.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="n_lot">N° Lot</label><br>
+                    {{ form.n_lot }}
+                    {% if form.n_lot.errors %}
+                        <div style="color: red;">
+                        {% for error in form.n_lot.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="date_delivery">Date Livraison</label><br>
+                    {{ form.date_delivery }}
+                    {% if form.date_delivery.errors %}
+                        <div style="color: red;">
+                        {% for error in form.date_delivery.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="date_prod">Date Production</label><br>
+                    {{ form.date_prod }}
+                    {% if form.date_prod.errors %}
+                        <div style="color: red;">
+                        {% for error in form.date_prod.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 mb-2">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="observation">Observation</label><br>
+                    {{ form.observation }}
+                    {% if form.observation.errors %}
+                        <div style="color: red;">
+                        {% for error in form.observation.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if user.role == 'Admin' %}
+        {% if complaint.state in 'En traitement,Traité,Clôturé' %}
+            <div class="card mt-4 custom-card">
+               <div class="card-header card-header-secondary">
+                   <p class="card-title lead" style="font-size: 26px; color: #45558A;">Traitement de la Réclamation Au Laboratoire</p>
+               </div>
+               <div class="row">
+                   <div class="col-lg-12 col-md-12 col-sm-12">
+                       <div class="form-outline">
+                           {{ form.treatment_labo }}
+                           {% if form.treatment_labo.errors %}
+                               <div style="color: red;">
+                               {% for error in form.treatment_labo.errors %}
+                                   *{{ error }}
+                               {% endfor %}
+                               </div>
+                           {% endif %}
+                       </div>
+                   </div>
+               </div>
+            </div>
+            <div class="card mt-4 custom-card">
+               <div class="card-header card-header-secondary">
+                   <p class="card-title lead" style="font-size: 26px; color: #45558A;">Traitement de la Réclamation sur Site</p>
+               </div>
+               <div class="row">
+                   <div class="col-lg-12 col-md-12 col-sm-12">
+                       <div class="form-outline">
+                           {{ form.treatment_site }}
+                           {% if form.treatment_site.errors %}
+                               <div style="color: red;">
+                               {% for error in form.treatment_site.errors %}
+                                   *{{ error }}
+                               {% endfor %}
+                               </div>
+                           {% endif %}
+                       </div>
+                   </div>
+               </div>
+            </div>
+            <div class="card mt-4 custom-card">
+               <div class="card-header card-header-secondary">
+                   <p class="card-title lead" style="font-size: 26px; color: #45558A;">Actions à mettre en œuvre</p>
+               </div>
+               <div class="row">
+                   <div class="col-lg-12 col-md-12 col-sm-12">
+                       <div class="form-outline">
+                           {{ form.actions }}
+                           {% if form.actions.errors %}
+                               <div style="color: red;">
+                               {% for error in form.actions.errors %}
+                                   *{{ error }}
+                               {% endfor %}
+                               </div>
+                           {% endif %}
+                       </div>
+                   </div>
+               </div>
+            </div>
+        {% endif %}
+        {% if complaint.state in 'Traité,Clôturé' %}
+            <div class="card mt-4 custom-card">
+               <div class="card-header card-header-secondary">
+                   <p class="card-title lead" style="font-size: 26px; color: #45558A;">Décision final</p>
+               </div>
+               <div class="row">
+                   <div class="col-lg-12 col-md-12 col-sm-12">
+                       <div class="form-outline">
+                           {{ form.decision }}
+                           {% if form.decision.errors %}
+                               <div style="color: red;">
+                               {% for error in form.decision.errors %}
+                                   *{{ error }}
+                               {% endfor %}
+                               </div>
+                           {% endif %}
+                       </div>
+                   </div>
+               </div>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="d-flex justify-content-center align-items-center form-group m-4">
+        <button type="submit" class="btn btn-secondary btn-block customSaveButton">{% if form.instance.pk %}Sauvegarder les modifications{% else %}Créer{% endif %}</button>
+    </div>
+
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    #suggestions {
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      max-height: 200px;
+      overflow-y: scroll;
+      display: none;
+      border-radius: 0 0 10px 10px;
+    }
+    
+    .suggestion {
+      padding: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    
+    .suggestion:hover {
+      background-color: #eee;
+    }
+    
+    #suggestions.loading {
+      background-color: #f2f2f2;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    #suggestions.loading .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ccc;
+      border-top: 2px solid #333;
+      border-radius: 50%;
+      animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .highlight {
+        border: 2px solid green;
+        animation: highlightAnimation 1s ease-in-out;
+    }
+    .highlight {
+        border: 2px solid green;
+        animation: highlightAnimation 1s ease-in-out;
+    }
+    .select2-search {
+        background-color: #e0e5f5 !important;
+    }
+    .select2-search input {
+        background-color: #e0e5f5 !important;
+    }
+    
+    .select2-results {
+        background-color: #e0e5f5 !important;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection {
+        background-color: #e0e5f5 !important;
+    }
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<script>
+    const setValue = (e, selectedId) => {
+        var suggestions = e.parentNode;
+        var fieldIdInput = suggestions.previousElementSibling;
+        var fieldInput = fieldIdInput.previousElementSibling;
+        if (fieldIdInput && fieldInput && suggestions) {
+          fieldIdInput.value = selectedId;
+          fieldInput.value = e.innerHTML;
+          suggestions.innerHTML = '';
+          suggestions.style.display = 'none';
+        }
+    };
+
+    $(document).ready(function() {
+        $('.search-input').keyup(function() {
+            var suggestions = $(this).siblings('#suggestions');
+            var searchInput = $(this);
+            var searchInputID = $(this).siblings('.search-input-id');
+            searchInputID.val('');
+            if (searchInput.val()) {
+                suggestions.addClass('loading');
+                $.ajax({url: '{% url "live_search" %}', type: 'GET', data: { 'search_term': searchInput.val(), 'search_for': searchInput.attr('name') }, dataType: 'json',
+                    success: function(response) {
+                        var suggestionsHTML = '';
+                        if (response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                var result = response[i];
+                                suggestionsHTML += `<div class="suggestion" onClick="setValue(this, ${result.id})">${result.name}</div>`;
+                            }
+                            suggestions.html(suggestionsHTML);
+                            suggestions.removeClass('loading');
+                            suggestions.show();
+                        } else {
+                            suggestionsHTML = '<p>Aucune suggestion trouvée</p>';
+                            suggestions.html(suggestionsHTML);
+                            suggestions.removeClass('loading');
+                            suggestions.show();
+                        }
+                    }
+            });
+            } else {
+                suggestions.empty();
+                suggestions.hide();
+            }
+        });
+        $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
+        $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
+    });
+</script>
+{% endblock content %}

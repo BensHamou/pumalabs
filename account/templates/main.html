@@ -30,70 +30,76 @@
       </div>
     {% else %} 
       <div class="wrapper d-flex align-items-stretch">
-        {% if user.is_authenticated %}
-          <div class="d-flex flex-column" style="height: 100vh; background: rgba(198, 204, 215, 1); z-index:10; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); position: sticky; top: 0; left: 0;">
-            <div class="pb-1 d-flex align-items-center flex-column" style="margin-top: 100%;">
-              {% if user.role == 'Admin' %}
-                <div class="d-flex" style="width: 100%; margin: 0px 10px;">
-                  {% block activeHome %}{% endblock %}
-                  <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
-                </div>
-              {% endif %}
-              {% if user.role not in 'Observateur,Nouveau,Gestionnaire de production' %}
-                <div class="d-flex" style="width: 100%; margin: 5px 10px;">
-                  {% block activeCreateReport %}{% endblock %}
-                  <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
-                </div>
-              {% endif %}
+        <div class="d-flex flex-column" style="height: 100vh; background: rgba(198, 204, 215, 1); z-index:10; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); position: sticky; top: 0; left: 0;">
+          <div class="pb-1 d-flex align-items-center flex-column" style="margin-top: 100%;">
+            {% if user.role == 'Admin' %}
               <div class="d-flex" style="width: 100%; margin: 0px 10px;">
-                {% block activeListReport %}{% endblock %}
-                <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
+                {% block activeHome %}{% endblock %}
+                <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
               </div>
+            {% endif %}
+            {% if user.role in 'Technicien,Validateur,Admin' %}
               <div class="d-flex" style="width: 100%; margin: 5px 10px;">
-                {% if user.role == 'Admin' %}
-                {% block activeUsers %}{% endblock %}
-                  <h4 class="mx-auto">
-                    <li class="nav-item dropdown dropend list-unstyled">
-                      <a class="nav-link text-reset" style="padding: 5px 0.5px;" data-bs-toggle="dropdown" role="button"><i class="fas fa-users fa-sm menu_item"></i></a >
-                        <ul class="dropdown-menu list-unstyled">
-                          <li><a href="{% url 'users' %}" class="dropdown-item">Actifs</a></li>
-                          <li><a href="{% url 'new_users' %}" class="dropdown-item">Nouveaux</a></li>
-                          <li><hr class="dropdown-divider" /></li>
-                          <li><a href="{% url 'refresh_users' %}" class="dropdown-item">Actualiser</a></li>
-                      </ul>
-                    </li>
-                  </h4>
-                {% endif %}
+                {% block activeCreateReport %}{% endblock %}
+                <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
               </div>
-              <div class="d-flex" style="width: 100%; margin: 0px 10px;">
-                {% if user.role == 'Admin' or user.is_admin %}
-                  {% block activeSettings %}{% endblock %}
-                  <h4 class="mx-auto">
-                    <li class="nav-item dropdown dropend list-unstyled">
-                      <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a>
-                        <ul class="dropdown-menu list-unstyled">
-                        <li><a href="{% url 'usines' %}" class="dropdown-item">Usines</a></li>
-                        <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
-                        <li><a href="{% url 'postes' %}" class="dropdown-item">Postes</a></li>
-                        <li><a href="{% url 'fournisseurs' %}" class="dropdown-item">Fournisseurs</a></li>
-                        <li><a href="{% url 'sable_types' %}" class="dropdown-item">Types de Sable</a></li>
-                        <li><a href="{% url 'emplacements' %}" class="dropdown-item">Emplacements</a></li>
-                        <li><a href="{% url 'products' %}" class="dropdown-item">Produits</a></li>
-                      </ul>
-                    </li>
-                  </h4>
-                {% endif %}
-              </div>
+            {% endif %}
+            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+              {% block activeListReport %}{% endblock %}
+              <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
             </div>
-            <div class="mt-auto pb-5 d-flex align-items-center flex-column">
-              <h4><a href="/logout" class="text-reset"><i class="fas fa-right-from-bracket fa-rotate-180 menu_item"></i></a></h4>
+
+            {% if user.role in 'Commercial,Résponsable,Directeur,Admin' %}
+              <div class="d-flex" style="width: 100%; margin: 5px 10px;">
+                {% block activeCreateComplaint %}{% endblock %}
+                <h4 class="mx-auto"><a href="{% url 'create_complaint' %}" class="text-reset"><i class="fas fa-ticket menu_item"></i></a></h4>
+              </div>
+            {% endif %}
+            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+              {% block activeListComplaint %}{% endblock %}
+              <h4 class="mx-auto"><a href="{% url 'list_complaint' %}" class="text-reset"><i class="fas fa-file-circle-exclamation menu_item"></i></a></h4>
+            </div>
+            <div class="d-flex" style="width: 100%; margin: 5px 10px;">
+              {% if user.role == 'Admin' %}
+              {% block activeUsers %}{% endblock %}
+                <h4 class="mx-auto">
+                  <li class="nav-item dropdown dropend list-unstyled">
+                    <a class="nav-link text-reset" style="padding: 5px 0.5px;" data-bs-toggle="dropdown" role="button"><i class="fas fa-users fa-sm menu_item"></i></a >
+                      <ul class="dropdown-menu list-unstyled">
+                        <li><a href="{% url 'users' %}" class="dropdown-item">Actifs</a></li>
+                        <li><a href="{% url 'new_users' %}" class="dropdown-item">Nouveaux</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a href="{% url 'refresh_users' %}" class="dropdown-item">Actualiser</a></li>
+                    </ul>
+                  </li>
+                </h4>
+              {% endif %}
+            </div>
+            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+              {% if user.role == 'Admin' or user.is_admin %}
+                {% block activeSettings %}{% endblock %}
+                <h4 class="mx-auto">
+                  <li class="nav-item dropdown dropend list-unstyled">
+                    <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a>
+                      <ul class="dropdown-menu list-unstyled">
+                      <li><a href="{% url 'usines' %}" class="dropdown-item">Usines</a></li>
+                      <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
+                      <li><a href="{% url 'postes' %}" class="dropdown-item">Postes</a></li>
+                      <li><a href="{% url 'fournisseurs' %}" class="dropdown-item">Fournisseurs</a></li>
+                      <li><a href="{% url 'sable_types' %}" class="dropdown-item">Types de Sable</a></li>
+                      <li><a href="{% url 'emplacements' %}" class="dropdown-item">Emplacements</a></li>
+                      <li><a href="{% url 'products' %}" class="dropdown-item">Produits</a></li>
+                    </ul>
+                  </li>
+                </h4>
+              {% endif %}
             </div>
           </div>
-        {% else %} 
-        <div style="height: 100vh; position: sticky;"></div>
-        {% endif %}
+          <div class="mt-auto pb-5 d-flex align-items-center flex-column">
+            <h4><a href="/logout" class="text-reset"><i class="fas fa-right-from-bracket fa-rotate-180 menu_item"></i></a></h4>
+          </div>
+        </div>
 
-        {% if user.is_authenticated %}
         <div style="flex-grow: 1; height: 100%;">
           <div class="row" style="width:100%; position: relative; margin: 0px; {% if not user.is_authenticated %}padding-top: 3%;{% endif %}">
             <div class="col-md-2 d-flex justify-content-center" style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
@@ -106,7 +112,6 @@
               </div>
             </div>
           </div>
-          {% endif %}
           {% if request.path == "/dashboard/" %}
             <div style="position: sticky; height: 100vh;">
               {% block dashboard %} {% endblock %}
