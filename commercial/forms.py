@@ -82,4 +82,7 @@ class ImageForm(ModelForm):
         model = Image
         fields = ['image']
 
-    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={"multiple": True}))
+    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={
+            'class': 'custom-file-input',
+            'accept': 'image/*'
+            }))

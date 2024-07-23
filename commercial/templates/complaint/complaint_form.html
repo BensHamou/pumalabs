@@ -93,18 +93,25 @@ Réclamation Client
             <p class="card-title lead mb-0" style="font-size: 26px; color: #45558A;">Gallery</p>
             <button type="button" class="btn btn-primary" id="addImage">+</button>
         </div>
-        <div class="row m-4">
-            <div class="row" id="imageContainer">
-                {% for form in formset %}
-                    <div class="col-md-4 mb-3 image-form">
-                        <div class="form-outline">{{ form.image }}</div>
-                        <div class="image-preview"></div>
-                        <button type="button" class="btn btn-danger remove-form" style="display: none;">Remove</button>
-                    </div>
-                {% endfor %}
-            </div>
+        <div class="row m-4" id="imageContainer">
+            {{ formset.management_form }}
+            {% for form in formset %}
+              <div class="frame-container">
+                <div class="image-form">
+                  {{ form.id }}
+                  <div class="form-outline image-div">{{ form.image }}</div>
+                  <div class="image-preview">
+                    {% if form.instance.pk %}
+                      <img src="{{ form.instance.image.url }}" alt="Image Preview" class="preview-img">
+                    {% endif %}
+                  </div>
+                  <button type="button" class="btn btn-danger remove-form" data-instance-id="{{ form.instance.pk }}">✕</button>
+                </div>
+              </div>
+            {% endfor %}
         </div>
     </div>
+          
     <div class="card mt-4 custom-card">
         <div class="card-header card-header-secondary">
             <p class="card-title lead" style="font-size: 26px; color: #45558A;">Donnée Sommaire </p>
@@ -307,22 +314,61 @@ Réclamation Client
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
+    #imageContainer {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .frame-container {
+      width: 350px;
+      margin: 10px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-form {
+      position: relative;
+      height: 250px;
+    }
+  
+    .image-preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  
     .preview-img {
-        width: 100%;
-        height: auto;
-        max-height: 200px;
-        object-fit: cover;
+        width: 100%; /* Image will always take up full width */
+        height: auto;  /* Height adjusts automatically */
+        display: block; 
+    }
+  
+    .remove-form {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: #45558a; 
+      color: white;
+      border: none;
+      padding: 2px 5px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 10px;
     }
 
-    .btn-danger {
-        background-color: #dc3545;
-        border: none;
+    .image-div > a,
+    .image-div > br { 
+        display: none; 
     }
 
-    .btn-primary {
-        background-color: #45558A;
-        border: none;
-    }
     #suggestions {
       top: 100%;
       left: 0;
@@ -404,6 +450,18 @@ Réclamation Client
 </style>
 
 <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const imageDivs = document.querySelectorAll('.image-div');
+        imageDivs.forEach(div => {
+          const children = Array.from(div.childNodes);
+          children.forEach(child => {
+            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim() !== "") {
+              child.remove(); 
+            }
+          });
+        });
+    });
+
     const setValue = (e, selectedId) => {
         var suggestions = e.parentNode;
         var fieldIdInput = suggestions.previousElementSibling;
@@ -417,41 +475,110 @@ Réclamation Client
     };
 
     $(document).ready(function() {
-        let formIdx = {{ formset.total_form_count|default:0 }};  // Initialize form index based on formset count
-
+        let formIdx = {{ formset.total_form_count|default:0 }};
+    
         function addForm() {
             const formHtml = `
-                <div class="col-md-4 mb-3 image-form">
-                    <div class="form-outline">
-                        <input type="file" name="form-${formIdx}-image" multiple="" accept="image/*" id="id_form-${formIdx}-image">
-                    </div>
-                    <div class="image-preview"></div>
-                    <button type="button" class="btn btn-danger remove-form">Remove</button>
-                </div>`;
-            
+            <div class="col-md-4 mb-3">
+                <div class="frame-container">
+                  <div class="image-form">
+                    <div class="form-outline image-div"> 
+                      <input type="file" name="form-${formIdx}-image" multiple accept="image/*" id="id_form-${formIdx}-image">
+                      <input type="hidden" name="form-${formIdx}-id" id="id_form-${formIdx}-id">
+                      <div class="image-preview"></div> </div> 
+                    <button type="button" class="btn btn-danger remove-form">✕</button>
+                  </div>
+                </div>
+              </div>`;
+          
             $('#imageContainer').append(formHtml);
             formIdx++;
+            $('#id_form-TOTAL_FORMS').val(formIdx);
         }
+    
         $('#addImage').click(function () {
             addForm();
         });
-
+    
         $('#imageContainer').on('click', '.remove-form', function () {
-            $(this).closest('.image-form').remove();
+            const instanceId = $(this).data('instance-id');
+            const row = $(this).closest('.image-form');
+            if (instanceId) {
+                confirmImageDeletion(instanceId, row);
+            } else {
+                deleteRow(row);
+            }
         });
+    
+        const confirmImageDeletion = (instanceId, row) => {
+            swal({ 
+                title: `Confirmation de la suppression.`,   
+                text: `Etes-vous sûr que vous voulez supprimer cette image?`,   
+                type: "warning",
+                showCancelButton: true,   
+                confirmButtonColor: "#DD6B55",   
+                confirmButtonText: "Oui",   
+                cancelButtonText: "Non",   
+                closeOnConfirm: true,   
+                closeOnCancel: true 
+            }, function(isConfirm){   
+                if (isConfirm) {
+                    $.ajax({
+                        url: '{% url "delete_image" 0 %}'.replace('0', instanceId),  // Adjust URL as needed
+                        type: 'POST',
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                deleteRow(row);
+                            } else {
+                                console.error('Error deleting image:', response.error);
+                            }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            console.log(xhr.status + ": " + xhr.responseText); // Provide error feedback
+                        }
+                    });
+                }
+            });
+        }
+    
+        const deleteRow = (row) => {
+            row.remove();
+            formIdx--;
+            $('#id_form-TOTAL_FORMS').val(formIdx);  // Update the total number of forms
+        }
+
+        <div class="frame-container">
+            <div class="image-form">
+              {{ form.id }}
+              <div class="form-outline image-div">{{ form.image }}</div>
+              <div class="image-preview">
+                {% if form.instance.pk %}
+                  <img src="{{ form.instance.image.url }}" alt="Image Preview" class="preview-img">
+                {% endif %}
+              </div>
+              <button type="button" class="btn btn-danger remove-form" data-instance-id="{{ form.instance.pk }}">✕</button>
+            </div>
+        </div>
+
+
         $('#imageContainer').on('change', 'input[type="file"]', function (event) {
             const input = $(this)[0];
-            const previewDiv = $(this).siblings('.image-preview');
+            const previewDiv = $(this).parent().siblings('.image-preview'); 
             previewDiv.empty();
-
+        
             Array.from(input.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const img = $('<img>').attr('src', e.target.result).addClass('preview-img');
+                    const img = $('<img>').attr('src', e.target.result).addClass('preview-img').css('max-width', '250px');
                     previewDiv.append(img);
                 };
+                reader.readAsDataURL(file);
             });
         });
+
         $('.search-input').keyup(function() {
             var suggestions = $(this).siblings('#suggestions');
             var searchInput = $(this);
@@ -483,6 +610,7 @@ Réclamation Client
                 suggestions.hide();
             }
         });
+
         $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
         $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
     });

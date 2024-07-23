@@ -3,6 +3,8 @@ from account.models import User, Usine
 from django.core.validators import MinValueValidator
 from django.template.defaultfilters import slugify
 from PIL import Image as PILImage
+import os
+
 
 class Setting(models.Model):
     name = models.CharField(max_length=50)
@@ -100,7 +102,7 @@ class Image(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.image:
+        if self.image and os.path.exists(self.image.path):
             img = PILImage.open(self.image.path)
             max_size = (1080, 1080)
             img.thumbnail(max_size, PILImage.LANCZOS)
