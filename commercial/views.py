@@ -13,7 +13,9 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .utils import *
 from django.forms import modelformset_factory
-
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 # DECORATORS
 
@@ -248,6 +250,16 @@ def confirmComplaint(request, id):
     complaint.save()
     cycle.save()
     messages.success(request, 'Complaint En traitement avec succès')
+
+    subject = "Complaint Confirmation" 
+    context = { 'complaint': complaint }
+    html_message = render_to_string('complaint_confirmation.html', context)
+    email = EmailMultiAlternatives(subject, None, 'Puma Commercial', ['mohammed.benslimane@groupe-hasnaoui.com'])
+    email.attach_alternative(html_message, "text/html") 
+    for image in complaint.images():
+        email.attach(image.image.name, image.image.read(), 'image/jpeg')
+    email.send() 
+
     return redirect(getRedirectionURL(request, url_path))
 
 @login_required(login_url='login')
