@@ -334,20 +334,6 @@ def live_search(request):
         
     return JsonResponse([], safe=False)
 
-
-@login_required(login_url='login')
-def deleteImageView(request, id):
-    if request.method == "POST":
-        image = Image.objects.get(id=id)
-        complaint_id = image.complaint.id
-        try:
-            image.image.delete()
-            image.delete()
-            return JsonResponse({'success': True, 'complaint_id': complaint_id})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-    return JsonResponse({'success': False, 'error': 'Invalid request'})
-
 def getRedirectionURL(request, url_path):
     params = {
         'page': request.GET.get('page', '1'),

@@ -75,11 +75,9 @@ Liste des Réclamations
                             <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
                                 <button type="button" onclick="window.location='{% url 'complaint_detail' complaint.id %}'"  style="padding: 2px;"
                                 class="btn" {% if complaint.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: #45558A;"></i></button>
-                                {% if complaint.creator and complaint.creator == user %}
-                                    <button type="button" {% if complaint.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmCompDel('{{complaint.id|escapejs}}')" class="btn">
-                                        <i class="far fa-trash-alt" style="color: #45558A;"></i>
-                                    </button>
-                                {% endif %}
+                                <button type="button" {% if complaint.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmCompDel('{{complaint.id|escapejs}}')" class="btn">
+                                    <i class="far fa-trash-alt" style="color: #45558A;"></i>
+                                </button>
                             </td>
                             {% endif %}
                         </tr>

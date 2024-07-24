@@ -104,9 +104,9 @@ class Image(models.Model):
         super().save(*args, **kwargs)
         if self.image and os.path.exists(self.image.path):
             img = PILImage.open(self.image.path)
-            max_size = (1080, 1080)
+            max_size = (1280, 720)
             img.thumbnail(max_size, PILImage.LANCZOS)
-            img.save(self.image.path, quality=85, optimize=True)
+            img.save(self.image.path, quality=50, optimize=True)
     
 class Cycle(models.Model):
 

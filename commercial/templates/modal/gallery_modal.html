@@ -1,8 +1,9 @@
+{% load static %} 
 <div class="modal" id="gallerysModal" tabindex="-1" aria-labelledby="gallerysModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content contentStyle">
             <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
-                <h4 class="headerStyle mb-0">Cycle de gallery</h4>
+                <h4 class="headerStyle mb-0">Gallery</h4>
                 <button type="button" class="btn-close" style="margin-left: 10px;" data-dismiss="modal" id="buttonGalleryX" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -11,6 +12,12 @@
                         {% for image in complaint.images.all %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                                 <img src="{{ image.image.url }}" class="d-block w-100" alt="Image">
+                            </div>
+                        {% empty %}
+                            <div class="carousel-item active">
+                                <div class="no-images-message text-center">
+                                    <img src="{% static 'img/empty_gallery.png' %}" class="d-block w-100" style="width: 125px; height: 500px;" alt="Image">
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
@@ -30,12 +37,12 @@
         </div>
     </div>
 </div>
-<!-- Include Bootstrap and Lightbox JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 <style>
+    
     .contentStyle {
         background: rgba(236, 239, 242, 0.95);
         border-radius: 16px; 

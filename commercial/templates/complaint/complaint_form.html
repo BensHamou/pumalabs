@@ -96,18 +96,23 @@ Réclamation Client
         <div class="row m-4" id="imageContainer">
             {{ formset.management_form }}
             {% for form in formset %}
-              <div class="frame-container">
-                <div class="image-form">
-                  {{ form.id }}
-                  <div class="form-outline image-div">{{ form.image }}</div>
-                  <div class="image-preview">
-                    {% if form.instance.pk %}
-                      <img src="{{ form.instance.image.url }}" alt="Image Preview" class="preview-img">
-                    {% endif %}
-                  </div>
-                  <button type="button" class="btn btn-danger remove-form" data-instance-id="{{ form.instance.pk }}">✕</button>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                    <div class="frame-container">
+                        <div class="image-form">
+                            <div class="form-outline image-div">
+                                {{ form.image }}
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                            </div>
+                            <div class="image-preview">
+                                {% if form.instance.pk %}
+                                    <img src="{{ form.instance.image.url }}" alt="Image Preview" class="preview-img">
+                                {% endif %}
+                            </div>
+                            <button type="button" class="btn remove-form" data-instance-id="{{ form.instance.pk }}"><i class="far fa-trash-alt" style="color: #45558A;"></i></button>
+                        </div>
+                    </div>
                 </div>
-              </div>
             {% endfor %}
         </div>
     </div>
@@ -315,11 +320,14 @@ Réclamation Client
 
 <style>
     #imageContainer {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        display: flex;
+        flex-wrap: wrap;
     }
     
+    [name$="-DELETE"] {
+        display: none;
+    }
+
     .frame-container {
       width: 350px;
       margin: 10px;
@@ -329,6 +337,7 @@ Réclamation Client
       padding: 10px;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: border-color 1s ease;
     }
 
     .image-form {
@@ -346,20 +355,17 @@ Réclamation Client
     }
   
     .preview-img {
-        width: 100%; /* Image will always take up full width */
-        height: auto;  /* Height adjusts automatically */
+        width: 100%;
+        height: auto;
         display: block; 
     }
   
     .remove-form {
       position: absolute;
-      top: 5px;
-      right: 5px;
-      background-color: #45558a; 
-      color: white;
-      border: none;
-      padding: 2px 5px;
-      border-radius: 50%;
+      top: 0px;
+      right: 0px;
+      background-color: transparent; 
+      padding: 0px;
       cursor: pointer;
       font-size: 10px;
     }
@@ -417,11 +423,11 @@ Réclamation Client
       }
     }
     .highlight {
-        border: 2px solid green;
+        border: 2px solid lightgreen ;
         animation: highlightAnimation 1s ease-in-out;
     }
     .highlight {
-        border: 2px solid green;
+        border: 2px solid lightgreen ;
         animation: highlightAnimation 1s ease-in-out;
     }
     .select2-search {
@@ -450,6 +456,9 @@ Réclamation Client
 </style>
 
 <script>
+    let formIdx = {{ formset.total_form_count|default:0 }};
+    const maxImages = 6;
+
     document.addEventListener('DOMContentLoaded', (event) => {
         const imageDivs = document.querySelectorAll('.image-div');
         imageDivs.forEach(div => {
@@ -474,43 +483,48 @@ Réclamation Client
         }
     };
 
-    $(document).ready(function() {
-        let formIdx = {{ formset.total_form_count|default:0 }};
-    
-        function addForm() {
-            const formHtml = `
-            <div class="col-md-4 mb-3">
-                <div class="frame-container">
-                  <div class="image-form">
-                    <div class="form-outline image-div"> 
-                      <input type="file" name="form-${formIdx}-image" multiple accept="image/*" id="id_form-${formIdx}-image">
-                      <input type="hidden" name="form-${formIdx}-id" id="id_form-${formIdx}-id">
-                      <div class="image-preview"></div> </div> 
-                    <button type="button" class="btn btn-danger remove-form">✕</button>
-                  </div>
-                </div>
-              </div>`;
-          
-            $('#imageContainer').append(formHtml);
-            formIdx++;
-            $('#id_form-TOTAL_FORMS').val(formIdx);
+    function addForm() {
+        if (formIdx >= maxImages) {
+            swal({
+              title: `Oups, vous ne pouvez pas ajouter plus de ${maxImages} images!`,
+              text: `Veuillez supprimer certaines images si vous souhaitez en ajouter de nouvelles.`,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "Ok",
+              type: "warning",
+              closeOnCancel: true
+            });
+            return;
         }
-    
-        $('#addImage').click(function () {
-            addForm();
-        });
-    
-        $('#imageContainer').on('click', '.remove-form', function () {
-            const instanceId = $(this).data('instance-id');
-            const row = $(this).closest('.image-form');
-            if (instanceId) {
-                confirmImageDeletion(instanceId, row);
-            } else {
-                deleteRow(row);
-            }
-        });
-    
-        const confirmImageDeletion = (instanceId, row) => {
+        const formHtml = `
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                <div class="frame-container new-form">
+                    <div class="image-form">
+                        <div class="form-outline image-div"> 
+                            <input type="file" name="form-${formIdx}-image" accept="image/*" id="id_form-${formIdx}-image">
+                            <input type="hidden" name="form-${formIdx}-id" id="id_form-${formIdx}-id">
+                            <input type="checkbox" name="form-${formIdx}-DELETE" id="id_form-${formIdx}-DELETE">
+                        </div> 
+                        <div class="image-preview"></div>
+                        <button type="button" class="btn remove-form"><i class="far fa-trash-alt" style="color: #45558A;"></i></button>
+                    </div>
+                </div>
+            </div>`;
+        $('#imageContainer').append(formHtml);
+        formIdx++;
+        updateTotalForms();
+        $('.new-form').addClass("highlight");
+        setTimeout(function() { $('.new-form').removeClass("highlight").removeClass("new-form"); }, 1000);
+    }
+
+    $('#addImage').click(function () {
+        addForm();
+    });
+
+    $('#imageContainer').on('click', '.remove-form', function () {
+        const instanceId = $(this).data('instance-id');
+        const row = $(this).closest('.image-form').parent().parent();
+        const deleteInput = row.find('[name$="-DELETE"]');
+        if (instanceId) {
             swal({ 
                 title: `Confirmation de la suppression.`,   
                 text: `Etes-vous sûr que vous voulez supprimer cette image?`,   
@@ -523,56 +537,32 @@ Réclamation Client
                 closeOnCancel: true 
             }, function(isConfirm){   
                 if (isConfirm) {
-                    $.ajax({
-                        url: '{% url "delete_image" 0 %}'.replace('0', instanceId),  // Adjust URL as needed
-                        type: 'POST',
-                        data: {
-                            csrfmiddlewaretoken: '{{ csrf_token }}',
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                deleteRow(row);
-                            } else {
-                                console.error('Error deleting image:', response.error);
-                            }
-                        },
-                        error: function (xhr, errmsg, err) {
-                            console.log(xhr.status + ": " + xhr.responseText); // Provide error feedback
-                        }
-                    });
+                    row.hide();
+                    console.log(deleteInput);
+                    deleteInput.prop('checked', true);
                 }
             });
+        } else {
+            row.hide();
+            deleteInput.prop('checked', true);
         }
-    
-        const deleteRow = (row) => {
-            row.remove();
-            formIdx--;
-            $('#id_form-TOTAL_FORMS').val(formIdx);  // Update the total number of forms
-        }
+        updateTotalForms();
+    });
 
-        <div class="frame-container">
-            <div class="image-form">
-              {{ form.id }}
-              <div class="form-outline image-div">{{ form.image }}</div>
-              <div class="image-preview">
-                {% if form.instance.pk %}
-                  <img src="{{ form.instance.image.url }}" alt="Image Preview" class="preview-img">
-                {% endif %}
-              </div>
-              <button type="button" class="btn btn-danger remove-form" data-instance-id="{{ form.instance.pk }}">✕</button>
-            </div>
-        </div>
+    const updateTotalForms = () => {
+        $('#id_form-TOTAL_FORMS').val($('#imageContainer .image-form').length);
+    }
 
-
+    $(document).ready(function() {
+        updateTotalForms();
         $('#imageContainer').on('change', 'input[type="file"]', function (event) {
             const input = $(this)[0];
-            const previewDiv = $(this).parent().siblings('.image-preview'); 
+            const previewDiv = $(this).parent().siblings('.image-preview');
             previewDiv.empty();
-        
             Array.from(input.files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const img = $('<img>').attr('src', e.target.result).addClass('preview-img').css('max-width', '250px');
+                    const img = $('<img>').attr('src', e.target.result).addClass('preview-img');
                     previewDiv.append(img);
                 };
                 reader.readAsDataURL(file);
@@ -612,6 +602,7 @@ Réclamation Client
         });
 
         $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
+
         $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
     });
 </script>
