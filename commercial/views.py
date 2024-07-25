@@ -254,7 +254,7 @@ def confirmComplaint(request, id):
     subject = f"Réclamation {complaint.n_reclamation}" 
     context = { 'complaint': complaint }
     html_message = render_to_string('complaint_confirmation.html', context)
-    email = EmailMultiAlternatives(subject, None, 'Puma Commercial', ['mohammed.benslimane@groupe-hasnaoui.com'])
+    email = EmailMultiAlternatives(subject, None, 'Puma Commercial', [complaint.usine.address])
     email.attach_alternative(html_message, "text/html") 
     for image in complaint.images():
         email.attach(image.image.name, image.image.read(), 'image/jpeg')
