@@ -357,7 +357,9 @@ Réclamation Client
     .preview-img {
         width: 100%;
         height: auto;
-        display: block; 
+        display: block;
+        border-radius: 5px;
+        margin-bottom: 10px;
     }
   
     .remove-form {
@@ -512,7 +514,9 @@ Réclamation Client
         $('#imageContainer').append(formHtml);
         formIdx++;
         updateTotalForms();
+
         $('.new-form').addClass("highlight");
+        $('.new-form')[0].scrollIntoView({ behavior: 'smooth' });
         setTimeout(function() { $('.new-form').removeClass("highlight").removeClass("new-form"); }, 1000);
     }
 

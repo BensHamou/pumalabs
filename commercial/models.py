@@ -86,7 +86,7 @@ class Complaint(models.Model):
 
     @property
     def n_reclamation(self):
-        return f"{self.id:05d}/{self.date_created.strftime('%y')}"
+        return f"{self.usine.prefix_site}{self.id:05d}/{self.date_created.strftime('%y')}"
 
     def __str__(self):
         return self.n_reclamation

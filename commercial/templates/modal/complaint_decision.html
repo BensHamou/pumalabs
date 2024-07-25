@@ -1,0 +1,12 @@
+<p>Bonjour l'équipe,</p>
+<p>Veuillez trouver ci-dessous la décision finale par {{ decider }} le ({{ date_decided|date:"d/m/Y" }}) :</p>
+<ul>
+    <li><b>N° Réclamation</b>: {{ complaint.n_reclamation }}</li>
+    <li><b>Distributeur</b>: {{ complaint.distributeur }}</li>
+    <li><b>Client</b>: {{ complaint.client }}</li>
+    <li><b>Produit</b>: {{ complaint.product }}</li>
+</ul>
+<ul>
+    <li>Décision Final : {{ complaint.decision|linebreaks }}</li>
+</ul>
+<p>Pour plus de détails, veuillez visiter: <a href="http://mylab.grupopuma-dz.com/complaints/{{complaint.id}}/">Lien</a></p>

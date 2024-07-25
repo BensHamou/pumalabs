@@ -18,9 +18,10 @@ from django.core.paginator import Paginator
 
 def login_success(request):
     user = request.user
-    if user.is_authenticated:
-        if user.role != 'Admin':
-            return redirect("list_report")
+    if user.role in ['Technicien', 'Validateur', 'Observateur', 'Gestionnaire de production']:
+        return redirect("list_report")
+    elif user.role in ['Commercial', 'Résponsable', 'Directeur']:
+        return redirect("list_complaint")
     return redirect("home")
 
 def admin_required(view_func):

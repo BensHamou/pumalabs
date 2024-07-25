@@ -171,14 +171,14 @@ def listComplaintsList(request):
     return render(request, 'list_complaints.html', context)
 
 @login_required(login_url='login')
-@admin_required
+@check_creator
 def deleteComplaintView(request, id):
     complaint = Complaint.objects.get(id=id)
     complaint.delete()
     return redirect(getRedirectionURL(request, reverse('list_complaint')))
 
 @login_required(login_url='login')
-@admin_required
+@comm_app_required
 def createComplaintView(request):
     form = ComplaintCommForm(user=request.user)
     ImageFormSet = modelformset_factory(Image,form=ImageForm, extra=1, can_delete=True)
@@ -251,7 +251,7 @@ def confirmComplaint(request, id):
     cycle.save()
     messages.success(request, 'Complaint En traitement avec succès')
 
-    subject = "Complaint Confirmation" 
+    subject = f"Réclamation {complaint.n_reclamation}" 
     context = { 'complaint': complaint }
     html_message = render_to_string('complaint_confirmation.html', context)
     email = EmailMultiAlternatives(subject, None, 'Puma Commercial', ['mohammed.benslimane@groupe-hasnaoui.com'])
@@ -320,6 +320,14 @@ def finishComplaintView(request, id):
             cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
             complaint.save()
             cycle.save()
+            subject = f"Réclamation {complaint.n_reclamation}" 
+            context = { 'complaint': complaint, 'decider': cycle.actor, 'date_decided': cycle.date }
+            html_message = render_to_string('complaint_decision.html', context)
+            email = EmailMultiAlternatives(subject, None, 'Puma Commercial', [complaint.usine.address])
+            email.attach_alternative(html_message, "text/html")
+            for image in complaint.images():
+                email.attach(image.image.name, image.image.read(), 'image/jpeg')
+            email.send() 
             return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
     context = {'form': form, 'complaint': complaint }
     return render(request, 'finish_complaint_form.html', context)

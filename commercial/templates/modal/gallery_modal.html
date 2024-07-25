@@ -11,12 +11,12 @@
                     <div class="carousel-inner">
                         {% for image in complaint.images.all %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{ image.image.url }}" class="d-block w-100" alt="Image">
+                                <img src="{{ image.image.url }}" class="d-block image-responsive" alt="Image">
                             </div>
                         {% empty %}
                             <div class="carousel-item active">
                                 <div class="no-images-message text-center">
-                                    <img src="{% static 'img/empty_gallery.png' %}" class="d-block w-100" style="width: 125px; height: 500px;" alt="Image">
+                                    <img src="{% static 'img/empty_gallery.png' %}" class="d-block image-responsive" alt="Image">
                                 </div>
                             </div>
                         {% endfor %}
@@ -42,6 +42,15 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 <style>
+
+    .image-responsive{
+        max-height: 500px; 
+        width: auto; 
+        display: block; 
+        margin-left: auto; 
+        margin-right: auto; 
+        border-raduis: 5px;
+    }
     
     .contentStyle {
         background: rgba(236, 239, 242, 0.95);

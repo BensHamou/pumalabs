@@ -1,7 +1,15 @@
-<h2>Complaint Confirmation</h2>
-<p>Complaint details:</p>
+{% load humanize %}
+<p>Bonjour l'équipe,</p>
+<p>Une fiche de réclamation a été créé par  {{ complaint.creator }} - {{ complaint.emplacement }} ({{ complaint.emplacement.region }})  le ({{ complaint.date_created|date:"d/m/Y" }}) :</p>
 <ul>
-    <li>ID: {{ complaint.id }}</li>
-    <li>Title: {{ complaint.project }}</li>
+    <li><b>N° Réclamation</b>: {{ complaint.n_reclamation }}</li>
+    <li><b>Distributeur</b>: {{ complaint.distributeur }}</li>
+    <li><b>Client</b>: {{ complaint.client }}</li>
+    <li><b>Produit</b>: {{ complaint.product }}</li>
+    <li><b>N° BC</b>: {{ complaint.n_bc }}</li>
+    <li><b>Date Livraison</b>: {{ complaint.date_delivery|date:"d/m/Y" }}</li>
+    <li><b>Quantité</b>: {{ complaint.qte|intcomma }}</li>
+    <li><b>N° Lot</b>: {{ complaint.n_lot }}</li>
+    <li><b>Date de Production</b>: {{ complaint.date_prod|date:"d/m/Y" }}</li>
 </ul>
-<p>View the full complaint details: <a href="http://127.0.0.1:8000/complaints/{{complaint.id}}/">Click here</a></p>
+<p>Pour plus de détails, veuillez visiter: <a href="http://mylab.grupopuma-dz.com/complaints/{{complaint.id}}/">Lien</a></p>

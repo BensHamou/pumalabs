@@ -81,22 +81,22 @@ TEMPLATES = [
 WSGI_APPLICATION = "pumalabs.wsgi.application"
 
 DATABASES = {
-    'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'PumaLab',
-       'USER': 'puma_prod',
-       'PASSWORD': 'puma_prod',
-       'HOST': '10.10.10.101',
-       'PORT': '5434',
-    }
     #'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': 'PumaLab',
-    #    'USER': 'lab_report',
-    #    'PASSWORD': 'lab_report',
-    #    'HOST': '10.10.10.20',
-    #    'PORT': '5168',
+    #   'ENGINE': 'django.db.backends.postgresql',
+    #   'NAME': 'PumaLab',
+    #   'USER': 'puma_prod',
+    #   'PASSWORD': 'puma_prod',
+    #   'HOST': '10.10.10.101',
+    #   'PORT': '5434',
     #}
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'PumaLab',
+        'USER': 'lab_report',
+        'PASSWORD': 'lab_report',
+        'HOST': '10.10.10.20',
+        'PORT': '5168',
+    }
     #'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': os.environ.get('DB_NAME'),
