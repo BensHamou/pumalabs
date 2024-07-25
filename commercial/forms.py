@@ -31,7 +31,7 @@ class EmplacementForm(ModelForm):
 class ComplaintCommForm(ModelForm):
     class Meta:
         model = Complaint
-        fields = ['creator', 'distributeur_id', 'distributeur', 'client_id', 'client', 'emplacement', 'product', 
+        fields = ['creator', 'distributeur_id', 'distributeur', 'client_id', 'client', 'categ_client', 'emplacement', 'product', 
                   'usine', 'project', 'n_bc', 'n_lot', 'qte', 'date_delivery', 'date_prod', 'observation',
                   'treatment_labo', 'treatment_site', 'actions', 'decision']
     
@@ -46,6 +46,7 @@ class ComplaintCommForm(ModelForm):
     emplacement = forms.ModelChoiceField(queryset=Emplacement.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Site")
     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Produit")
     usine = forms.ModelChoiceField(queryset=Usine.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Usine")
+    categ_client = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Catégorie Client")
 
     project = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Projet')))
     n_bc = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','N° BC')))

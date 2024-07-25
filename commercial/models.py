@@ -70,6 +70,7 @@ class Complaint(models.Model):
     emplacement = models.ForeignKey(Emplacement, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     usine = models.ForeignKey(Usine, on_delete=models.CASCADE)
+    categ_client = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     project = models.CharField(max_length=500)
     n_bc = models.CharField(max_length=25)
