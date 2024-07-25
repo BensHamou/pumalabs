@@ -40,7 +40,7 @@ class ComplaintCommForm(ModelForm):
     distributeur_id = forms.IntegerField(widget=forms.HiddenInput(attrs=getAttrs('controlID','ID_dist_id')))
     distributeur = forms.CharField(widget=forms.TextInput(attrs=getAttrs('controlSearch','Distributeur')))
 
-    client_id = forms.IntegerField(widget=forms.HiddenInput(attrs=getAttrs('controlID','ID_clinet_id')))
+    client_id = forms.IntegerField(widget=forms.HiddenInput(attrs=getAttrs('controlID','ID_client_id')))
     client = forms.CharField(widget=forms.TextInput(attrs=getAttrs('controlSearch','Client')))
 
     emplacement = forms.ModelChoiceField(queryset=Emplacement.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Site")
