@@ -13,6 +13,13 @@ class ProductForm(ModelForm):
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
 
+class CategoryForm(ModelForm):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+
 class EmplacementForm(ModelForm):
     class Meta:
         model = Emplacement

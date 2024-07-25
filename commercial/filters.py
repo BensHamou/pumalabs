@@ -25,6 +25,17 @@ class EmplacementFilter(FilterSet):
     class Meta:
         model = Emplacement
         fields = ['search']
+
+class CategoryFilter(FilterSet):
+
+    search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher Category Client..')))
+
+    def filter_search(self, queryset, name, value):
+        return queryset.filter(Q(designation__icontains=value) |Q(region__icontains=value)).distinct()
+
+    class Meta:
+        model = Category
+        fields = ['search']
         
 class ComplaintFilter(FilterSet):
 

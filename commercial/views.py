@@ -155,6 +155,57 @@ def editProductView(request, id):
 
     return render(request, 'product_form.html', context)
 
+# CATEGORY
+@login_required(login_url='login')
+@admin_required 
+def listCategoryView(request):
+    categories = Category.objects.all().order_by('id')
+    filteredData = CategoryFilter(request.GET, queryset=categories)
+    categories = filteredData.qs
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(categories, page_size)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    context = { 'page': page, 'filtredData': filteredData }
+    return render(request, 'list_categories.html', context)
+
+@login_required(login_url='login')
+@admin_required
+def deleteCategoryView(request, id):
+    category = Category.objects.get(id=id)
+    category.delete()
+    return redirect(getRedirectionURL(request, reverse('categories')))
+
+
+@login_required(login_url='login')
+@admin_required
+def createCategoryView(request):
+    form = CategoryForm()
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(getRedirectionURL(request, reverse('categories')))
+    context = {'form': form }
+    return render(request, 'category_form.html', context)
+
+@login_required(login_url='login')
+@admin_required
+def editCategoryView(request, id):
+    category = Category.objects.get(id=id)
+
+    form = CategoryForm(instance=category)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect(getRedirectionURL(request, reverse('categories')))
+    context = {'form': form, 'category': category }
+
+    return render(request, 'category_form.html', context)
+
+
 # COMPLAINTS
 @login_required(login_url='login')
 @comm_app_required 

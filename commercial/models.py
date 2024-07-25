@@ -21,6 +21,14 @@ class Product(models.Model):
     def __str__(self):
         return self.designation
     
+class Category(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    designation = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.designation
+    
 class Emplacement(models.Model):
  
     REGION = [

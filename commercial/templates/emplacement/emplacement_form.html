@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}
-Emplacement
+Site
 {% endblock %}
 {% load static %} 
 {% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
@@ -13,7 +13,7 @@ Emplacement
     <p class="lead m-0 p-0 retourC">retour</p>
 </a>
 </div>
-<h4 class="mb-4 retourC">{% if emplacement %}Modification du {{ emplacement.designation }}{% else %}Création d'un emplacement{% endif %}</h4>
+<h4 class="mb-4 retourC">{% if emplacement %}Modification du {{ emplacement.designation }}{% else %}Création d'un site{% endif %}</h4>
 
 <form method="POST">
   {% csrf_token %}

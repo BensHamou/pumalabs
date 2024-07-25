@@ -16,6 +16,11 @@ urlpatterns = [
     path("emplacements/edit-emplacement/<int:id>", editEmplacementView, name="edit_emplacement"),
     path("emplacements/create-emplacement/", createEmplacementView, name="create_emplacement"),
 
+    path('categories/', listCategoryView, name='categories'),
+    path("categories/delete-category/<int:id>", deleteCategoryView, name="delete_category"),
+    path("categories/create-category/", createCategoryView, name="create_category"),
+    path("categories/edit-category/<int:id>", editCategoryView, name="edit_category"),
+
     path('complaints/', listComplaintsList, name='list_complaint'),
     path('complaints/create/', createComplaintView, name='create_complaint'),
     path('complaints/<int:id>/', detailComplaintView , name='complaint_detail'),

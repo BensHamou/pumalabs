@@ -64,7 +64,7 @@ TEMPLATES = [
                  os.path.join(BASE_DIR, 'report', 'templates', 'sable_type'), os.path.join(BASE_DIR, 'report', 'templates', 'fournisseur'),
                  os.path.join(BASE_DIR, 'commercial', 'templates', 'emplacement'), os.path.join(BASE_DIR, 'commercial', 'templates', 'product'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'modal'), os.path.join(BASE_DIR, 'commercial', 'templates', 'complaint'), 
-                 os.path.join(BASE_DIR, 'commercial', 'templates', 'modal'),
+                 os.path.join(BASE_DIR, 'commercial', 'templates', 'modal'), os.path.join(BASE_DIR, 'commercial', 'templates', 'category'),
                  ],
         "APP_DIRS": True,
         "OPTIONS": {
