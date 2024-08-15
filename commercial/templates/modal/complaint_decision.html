@@ -1,3 +1,4 @@
+{% load humanize %}
 <p>Bonjour l'équipe,</p>
 <p>Veuillez trouver ci-dessous la décision finale par {{ decider }} le ({{ date_decided|date:"d/m/Y" }}) :</p>
 <ul>
@@ -6,6 +7,11 @@
     <li><b>Client</b>: {{ complaint.client }}</li>
     <li><b>Catégorie Client</b>: {{ complaint.categ_client }}</li>
     <li><b>Produit</b>: {{ complaint.product }}</li>
+    <li><b>N° BC</b>: {{ complaint.n_bc }}</li>
+    <li><b>Date Livraison</b>: {{ complaint.date_delivery|date:"d/m/Y" }}</li>
+    <li><b>Quantité</b>: {{ complaint.qte|intcomma }}</li>
+    <li><b>N° Lot</b>: {{ complaint.n_lot }}</li>
+    <li><b>Date de Production</b>: {{ complaint.date_prod|date:"d/m/Y" }}</li>
 </ul>
 <ul>
     <li><b>Description sommaire des tests et résultats</b> : {{ complaint.treatment_labo|linebreaks }}</li>

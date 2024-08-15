@@ -13,7 +13,6 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .utils import *
 from django.forms import modelformset_factory
-from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
@@ -250,6 +249,11 @@ def createComplaintView(request):
                     if image.instance.image:
                         image.save() 
             return redirect(getRedirectionURL(request, reverse('list_complaint')))
+        else:
+            print("Form Errors:", form.errors)
+            print("Formset Errors:")
+            for subform in formset:
+                print(subform.errors)
     else:
         formset = ImageFormSet(queryset=Image.objects.none())
     context = {'form': form, 'formset': formset }
@@ -385,7 +389,7 @@ def finishComplaintView(request, id):
             cycle = Cycle(old_state=old_state, new_state=new_state, actor=actor, complaint=complaint)
             complaint.save()
             cycle.save()
-            subject = f"Réclamation {complaint.n_reclamation}" 
+            subject = f"Re: Réclamation {complaint.n_reclamation}" 
             context = { 'complaint': complaint, 'decider': cycle.actor, 'date_decided': cycle.date }
             html_message = render_to_string('complaint_decision.html', context)
             email = EmailMultiAlternatives(subject, None, 'Puma Commercial', [complaint.usine.address])
