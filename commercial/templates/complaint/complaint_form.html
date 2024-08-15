@@ -228,7 +228,7 @@ Réclamation Client
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 mb-2">
                 <div class="form-outline">
-                    <label class="form-label labelCustom" for="observation">Observation</label><br>
+                    <label class="form-label labelCustom" for="observation">Description</label><br>
                     {{ form.observation }}
                     {% if form.observation.errors %}
                         <div style="color: red;">
@@ -258,6 +258,16 @@ Réclamation Client
                                {% endfor %}
                                </div>
                            {% endif %}
+                           <div style="padding: 10px;">                            
+                               {{ form.treatment_labo_att }}
+                               {% if form.treatment_labo_att.errors %}
+                                   <div style="color: red;">
+                                   {% for error in form.treatment_labo_att.errors %}
+                                       *{{ error }}
+                                   {% endfor %}
+                                   </div>
+                               {% endif %}
+                           </div>
                        </div>
                    </div>
                </div>
@@ -277,6 +287,16 @@ Réclamation Client
                                {% endfor %}
                                </div>
                            {% endif %}
+                           <div style="padding: 10px;">                            
+                               {{ form.treatment_site_att }}
+                               {% if form.treatment_site_att.errors %}
+                                   <div style="color: red;">
+                                   {% for error in form.treatment_site_att.errors %}
+                                       *{{ error }}
+                                   {% endfor %}
+                                   </div>
+                               {% endif %}
+                           </div>
                        </div>
                    </div>
                </div>

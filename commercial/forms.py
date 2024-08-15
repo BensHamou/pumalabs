@@ -33,7 +33,7 @@ class ComplaintCommForm(ModelForm):
         model = Complaint
         fields = ['creator', 'distributeur_id', 'distributeur', 'client_id', 'client', 'categ_client', 'emplacement', 'product', 
                   'usine', 'project', 'n_bc', 'n_lot', 'qte', 'date_delivery', 'date_prod', 'observation',
-                  'treatment_labo', 'treatment_site', 'actions', 'decision']
+                  'treatment_labo', 'treatment_labo_att', 'treatment_site', 'treatment_site_att', 'actions', 'decision']
     
     creator = forms.ModelChoiceField(queryset=User.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Commercial")
     
@@ -56,9 +56,11 @@ class ComplaintCommForm(ModelForm):
     date_delivery = forms.DateField(initial=timezone.now().date(), widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
     date_prod = forms.DateField(initial=timezone.now().date(), widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
 
-    observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
+    observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Description')), required=False)
     treatment_labo = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Traitement de la Réclamation Au Laboratoire')), required=False)
+    treatment_labo_att = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input', 'accept': '.zip,.pdf,.doc,.docx,.jpg,.jpeg,.png'}), required=False)
     treatment_site = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Traitement de la Réclamation sur Site')), required=False)
+    treatment_site_att = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input', 'accept': '.zip,.pdf,.doc,.docx,.jpg,.jpeg,.png'}), required=False)
     actions = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Actions à mettre en œuvre')), required=False)
     decision = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Décision final')), required=False)
 
@@ -68,14 +70,17 @@ class ComplaintCommForm(ModelForm):
         self.fields['creator'].initial = user
         if not user.role == 'Admin':
             self.fields['creator'].widget.attrs['disabled'] = True
+    
 
 class ComplaintResponsableForm(ModelForm):
     class Meta:
         model = Complaint
-        fields = ['treatment_labo', 'treatment_site', 'actions']
+        fields = ['treatment_labo', 'treatment_labo_att', 'treatment_site', 'treatment_site_att', 'actions']
     
     treatment_labo = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Traitement de la Réclamation Au Laboratoire')))
     treatment_site = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Traitement de la Réclamation sur Site')))
+    treatment_labo_att = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input', 'accept': '.zip,.pdf,.doc,.docx,.jpg,.jpeg,.png'}), required=False)
+    treatment_site_att = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input', 'accept': '.zip,.pdf,.doc,.docx,.jpg,.jpeg,.png'}), required=False)
     actions = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea2','Actions à mettre en œuvre')))
 
 class ComplaintDirectorForm(ModelForm):
@@ -90,7 +95,4 @@ class ImageForm(ModelForm):
         model = Image
         fields = ['image']
 
-    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={
-            'class': 'custom-file-input',
-            'accept': 'image/*'
-            }))
+    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'class': 'custom-file-input','accept': 'image/*'}))

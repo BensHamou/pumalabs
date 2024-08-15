@@ -141,7 +141,7 @@ Réclamation Client
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Observation</label>
+                    <label class="col-sm-3 col-form-label" style="color: #0C2858;">Description</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-detail" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {% if complaint.observation  %}{{ complaint.observation|linebreaks }}{% else %}/{% endif %}
@@ -153,7 +153,7 @@ Réclamation Client
     </div>
 </div>
 
-<form method="POST" class='mb-4'>
+<form method="POST" class='mb-4' enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card mt-4 custom-card">
        <div class="card-header card-header-secondary">
@@ -170,6 +170,16 @@ Réclamation Client
                        {% endfor %}
                        </div>
                    {% endif %}
+                    <div style="padding: 10px;">                            
+                        {{ form.treatment_labo_att }}
+                        {% if form.treatment_labo_att.errors %}
+                            <div style="color: red;">
+                            {% for error in form.treatment_labo_att.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                </div>
            </div>
        </div>
@@ -189,6 +199,16 @@ Réclamation Client
                        {% endfor %}
                        </div>
                    {% endif %}
+                    <div style="padding: 10px;">                            
+                        {{ form.treatment_site_att }}
+                        {% if form.treatment_site_att.errors %}
+                            <div style="color: red;">
+                            {% for error in form.treatment_site_att.errors %}
+                                *{{ error }}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                </div>
            </div>
        </div>

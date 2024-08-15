@@ -45,7 +45,17 @@ class Emplacement(models.Model):
 
     def __str__(self):
         return self.designation
-    
+
+def get_labo_attachment_filename(instance, filename):
+    title = instance.n_reclamation
+    slug = slugify(title)
+    return f"attachments/labo/{slug}-{filename}"
+
+def get_site_attachment_filename(instance, filename):
+    title = instance.n_reclamation
+    slug = slugify(title)
+    return f"attachments/site/{slug}-{filename}"
+
 class Complaint(models.Model):
 
     STATE_COMPLAINT = [
@@ -82,7 +92,9 @@ class Complaint(models.Model):
     observation = models.TextField(null=True, blank=True)
 
     treatment_labo = models.TextField(null=True, blank=True)
+    treatment_labo_att = models.FileField(upload_to=get_labo_attachment_filename, verbose_name='Lab Attachment', null=True, blank=True)
     treatment_site = models.TextField(null=True, blank=True)
+    treatment_site_att = models.FileField(upload_to=get_site_attachment_filename, verbose_name='Site Attachment', null=True, blank=True)
     actions = models.TextField(null=True, blank=True)
 
     decision = models.TextField(null=True, blank=True)
@@ -103,7 +115,7 @@ class Complaint(models.Model):
 def get_image_filename(instance, filename):
     title = instance.complaint.n_reclamation
     slug = slugify(title)
-    return "complaint_images/%s-%s" % (slug, filename)  
+    return "complaint_images/%s-%s" % (slug, filename)
 
 class Image(models.Model):
     complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE)

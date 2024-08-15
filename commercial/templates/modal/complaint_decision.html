@@ -8,6 +8,9 @@
     <li><b>Produit</b>: {{ complaint.product }}</li>
 </ul>
 <ul>
-    <li>Décision Final : {{ complaint.decision|linebreaks }}</li>
+    <li><b>Description sommaire des tests et résultats</b> : {{ complaint.treatment_labo|linebreaks }}</li>
+    <li><b>Description sommaire des actions sur site et résultats</b> : {{ complaint.treatment_site|linebreaks }}</li>
+    <li><b>En accord avec les résultats labo et sur site, des actions addionelles seront programmés</b> : {{ complaint.actions|linebreaks }}</li>
+    <li><b>Décision Final</b> : {{ complaint.decision|linebreaks }}</li>
 </ul>
 <p>Pour plus de détails, veuillez visiter: <a href="http://mylab.grupopuma-dz.com/complaints/{{complaint.id}}/">Lien</a></p>

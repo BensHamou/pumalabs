@@ -259,13 +259,20 @@ def createComplaintView(request):
 @check_creator
 def editComplaintView(request, id):
     complaint = Complaint.objects.get(id=id)
+    old_lab_attachment = complaint.treatment_labo_att
+    old_site_attachment = complaint.treatment_site_att
     form = ComplaintCommForm(instance=complaint, user=request.user)
     ImageFormSet = modelformset_factory(Image,form=ImageForm, extra=0, can_delete=True)
     if request.method == 'POST':
-        form = ComplaintCommForm(request.POST, instance=complaint, user=request.user)
+        form = ComplaintCommForm(request.POST, request.FILES, instance=complaint, user=request.user)
         formset = ImageFormSet(request.POST, request.FILES, queryset=Image.objects.filter(complaint=complaint))
         if form.is_valid() and formset.is_valid():
-            form.save()
+            complaint = form.save(commit=False)
+            if not complaint.treatment_labo_att and old_lab_attachment:
+                old_lab_attachment.delete(save=False)
+            if not complaint.treatment_site_att and old_site_attachment:
+                old_site_attachment.delete(save=False)
+            complaint.save()
             for image in formset:
                 if image.cleaned_data.get('DELETE'):
                     if image.instance.pk:
@@ -340,10 +347,17 @@ def cancelComplaint(request, id):
 def completeComplaintView(request, id):
     complaint = Complaint.objects.get(id=id)
     form = ComplaintResponsableForm(instance=complaint)
+    old_lab_attachment = complaint.treatment_labo_att
+    old_site_attachment = complaint.treatment_site_att
     if request.method == 'POST':
-        form = ComplaintResponsableForm(request.POST, instance=complaint)
+        form = ComplaintResponsableForm(request.POST, request.FILES, instance=complaint)
         if form.is_valid():
-            complaint = form.save()
+            complaint = form.save(commit=False)
+            if not complaint.treatment_labo_att and old_lab_attachment:
+                old_lab_attachment.delete(save=False)
+            if not complaint.treatment_site_att and old_site_attachment:
+                old_site_attachment.delete(save=False)
+            complaint.save()
             old_state = complaint.state
             complaint.state = 'Traité'
             new_state = complaint.state
@@ -378,6 +392,10 @@ def finishComplaintView(request, id):
             email.attach_alternative(html_message, "text/html")
             for image in complaint.images():
                 email.attach(image.image.name, image.image.read(), 'image/jpeg')
+            if complaint.treatment_labo_att:
+                email.attach(complaint.treatment_labo_att.name, complaint.treatment_labo_att.read())
+            if complaint.treatment_site_att:
+                email.attach(complaint.treatment_site_att.name, complaint.treatment_site_att.read())
             email.send() 
             return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
     context = {'form': form, 'complaint': complaint }
