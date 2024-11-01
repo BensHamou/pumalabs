@@ -17,4 +17,4 @@ commecial/migrations/*
 report/migrations/*
 !report/migrations/__init__.py
 
-media/
+media/*

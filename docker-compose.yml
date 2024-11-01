@@ -23,7 +23,8 @@ services:
     ports:
       - "8168:8168"
     volumes:
-      - ./pumalabs:/pumalabs
+      - ./pumalabs:/pumalabs  # Mount the app folder to sync code changes
+      - ./media:/app/media    # Ensure media files persist on the host
 
     command: >
       sh -c " python manage.py makemigrations &&
@@ -39,6 +40,7 @@ services:
       - DB_PORT=5432
 volumes:
   db_data:
+  media_volume:
 networks:
   default:
     driver: bridge
