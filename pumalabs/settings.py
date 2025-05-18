@@ -89,14 +89,14 @@ DATABASES = {
     #   'HOST': '10.10.10.101',
     #   'PORT': '5434',
     #}
-    #'default': {
+    # 'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': 'PumaLab',
     #    'USER': 'lab_report',
     #    'PASSWORD': 'lab_report',
     #    'HOST': '10.10.10.20',
     #    'PORT': '5168',
-    #}
+    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME'),
@@ -149,6 +149,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'pumalabs001@gmail.com'
-EMAIL_HOST_PASSWORD = 'bvliwpvyejfhfaln'
+EMAIL_HOST_PASSWORD = 'zzynmnuizkbjtpoo'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'pumalabs001@gmail.com'

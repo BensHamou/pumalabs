@@ -287,6 +287,11 @@ def editComplaintView(request, id):
                     if image.instance.image:
                         image.save() 
             return redirect(getRedirectionURL(request, reverse('complaint_detail', args=[complaint.id])))
+        else:
+            print("Form Errors:", form.errors)
+            print("Formset Errors:")
+            for subform in formset:
+                print(subform.errors)
     else:
         formset = ImageFormSet(queryset=Image.objects.filter(complaint=complaint))
     context = {'form': form, 'complaint': complaint, 'formset': formset }
